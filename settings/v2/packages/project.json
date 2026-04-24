@@ -1,0 +1,36 @@
+{
+  "__version__": "1.0.6",
+  "physics": {
+    "collisionGroups": [
+      {
+        "index": 1,
+        "name": "soccer"
+      },
+      {
+        "index": 2,
+        "name": "enemy"
+      },
+      {
+        "index": 3,
+        "name": "hero"
+      },
+      {
+        "index": 4,
+        "name": "bullet"
+      }
+    ],
+    "collisionMatrix": {
+      "0": 1,
+      "1": 12,
+      "2": 2,
+      "3": 18,
+      "4": 8
+    }
+  },
+  "general": {
+    "designResolution": {
+      "width": 750,
+      "height": 1334
+    }
+  }
+}
