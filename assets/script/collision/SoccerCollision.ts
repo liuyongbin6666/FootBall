@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, BoxCollider2D, Contact2DType, Collider2D, Collider } from 'cc';
+import { _decorator, Component, Node, BoxCollider2D, Contact2DType, Collider2D, Collider, Sprite, find } from 'cc';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
 import { GameEventName } from '../manager/GameEventName';
 const { ccclass, property } = _decorator;
@@ -11,11 +11,30 @@ export class SoccerCollision extends Component {
     @property(BoxCollider2D)
     private collider: BoxCollider2D = null;
     
+    private soccer_1:Sprite;
+    private soccer_2:Sprite;
+    private soccer_3:Sprite;
+    private soccer_4:Sprite;
+    private soccer_5:Sprite;
+    private soccer_6:Sprite;
+    private soccerImgChange:number;
     onLoad()
     {
+        this._initObect();
+
         // 注册碰撞事件
         this.initCollision();
     }
+
+    private _initObect() {
+        this.soccer_1 = find('soccer_1', this.node).getComponent(Sprite);
+        this.soccer_2 = find('soccer_2', this.node).getComponent(Sprite);
+        this.soccer_3 = find('soccer_3', this.node).getComponent(Sprite);
+        this.soccer_4 = find('soccer_4', this.node).getComponent(Sprite);
+        this.soccer_5 = find('soccer_5', this.node).getComponent(Sprite);
+        this.soccer_6 = find('soccer_6', this.node).getComponent(Sprite);
+    }
+
     start() {
 
     }
@@ -54,9 +73,32 @@ export class SoccerCollision extends Component {
         // GameCustomEvent.Instance.node.emit(GameEventName.EXPLORE_THREAD_CONTROLLER_EVENT,threadEvent);
     }
 
-
     update(deltaTime: number) {
-        
+        if(this.soccer_1.node.active)
+        {
+            this.soccer_1.node.active = false;
+            this.soccer_2.node.active = true;
+        }else if(this.soccer_2.node.active)
+        {
+            this.soccer_2.node.active = false;
+            this.soccer_3.node.active = true;
+        }else if(this.soccer_3.node.active)
+        {
+            this.soccer_3.node.active = false;
+            this.soccer_4.node.active = true;
+        }else if(this.soccer_4.node.active)
+        {
+            this.soccer_4.node.active = false;
+            this.soccer_5.node.active = true;
+        }else if(this.soccer_5.node.active)
+        {
+            this.soccer_5.node.active = false;
+            this.soccer_6.node.active = true;
+        }else if(this.soccer_6.node.active)
+        {
+            this.soccer_6.node.active = false;
+            this.soccer_1.node.active = true;
+        }
     }
 }
 

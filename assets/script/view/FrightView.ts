@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color } from 'cc';
-import { enemyStructure, heroStructure, soccerStructure } from '../data/GlobalStructure';
+import { bulletStructure, enemyStructure, heroStructure, soccerStructure } from '../data/GlobalStructure';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { OperationTool } from '../tool/OperationTool';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
@@ -22,6 +22,9 @@ export class FrightView extends Component {
 
     @property(Prefab)
     private soccerItemPre: Prefab = null;
+    
+    @property(Prefab)
+    private bulletItemPre: Prefab = null;
 
     @property(Prefab)
     private harmItemPre: Prefab = null;
@@ -63,6 +66,8 @@ export class FrightView extends Component {
     private recycleEnemyArr:Array<enemyStructure> = [];
     //足球
     private soccerArr:Array<soccerStructure> = [];
+    //子弹
+    private bulletArr:Array<bulletStructure> = [];
     //关卡
     private level:number = 1;
     //第几波
@@ -77,6 +82,8 @@ export class FrightView extends Component {
     private EXP:number = 0;
     //升级所需经验
     private maxEXP:number = 200;
+    //溢出经验
+    private overflowEXP:number = 0;
     //英雄槽
     private heroGrooveArr:Array<any>;
     //技能槽
@@ -87,6 +94,8 @@ export class FrightView extends Component {
     private mapMoveSpeed:number = 0.2;
     private frightBgY:number = 0;
     private frightLinkUpBgY:number = 0;
+    //敌人子弹速度
+    private bulletSpeed:number = 5;
     //游戏状态
     private soccerGameState:number = 0;
     protected onLoad(): void {
@@ -129,11 +138,14 @@ export class FrightView extends Component {
         this.resetGame();
         //模拟数据
         var es1:enemyStructure = {enemyID:1,heroHeadImgPath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:50,moveSpeed:0.6,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,enemyItem:null,HP:10,speak:"杀光他们！"};
+            maxHP:50,moveSpeed:0.6,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",enemyItem:null,
+            HP:10,attakState:0};
         var es2:enemyStructure = {enemyID:2,heroHeadImgPath:"",enemyName:"敌人2",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:100,moveSpeed:0.5,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,enemyItem:null,HP:10,speak:"冲啊！"};
+            maxHP:100,moveSpeed:0.5,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"冲啊！",enemyItem:null,
+            HP:10,attakState:0};
         var es3:enemyStructure = {enemyID:3,heroHeadImgPath:"",enemyName:"敌人3",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:80,moveSpeed:0.4,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,enemyItem:null,HP:10,speak:"Biu~Biu~"};
+            maxHP:80,moveSpeed:0.4,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"Biu~Biu~",enemyItem:null,
+            HP:10,attakState:0};
         this.enemyArr.push(es1);
         this.enemyArr.push(es2);
         this.enemyArr.push(es3);
@@ -163,10 +175,8 @@ export class FrightView extends Component {
         this.createHero();
         this.createAllEnemy();
         this.createSoccer();//1,-250,-300
-        this.lab_HPProportion.string = this.HP + "/" + this.maxHP;
-        this.pro_HP.progress = this.HP/this.maxHP;
-        this.lab_EXPProportion.string = this.EXP + "/" + this.maxEXP;
-        this.pro_EXP.progress = this.EXP/this.maxEXP;
+        this.freshHP();
+        this.freshEXP();
         this.soccerGameState = gameState.start;
         this.schedule(this.soccerGame,this.timeHS);
     }
@@ -264,6 +274,19 @@ export class FrightView extends Component {
         this.node_soccer.addChild(item);
     }
 
+    //创建子弹 enemyNode 发射子弹的敌人
+    createBullet(enemyNode:Node)
+    {
+        let item = instantiate(this.bulletItemPre);
+        //在敌人的手部生成子弹
+        item.setPosition(enemyNode.getPosition().x,enemyNode.getPosition().y + 20);
+        item["bulletID"] = this.bulletArr.length + 1;
+        //随机一个英雄做为攻击目标
+        var attackHeroIndex:number = Math.floor(Math.random() * this.heroArr.length);
+        var newBullet:bulletStructure = {bulletID:this.bulletArr.length + 1,bulletImgPath:"",goalHeroID:this.heroArr[attackHeroIndex].heroID};
+        this.bulletArr.push(newBullet);
+    }
+
     soccerAdd()
     {
         //根据本局的英雄个数，逐渐增加球
@@ -280,6 +303,20 @@ export class FrightView extends Component {
             //3个球
             this.createSoccer();
         }
+    }
+
+    //刷新血量显示
+    freshHP()
+    {
+        this.lab_HPProportion.string = this.HP + "/" + this.maxHP;
+        this.pro_HP.progress = this.HP/this.maxHP;
+    }
+
+    //刷新经验显示
+    freshEXP()
+    {
+        this.lab_EXPProportion.string = this.EXP + "/" + this.maxEXP;
+        this.pro_EXP.progress = this.EXP/this.maxEXP;
     }
 
     //移动英雄站位
@@ -471,6 +508,11 @@ export class FrightView extends Component {
                 }
                 break;
             case 3:
+                //子弹碰到英雄，子弹消失，总血条扣血
+                if(this.HP <= 0)
+                {
+                    //游戏失败，重新开始
+                }
                 break;
         }
     }
@@ -482,7 +524,18 @@ export class FrightView extends Component {
         {
             if(this.enemyArr[findDeadEnemy].HP <= 0)
             {
-                //不能直接移除显示材质，因为为共享资源，移除时会进行释放，导致其他同类材质显示不正常
+                //经验条增加经验
+                this.EXP += this.enemyArr[findDeadEnemy].EXP;
+                //判断是否升级
+                if(this.EXP >= this.maxEXP)
+                {
+                    //升级显示酒馆选牌界面
+                    //升级后的溢出经验
+                    this.overflowEXP = this.EXP - this.maxEXP;
+                    this.EXP = this.overflowEXP;
+                }
+                this.freshEXP();
+                //不能直接移除显示材质，因为为共享资源，移除时会进行资源释放，导致其他同类材质显示不正常
                 //移除敌人显示
                 // this.node_enemy.removeChild(this.node_enemy.children[findDeadEnemy]);
                 //将敌人移除到屏幕外的位置
@@ -507,20 +560,20 @@ export class FrightView extends Component {
             //检测敌人是否死亡
             // this.enemyDead();
             //背景移动
-            this.frightBgY = this.img_frightBg.node.getPosition().y - this.mapMoveSpeed;
-            this.frightLinkUpBgY = this.img_frightLinkUpBg.node.getPosition().y - this.mapMoveSpeed;
-            if(this.img_frightBg.node.getPosition().y < -667)
-            {
-                this.img_frightBg.node.setPosition(this.img_frightBg.node.getPosition().x,this.frightLinkUpBgY + 1334);
-            }else{
-                this.img_frightBg.node.setPosition(this.img_frightBg.node.getPosition().x,this.img_frightBg.node.getPosition().y - this.mapMoveSpeed);
-            }
-            if(this.img_frightLinkUpBg.node.getPosition().y < -667)
-            {
-                this.img_frightLinkUpBg.node.setPosition(this.img_frightLinkUpBg.node.getPosition().x,this.frightBgY + 1334);
-            }else{
-                this.img_frightLinkUpBg.node.setPosition(this.img_frightLinkUpBg.node.getPosition().x,this.img_frightLinkUpBg.node.getPosition().y - this.mapMoveSpeed);
-            }
+            // this.frightBgY = this.img_frightBg.node.getPosition().y - this.mapMoveSpeed;
+            // this.frightLinkUpBgY = this.img_frightLinkUpBg.node.getPosition().y - this.mapMoveSpeed;
+            // if(this.img_frightBg.node.getPosition().y < -667)
+            // {
+            //     this.img_frightBg.node.setPosition(this.img_frightBg.node.getPosition().x,this.frightLinkUpBgY + 1334);
+            // }else{
+            //     this.img_frightBg.node.setPosition(this.img_frightBg.node.getPosition().x,this.img_frightBg.node.getPosition().y - this.mapMoveSpeed);
+            // }
+            // if(this.img_frightLinkUpBg.node.getPosition().y < -667)
+            // {
+            //     this.img_frightLinkUpBg.node.setPosition(this.img_frightLinkUpBg.node.getPosition().x,this.frightBgY + 1334);
+            // }else{
+            //     this.img_frightLinkUpBg.node.setPosition(this.img_frightLinkUpBg.node.getPosition().x,this.img_frightLinkUpBg.node.getPosition().y - this.mapMoveSpeed);
+            // }
 
             //敌人移动
             for(var moveEnemy:number = 0;moveEnemy < this.enemyArr.length;moveEnemy++)
@@ -530,7 +583,13 @@ export class FrightView extends Component {
                     //如果走到了发动攻击位置，y不再变，向英雄投射子弹
                     if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < -130)
                     {
-                        //投射子弹
+                        //判断敌人状态
+                        if(this.enemyArr[moveEnemy].attakState == 0 || this.enemyArr[moveEnemy].attakState == 2)
+                        {
+                            //投射子弹
+                            this.createBullet(this.enemyArr[moveEnemy].enemyItem);
+                            this.enemyArr[moveEnemy].attakState = 1;
+                        }
                     }else{
                         this.enemyArr[moveEnemy].enemyItem.setPosition(this.enemyArr[moveEnemy].enemyItem.getPosition().x,
                         this.enemyArr[moveEnemy].enemyItem.getPosition().y - this.enemyArr[moveEnemy].moveSpeed);

@@ -17,6 +17,10 @@
       {
         "index": 4,
         "name": "bullet"
+      },
+      {
+        "index": 5,
+        "name": "wall"
       }
     ],
     "collisionMatrix": {

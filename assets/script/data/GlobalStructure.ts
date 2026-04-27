@@ -148,6 +148,8 @@ export interface enemyStructure {
     enemyItem:Node;
     //敌人血量
     HP:number;
+    //敌人攻击状态 0 闲置（未到发子弹地点） 1 发射子弹中 2 发射子弹完毕
+    attakState:number;
 }
 
 //足球
