@@ -194,9 +194,6 @@ export class Layer extends Component {
             /**
              * 页面
             */
-            //入场动画/漫画
-            case "entranceCartoon":
-                return "prefab/view/entranceCartoon";
             //大厅
             case "hall":
                 return "prefab/view/hall";
@@ -209,15 +206,15 @@ export class Layer extends Component {
             //章节总览
             case "chapterSylloge":
                 return "prefab/view/chapterSylloge/chapterSylloge";
+            //战斗
+            case "fright":
+                return "prefab/view/fright";
+            //酒馆抽卡
+            case "amplificationCard":
+                return "prefab/view/amplificationCard";
             //游戏记录
             case "gameRecord":
                 return "prefab/view/gameRecord/gameRecord";
-            //对话
-            case "speak":
-                return "prefab/view/speak";
-            //对话记录
-            case "speakRecord":
-                return "prefab/view/speakRecord/speakRecord";
             //角色属性
             case "roleProperty":
                 return "prefab/view/roleProperty/roleProperty";
@@ -233,15 +230,9 @@ export class Layer extends Component {
             //地图-变换房间
             case "roomRotationControl":
                 return "prefab/view/map/mapComponent/roomRotationControl";
-            //探索
-            case "explore":
-                return "prefab/view/explore/explore";
             //装备
             case "equip":
                 return "prefab/view/equip";
-            //通关结算
-            case "chapterResult":
-                return "prefab/view/chapterResult/chapterResult";
             //充值
             case "recharge":
                 return "prefab/view/recharge/recharge";
@@ -263,18 +254,12 @@ export class Layer extends Component {
             //成就
             case "achievement":
                 return "prefab/view/achievement/achievement";
-            //剧情动画片段
-            case "animationFragment":
-                return "prefab/view/animationFragment";
             //引导
             case "guidance":
                 return "prefab/view/guidance/guidance";
             //按键操作引导
             case "keyOperation":
                 return "prefab/view/guidance/keyOperation";
-            //QTE操作引导
-            case "qte":
-                return "prefab/view/guidance/qte";
             /**
              * 组件（有单独脚本）
             */
@@ -297,44 +282,15 @@ export class Layer extends Component {
                 return "prefab/view/map/item/npcItem";
             case "npcPassItem":
                 return "prefab/view/map/item/npcPassItem";
-            case "sItem":
-                return "prefab/view/map/item/sItem";
-            case "barrierItem":
-                return "prefab/view/map/item/barrierItem";
-            case "jointItem":
-                return "prefab/view/map/item/jointItem";
-            case "bridgeItem":
-                return "prefab/view/map/item/bridgeItem";
-            case "moveBridgeItem":
-                return "prefab/view/map/item/moveBridgeItem";
-            case "ladderItem":
-                return "prefab/view/map/item/ladderItem";
-            case "slopeItem":
-                return "prefab/view/map/item/slopeItem";
-            case "shoreItem":
-                return "prefab/view/map/item/shoreItem";
-            case "treasureBoxItem":
-                return "prefab/view/map/item/treasureBoxItem";
-            case "switchItem":
-                return "prefab/view/map/item/switchItem";
             /**
              * 内嵌小游戏
             */
-            //战斗
-            case "battle":
-                return "prefab/view/miniGames/battle/battle";
             //战斗准备，战前设置
             case "battlePrepare":
                 return "prefab/view/miniGames/battle/battlePrepare";
             //战斗结算
             case "battleOver":
                 return "prefab/view/miniGames/battle/battleOver";
-            //填色
-            case "palette":
-                return "prefab/view/miniGames/palette/palette";
-            //割绳子
-            case "cutRope":
-                return "prefab/view/miniGames/cutRope/cutRope";
         }
         console.log("材质名未找到！");
         return "";

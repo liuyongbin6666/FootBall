@@ -1,9 +1,10 @@
-import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color } from 'cc';
+import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color, UIOpacity } from 'cc';
 import { bulletStructure, enemyStructure, heroStructure, soccerStructure } from '../data/GlobalStructure';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { OperationTool } from '../tool/OperationTool';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
 import { GameEventName } from '../manager/GameEventName';
+import { Layer } from '../manager/Layer';
 const { ccclass, property } = _decorator;
 
 /**
@@ -49,11 +50,11 @@ export class FrightView extends Component {
     private pro_EXP:ProgressBar = null;
     //EXP比例
     private lab_EXPProportion:Label;
-    private btn_skill1:Button;
-    private btn_skill2:Button;
-    private btn_skill3:Button;
-    private btn_skill4:Button;
-    private btn_skill5:Button;
+    private btn_prop1:Button;
+    private btn_prop2:Button;
+    private btn_prop3:Button;
+    private btn_prop4:Button;
+    private btn_prop5:Button;
 
     /**
      * 数据
@@ -68,6 +69,8 @@ export class FrightView extends Component {
     private soccerArr:Array<soccerStructure> = [];
     //子弹
     private bulletArr:Array<bulletStructure> = [];
+    //玩家等级
+    private playerLevel:number = 1;
     //关卡
     private level:number = 1;
     //第几波
@@ -86,8 +89,8 @@ export class FrightView extends Component {
     private overflowEXP:number = 0;
     //英雄槽
     private heroGrooveArr:Array<any>;
-    //技能槽
-    private skillGrooveArr:Array<any>;
+    //道具槽
+    private propGrooveArr:Array<any>;
     //计时器时间
     private timeHS:number = 0.01;
     //地图移动速度
@@ -117,20 +120,20 @@ export class FrightView extends Component {
         this.lab_HPProportion = find('node_bottom/lab_HPProportion', this.node).getComponent(Label);
         this.pro_EXP = find('node_bottom/pro_EXP', this.node).getComponent(ProgressBar);
         this.lab_EXPProportion = find('node_bottom/lab_EXPProportion', this.node).getComponent(Label);
-        this.btn_skill1 = find('node_bottom/lay_skillGroove/mask_skill1/btn_skill1', this.node).getComponent(Button);
-        this.btn_skill2 = find('node_bottom/lay_skillGroove/mask_skill2/btn_skill2', this.node).getComponent(Button);
-        this.btn_skill3 = find('node_bottom/lay_skillGroove/mask_skill3/btn_skill3', this.node).getComponent(Button);
-        this.btn_skill4 = find('node_bottom/lay_skillGroove/mask_skill4/btn_skill4', this.node).getComponent(Button);
-        this.btn_skill5 = find('node_bottom/lay_skillGroove/mask_skill5/btn_skill5', this.node).getComponent(Button);
+        this.btn_prop1 = find('node_bottom/lay_propGroove/prop1/mask_prop/btn_prop1', this.node).getComponent(Button);
+        this.btn_prop2 = find('node_bottom/lay_propGroove/prop2/mask_prop/btn_prop2', this.node).getComponent(Button);
+        this.btn_prop3 = find('node_bottom/lay_propGroove/prop3/mask_prop/btn_prop3', this.node).getComponent(Button);
+        this.btn_prop4 = find('node_bottom/lay_propGroove/prop4/mask_prop/btn_prop4', this.node).getComponent(Button);
+        this.btn_prop5 = find('node_bottom/lay_propGroove/prop5/mask_prop/btn_prop5', this.node).getComponent(Button);
     }
 
     private _onEvent() {
         // this.btn_close.node.on(Node.EventType.TOUCH_END, this.closeView, this);
-        this.btn_skill1.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_skill2.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_skill3.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_skill4.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_skill5.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        this.btn_prop1.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        this.btn_prop2.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        this.btn_prop3.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        this.btn_prop4.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        this.btn_prop5.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.FRIGHT_SUBTRACT_BOOLD_EVENT,this.frightControllerFun,this);
     }
 
@@ -138,13 +141,13 @@ export class FrightView extends Component {
         this.resetGame();
         //模拟数据
         var es1:enemyStructure = {enemyID:1,heroHeadImgPath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:50,moveSpeed:0.6,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",enemyItem:null,
+            maxHP:150,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:3,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",enemyItem:null,
             HP:10,attakState:0};
         var es2:enemyStructure = {enemyID:2,heroHeadImgPath:"",enemyName:"敌人2",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:100,moveSpeed:0.5,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"冲啊！",enemyItem:null,
+            maxHP:100,moveSpeed:0.3,attackSpeed:1,attackDistance:10,harm:1,EXP:2,gold:1,prop:1,skillProbability:10,speak:"冲啊！",enemyItem:null,
             HP:10,attakState:0};
         var es3:enemyStructure = {enemyID:3,heroHeadImgPath:"",enemyName:"敌人3",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:80,moveSpeed:0.4,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"Biu~Biu~",enemyItem:null,
+            maxHP:180,moveSpeed:0.4,attackSpeed:1,attackDistance:10,harm:1,EXP:4,gold:1,prop:1,skillProbability:10,speak:"Biu~Biu~",enemyItem:null,
             HP:10,attakState:0};
         this.enemyArr.push(es1);
         this.enemyArr.push(es2);
@@ -167,14 +170,15 @@ export class FrightView extends Component {
         this.heroArr.push(he2);
         this.heroArr.push(he3);
         this.heroArr.push(he4);
-        console.log(this.heroArr);
         this.heroArr.push(he5);
         this.heroArr.push(he6);
         this.heroArr.push(he7);
+        console.log(this.heroArr);
 
         this.createHero();
         this.createAllEnemy();
         this.createSoccer();//1,-250,-300
+        this.updatePlayerMaxEXP();
         this.freshHP();
         this.freshEXP();
         this.soccerGameState = gameState.start;
@@ -190,8 +194,8 @@ export class FrightView extends Component {
         this.soccerGameState = gameState.wait;
         this.HP = 0;
         this.EXP = 0;
-        this.maxHP = 0;
-        this.maxEXP = 0;
+        // this.maxHP = 0;
+        // this.maxEXP = 0;
     }
 
     //创建英雄
@@ -205,9 +209,9 @@ export class FrightView extends Component {
             let item = instantiate(this.heroItemPre);
             if(this.heroArr[he].heroIndex == 0)
             {
-                item.setPosition(-250,-300);
+                item.setPosition(-250,-170);
             }else{
-                item.setPosition(-250 + this.heroArr[he].heroIndex * 90,-300);
+                item.setPosition(-250 + this.heroArr[he].heroIndex * 90,-170);
             }
             console.log(he,item.getPosition().x,item.getPosition().y);
             item["heroID"] = this.heroArr[he].heroID;
@@ -235,7 +239,7 @@ export class FrightView extends Component {
         {
             let item = instantiate(this.enemyItemPre);
             //随机位置
-            item.setPosition(-270 + Math.floor(Math.random() * 540),500);
+            item.setPosition(-200 + Math.floor(Math.random() * 410),355);
             console.log(item.getPosition().x,item.getPosition().y);
             item["enemyID"] = this.enemyArr[en].enemyID;
             // var es:enemyStructure = {enemyID:1,enemyImgPath:"",enemyName:"敌人"+(en+1),enemyIntroduce:"敌人介绍",experience:100,enemyType:1,
@@ -268,7 +272,7 @@ export class FrightView extends Component {
         let item = instantiate(this.soccerItemPre);
         item.setPosition(this.heroArr[newHeroIndex].heroItem.getPosition().x,this.heroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item["soccerID"] = this.soccerArr.length + 1;
-        var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:10,soccerItem:item,soccerState:0,
+        var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:5,soccerItem:item,soccerState:0,
             xDirection:-1,yDirection:1,relevanceHeroID:this.heroArr[newHeroIndex].heroID,goalEnemyID:1,goalHeroID:0,wallX:0,wallY:0,moveTotal:0};
         this.soccerArr.push(newSoccer);
         this.node_soccer.addChild(item);
@@ -310,6 +314,7 @@ export class FrightView extends Component {
     {
         this.lab_HPProportion.string = this.HP + "/" + this.maxHP;
         this.pro_HP.progress = this.HP/this.maxHP;
+        console.log("HP：",this.HP,this.maxEXP);
     }
 
     //刷新经验显示
@@ -317,6 +322,7 @@ export class FrightView extends Component {
     {
         this.lab_EXPProportion.string = this.EXP + "/" + this.maxEXP;
         this.pro_EXP.progress = this.EXP/this.maxEXP;
+        console.log("EXP：",this.EXP,this.maxEXP);
     }
 
     //移动英雄站位
@@ -369,11 +375,13 @@ export class FrightView extends Component {
                 }
                 var rHeroID:number = 0;
                 var gEnemyID:number = 0;
+                var fSoccer:number = 0;
                 //根据足球ID找到足球
                 for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
                 {
                     if(this.soccerArr[findSoccer].soccerID == controllerEvent.getCustomProperty().soccerID)
                     {
+                        fSoccer = findSoccer;
                         //找到赋予球属性的英雄ID
                         rHeroID = this.soccerArr[findSoccer].relevanceHeroID;
                         gEnemyID = this.soccerArr[findSoccer].goalEnemyID;
@@ -387,6 +395,7 @@ export class FrightView extends Component {
                         // while(this.heroArr[newHeroIndex].catchSoccerID != 0){
                         //     newHeroIndex = Math.floor(Math.random() * this.heroArr.length);
                         // }
+                        //
                         this.soccerArr[findSoccer].goalHeroID = this.heroArr[newHeroIndex].heroID;
                         // console.log("新英雄ID：",this.soccerArr[findSoccer].goalHeroID);
                         //英雄状态变为接球
@@ -433,6 +442,12 @@ export class FrightView extends Component {
                     console.log("碰撞敌人ID",controllerEvent.getCustomProperty().enemyID,"敌人ID：",this.enemyArr[findEnemy].enemyID,"敌人HP：",this.enemyArr[findEnemy].HP,this.enemyArr.length);
                     if(this.enemyArr[findEnemy].enemyID == controllerEvent.getCustomProperty().enemyID)
                     {
+                        //若敌人处于近距离，则根据y选择近距离(-130 < x < 130)的英雄
+                        if(this.enemyArr[findEnemy].enemyItem.getPosition().y < 90)
+                        {
+                            this.soccerArr[fSoccer].goalHeroID = this.heroArr[newHeroIndex].heroID;
+                        }
+
                         var newHP:number = this.enemyArr[findEnemy].HP - lastHarm;
                         //敌人受到伤害，并扣除血量，如扣除后的血量低于0，敌人消失
                         this.enemyArr[findEnemy].HP = newHP;
@@ -477,6 +492,7 @@ export class FrightView extends Component {
                         //找到位置最前面的敌人发球
                         console.log("找到位置最前面且血量大于0的敌人发球",soccerBack);
                         this.soccerArr[soccerBack].goalEnemyID = this.findFrontEnemyID();
+                        //如果敌人已进入攻击状态，则选最近的（-130 < x < 130）攻击状态的敌人
                         if(this.soccerArr[soccerBack].goalEnemyID == -1)
                         {
                             //所有怪物已死亡，进入结算
@@ -529,10 +545,17 @@ export class FrightView extends Component {
                 //判断是否升级
                 if(this.EXP >= this.maxEXP)
                 {
-                    //升级显示酒馆选牌界面
-                    //升级后的溢出经验
+                    //本级升级溢出的经验添，加到下一级升级的经验中
                     this.overflowEXP = this.EXP - this.maxEXP;
                     this.EXP = this.overflowEXP;
+                    //升级
+                    this.playerLevel++;
+                    this.updatePlayerMaxEXP();
+                    //显示酒馆选牌界面
+                    this.soccerGameState = gameState.result;
+                    // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
+                    // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,false);
+                    Layer.Instance.show("amplificationCard",Layer.Instance.layerView);
                 }
                 this.freshEXP();
                 //不能直接移除显示材质，因为为共享资源，移除时会进行资源释放，导致其他同类材质显示不正常
@@ -581,7 +604,7 @@ export class FrightView extends Component {
                 if(this.enemyArr[moveEnemy].enemyItem != null)
                 {
                     //如果走到了发动攻击位置，y不再变，向英雄投射子弹
-                    if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < -130)
+                    if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < 6)
                     {
                         //判断敌人状态
                         if(this.enemyArr[moveEnemy].attakState == 0 || this.enemyArr[moveEnemy].attakState == 2)
@@ -594,6 +617,38 @@ export class FrightView extends Component {
                         this.enemyArr[moveEnemy].enemyItem.setPosition(this.enemyArr[moveEnemy].enemyItem.getPosition().x,
                         this.enemyArr[moveEnemy].enemyItem.getPosition().y - this.enemyArr[moveEnemy].moveSpeed);
                     }
+                }
+            }
+            
+            //球滚动动画
+            for(var ballRoll:number = 0;ballRoll < this.soccerArr.length;ballRoll++)
+            {
+                if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_1").getComponent(UIOpacity).opacity == 255)
+                {
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_1").getComponent(UIOpacity).opacity = 1;
+                    // getComponent(Sprite).node.active = false;
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_2").getComponent(UIOpacity).opacity = 255;
+                    // this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_2").getComponent(Sprite).node.active = true;
+                }else if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_2").getComponent(UIOpacity).opacity == 255)
+                {
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_2").getComponent(UIOpacity).opacity = 1;
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_3").getComponent(UIOpacity).opacity = 255;
+                }else if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_3").getComponent(UIOpacity).opacity == 255)
+                {
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_3").getComponent(UIOpacity).opacity = 1;
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_4").getComponent(UIOpacity).opacity = 255;
+                }else if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_4").getComponent(UIOpacity).opacity == 255)
+                {
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_4").getComponent(UIOpacity).opacity = 1;
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_5").getComponent(UIOpacity).opacity = 255;
+                }else if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_5").getComponent(UIOpacity).opacity == 255)
+                {
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_5").getComponent(UIOpacity).opacity = 1;
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_6").getComponent(UIOpacity).opacity = 255;
+                }else if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_6").getComponent(UIOpacity).opacity == 255)
+                {
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_6").getComponent(UIOpacity).opacity = 1;
+                    this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_1").getComponent(UIOpacity).opacity = 255;
                 }
             }
         
@@ -688,6 +743,32 @@ export class FrightView extends Component {
         }else if(this.soccerGameState == gameState.result)
         {
             //打开抽卡（酒馆）界面
+        }
+    }
+
+    //更新玩家当前等级升下一级需要的经验值
+    updatePlayerMaxEXP()
+    {
+        if(this.playerLevel < 6)
+        {
+            this.maxEXP = this.playerLevel * 10;
+            
+        }else{
+            this.maxEXP = 100;
+        }
+    }
+
+    //关卡数字转汉字
+    levelChineseCharacter():string
+    {
+        switch(this.playerLevel)
+        {
+            case 1:
+                return "一";
+            case 2:
+                return "二";
+            case 3:
+                return "三";
         }
     }
 

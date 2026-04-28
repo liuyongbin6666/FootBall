@@ -1,0 +1,5 @@
+[
+	{"level":1, "qualityWhite": 40, "qualityGreen":30, "qualityBlue":20, "qualityPurple":10, "qualityRed":0, "qualityYellow":0},
+	{"level":2, "qualityWhite": 30, "qualityGreen":40, "qualityBlue":18, "qualityPurple":8, "qualityRed":3, "qualityYellow":1},
+	{"level":3, "qualityWhite": 20, "qualityGreen":20, "qualityBlue":30, "qualityPurple":15, "qualityRed":10, "qualityYellow":5}
+]

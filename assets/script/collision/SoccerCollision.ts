@@ -11,13 +11,12 @@ export class SoccerCollision extends Component {
     @property(BoxCollider2D)
     private collider: BoxCollider2D = null;
     
-    private soccer_1:Sprite;
-    private soccer_2:Sprite;
-    private soccer_3:Sprite;
-    private soccer_4:Sprite;
-    private soccer_5:Sprite;
-    private soccer_6:Sprite;
-    private soccerImgChange:number;
+    // private soccer_1:Sprite;
+    // private soccer_2:Sprite;
+    // private soccer_3:Sprite;
+    // private soccer_4:Sprite;
+    // private soccer_5:Sprite;
+    // private soccer_6:Sprite;
     onLoad()
     {
         this._initObect();
@@ -27,12 +26,12 @@ export class SoccerCollision extends Component {
     }
 
     private _initObect() {
-        this.soccer_1 = find('soccer_1', this.node).getComponent(Sprite);
-        this.soccer_2 = find('soccer_2', this.node).getComponent(Sprite);
-        this.soccer_3 = find('soccer_3', this.node).getComponent(Sprite);
-        this.soccer_4 = find('soccer_4', this.node).getComponent(Sprite);
-        this.soccer_5 = find('soccer_5', this.node).getComponent(Sprite);
-        this.soccer_6 = find('soccer_6', this.node).getComponent(Sprite);
+        // this.soccer_1 = find('soccer_1', this.node).getComponent(Sprite);
+        // this.soccer_2 = find('soccer_2', this.node).getComponent(Sprite);
+        // this.soccer_3 = find('soccer_3', this.node).getComponent(Sprite);
+        // this.soccer_4 = find('soccer_4', this.node).getComponent(Sprite);
+        // this.soccer_5 = find('soccer_5', this.node).getComponent(Sprite);
+        // this.soccer_6 = find('soccer_6', this.node).getComponent(Sprite);
     }
 
     start() {
@@ -74,31 +73,31 @@ export class SoccerCollision extends Component {
     }
 
     update(deltaTime: number) {
-        if(this.soccer_1.node.active)
-        {
-            this.soccer_1.node.active = false;
-            this.soccer_2.node.active = true;
-        }else if(this.soccer_2.node.active)
-        {
-            this.soccer_2.node.active = false;
-            this.soccer_3.node.active = true;
-        }else if(this.soccer_3.node.active)
-        {
-            this.soccer_3.node.active = false;
-            this.soccer_4.node.active = true;
-        }else if(this.soccer_4.node.active)
-        {
-            this.soccer_4.node.active = false;
-            this.soccer_5.node.active = true;
-        }else if(this.soccer_5.node.active)
-        {
-            this.soccer_5.node.active = false;
-            this.soccer_6.node.active = true;
-        }else if(this.soccer_6.node.active)
-        {
-            this.soccer_6.node.active = false;
-            this.soccer_1.node.active = true;
-        }
+        // if(this.soccer_1.node.active)
+        // {
+        //     this.soccer_1.node.active = false;
+        //     this.soccer_2.node.active = true;
+        // }else if(this.soccer_2.node.active)
+        // {
+        //     this.soccer_2.node.active = false;
+        //     this.soccer_3.node.active = true;
+        // }else if(this.soccer_3.node.active)
+        // {
+        //     this.soccer_3.node.active = false;
+        //     this.soccer_4.node.active = true;
+        // }else if(this.soccer_4.node.active)
+        // {
+        //     this.soccer_4.node.active = false;
+        //     this.soccer_5.node.active = true;
+        // }else if(this.soccer_5.node.active)
+        // {
+        //     this.soccer_5.node.active = false;
+        //     this.soccer_6.node.active = true;
+        // }else if(this.soccer_6.node.active)
+        // {
+        //     this.soccer_6.node.active = false;
+        //     this.soccer_1.node.active = true;
+        // }
     }
 }
 

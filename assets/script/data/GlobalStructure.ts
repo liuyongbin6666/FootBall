@@ -11,6 +11,18 @@ export class GlobalStructure extends Component {
     }
 }
 
+//用户信息
+export interface userStructure {
+    //用户id
+    userId:number;
+    //用户昵称
+    nickName:string;
+    //用户金币
+    gold:number;
+    //用户头像
+    headIcon:string;
+}
+
 //章节
 export interface chapterStructure {
     //章节ID
@@ -152,6 +164,16 @@ export interface enemyStructure {
     attakState:number;
 }
 
+//敌人
+export interface bulletStructure {
+    //子弹ID
+    bulletID:number;
+    //子弹图片路径
+    bulletImgPath:string;
+    //目标英雄ID
+    goalHeroID:number;
+}
+
 //足球
 export interface soccerStructure {
     //足球ID
@@ -261,6 +283,24 @@ export interface talentStructure {
     maxDotCount:number;
     //天赋效果
     effect:number;
+}
+
+//酒馆抽卡概率
+export interface ampCardProTableStructure {
+    //酒馆等级
+    level:number;
+    //白卡占比（按百分比%）
+    qualityWhite:number;
+    //绿卡占比
+    qualityGreen:number;
+    //蓝卡占比
+    qualityBlue:number;
+    //紫卡占比
+    qualityPurple:number;
+    //红卡占比
+    qualityRed:number;
+    //黄卡占比
+    qualityYellow:number;
 }
 
 //材质类
