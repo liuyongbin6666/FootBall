@@ -152,20 +152,21 @@ export class FrightView extends Component {
         this.enemyArr.push(es1);
         this.enemyArr.push(es2);
         this.enemyArr.push(es3);
-        var he1:heroStructure = {heroID:1,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄1",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:300,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:100,catchSoccerID:0};
-        var he2:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄2",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:200,skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:1,HP:120,catchSoccerID:0};
-        var he3:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄3",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:250,skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:2,HP:110,catchSoccerID:0};
-        var he4:heroStructure = {heroID:4,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄4",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:300,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:3,HP:100,catchSoccerID:0};
-        var he5:heroStructure = {heroID:5,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄5",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:200,skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:4,HP:120,catchSoccerID:0};
-        var he6:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄6",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:250,skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:5,HP:110,catchSoccerID:0};
-        var he7:heroStructure = {heroID:7,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄7",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:300,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:6,HP:100,catchSoccerID:0};
+        var he1:heroStructure = {heroID:1,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄1",heroIntroduce:"英雄介绍",heroType:1,quality:1,maxHP:300,
+            skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:100,catchSoccerID:0,unlock:true,join:true,
+            harmLevel:0};
+        var he2:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄2",heroIntroduce:"英雄介绍",heroType:1,quality:1,maxHP:200,
+            skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:1,HP:120,catchSoccerID:0,unlock:true,join:true};
+        var he3:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄3",heroIntroduce:"英雄介绍",heroType:1,quality:1,maxHP:250,
+            skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:2,HP:110,catchSoccerID:0,unlock:true,join:true};
+        var he4:heroStructure = {heroID:4,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄4",heroIntroduce:"英雄介绍",heroType:1,quality:1,maxHP:300,
+            skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:3,HP:100,catchSoccerID:0,unlock:true,join:true};
+        var he5:heroStructure = {heroID:5,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄5",heroIntroduce:"英雄介绍",heroType:1,quality:1,maxHP:200,
+            skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:4,HP:120,catchSoccerID:0,unlock:true,join:true};
+        var he6:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄6",heroIntroduce:"英雄介绍",heroType:1,quality:1,maxHP:250,
+            skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:5,HP:110,catchSoccerID:0,unlock:true,join:true};
+        var he7:heroStructure = {heroID:7,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄7",heroIntroduce:"英雄介绍",heroType:1,quality:1,maxHP:300,
+            skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:6,HP:100,catchSoccerID:0,unlock:true,join:true};
         this.heroArr.push(he1);
         this.heroArr.push(he2);
         this.heroArr.push(he3);
@@ -758,17 +759,26 @@ export class FrightView extends Component {
         }
     }
 
-    //关卡数字转汉字
-    levelChineseCharacter():string
+    //抽卡属性增加成功
+    propertylevelUp(promote)
     {
-        switch(this.playerLevel)
+        switch(promote)
         {
             case 1:
-                return "一";
+                //攻击力
+            case 4:
+                //HP
+                //x + x * multiple /100
+                break;
             case 2:
-                return "二";
+                //暴击
             case 3:
-                return "三";
+                //会心
+                //multiple /100
+                break;
+            case 5:
+                //技能
+                break;
         }
     }
 

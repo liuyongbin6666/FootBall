@@ -27,7 +27,7 @@ export class LoadingView extends Component {
     */
     private loadState:boolean = false;
     //资源初次加载总文件数量
-    private loadTotalCount:number = 1;
+    private loadTotalCount:number = 4;
     //资源已加载总文件数量
     private loadCount:number = 0;
     protected onLoad(): void {
@@ -86,6 +86,38 @@ export class LoadingView extends Component {
     //加载json表
     loadFile() {
         var _this = this;
+
+        //加载英雄表
+        LoadTableTool.Instance.loadTextFile("json/heroJson",(value)=>{
+            var heroArr = JSON.parse(value);
+            console.log("英雄：",heroArr);
+            //找到图片路径
+            // for(var r:number = 0;r < heroArr.length;r++)
+            // {
+            //     //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
+            //     var newImgPath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroHeadImgPath);
+            //     heroArr[r].heroHeadImgPath = newImgPath;
+            // }
+            GlobalData.Instance.heroTableArr = heroArr;
+            _this.loadCount++;
+        });
+
+        //加载英雄技能表
+        LoadTableTool.Instance.loadTextFile("json/heroSkillJson",(value)=>{
+            var heroSkillArr = JSON.parse(value);
+            console.log("英雄技能表：",heroSkillArr);
+            GlobalData.Instance.heroSkillTableArr = heroSkillArr;
+            _this.loadCount++;
+        });
+
+        //加载英雄属性增幅表
+        LoadTableTool.Instance.loadTextFile("json/heroPropertyJson",(value)=>{
+            var heroProGrowUpArr = JSON.parse(value);
+            console.log("英雄属性增幅表：",heroProGrowUpArr);
+            GlobalData.Instance.heroProGrowUpTableArr = heroProGrowUpArr;
+            _this.loadCount++;
+        });
+
         //加载抽卡概率表
         LoadTableTool.Instance.loadTextFile("json/ampCardProJson",(value)=>{
             var ampCardProArr = JSON.parse(value);
@@ -93,21 +125,6 @@ export class LoadingView extends Component {
             GlobalData.Instance.ampCardProTableArr = ampCardProArr;
             _this.loadCount++;
         });
-
-        //加载角色信息
-        // LoadTableTool.Instance.loadTextFile("json/roleJson",(value)=>{
-        //     var roleArr = JSON.parse(value);
-        //     console.log("角色：",roleArr);
-        //     //根据当前章节，找到对应路径
-        //     for(var r:number = 0;r < roleArr.length;r++)
-        //     {
-        //         //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
-        //         var newImgPath:string = CharacterTool.Instance.pathCharacter(roleArr[r].roleImg);
-        //         roleArr[r].roleImg = newImgPath;
-        //     }
-        //     GlobalData.Instance.roleTableArr = roleArr;
-        //     _this.loadCount++;
-        // });
 
         //加载章节表
         // LoadTableTool.Instance.loadTextFile("json/chapterJson",(value)=>{

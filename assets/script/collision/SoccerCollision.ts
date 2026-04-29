@@ -54,14 +54,14 @@ export class SoccerCollision extends Component {
         {
             //发送触碰事件，敌人的ID
             //console.log('碰撞敌人ID！',otherCollider.node["enemyID"]);
-            let threadEvent = new GameEventName({ eventCode: 1,soccerID:selfCollider.node["soccerID"],enemyID: otherCollider.node["enemyID"] });
-            GameCustomEvent.Instance.node.emit(GameEventName.FRIGHT_SUBTRACT_BOOLD_EVENT,threadEvent);
+            let soenEvent = new GameEventName({ eventCode: 1,soccerID:selfCollider.node["soccerID"],enemyID: otherCollider.node["enemyID"] });
+            GameCustomEvent.Instance.node.emit(GameEventName.FRIGHT_SUBTRACT_BOOLD_EVENT,soenEvent);
         }else if(otherCollider.group == 8)
         {
             //发送触碰事件，英雄的ID
             //console.log('碰撞英雄ID！',otherCollider.node["heroID"]);
-            let threadEvent = new GameEventName({ eventCode: 2,soccerID:selfCollider.node["soccerID"],heroID: otherCollider.node["heroID"] });
-            GameCustomEvent.Instance.node.emit(GameEventName.FRIGHT_SUBTRACT_BOOLD_EVENT,threadEvent);
+            let soheEvent = new GameEventName({ eventCode: 2,soccerID:selfCollider.node["soccerID"],heroID: otherCollider.node["heroID"] });
+            GameCustomEvent.Instance.node.emit(GameEventName.FRIGHT_SUBTRACT_BOOLD_EVENT,soheEvent);
         }
     }
 

@@ -1,0 +1,22 @@
+[
+	{"skillID":101, "skillType":1, "skillName": "回击", "describe":"返回时会对碰撞到的怪物造成伤害。", "skillIconPath":"",
+		"skillArr":[{"level":1,"effect":0.1},
+					{"level":2,"effect":0.2},
+					{"level":3,"effect":0.3}]},
+	{"skillID":102, "skillType":1, "skillName": "击退", "describe":"", "skillIconPath":"", 
+		"skillArr":[{"level":1,"effect":1},
+					{"level":2,"effect":2},
+					{"level":3,"effect":3}]},
+	{"skillID":103, "skillType":1, "skillName": "弹飞", "describe":"", "skillIconPath":"",
+		"skillArr":[{"level":1,"effect":0.1},
+					{"level":2,"effect":0.2},
+					{"level":3,"effect":0.3}]},
+	{"skillID":104, "skillType":1, "skillName": "弹跳", "describe":"", "skillIconPath":"",
+		"skillArr":[{"level":1,"effect":1},
+					{"level":2,"effect":2},
+					{"level":3,"effect":3}]},
+	{"skillID":105, "skillType":1, "skillName": "穿透", "describe":"", "skillIconPath":"",
+		"skillArr":[{"level":1,"effect":0.1},
+					{"level":2,"effect":0.2},
+					{"level":3,"effect":0.3}]}
+]
