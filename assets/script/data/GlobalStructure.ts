@@ -66,11 +66,13 @@ export interface heroStructure {
     heroType:number;
     //英雄品质
     quality:number;
+    //属性克制
+    restrainType:number;
     //英雄血量上限
-    maxHP:number; 
+    maxHP:number;
     //速度
     speed:number;
-    //伤害
+    //初始伤害
     harm:number;
     //英雄技能
     skillArr:Array<number>;
@@ -111,6 +113,22 @@ export interface heroStructure {
     HP:number;
     //0 闲置状态，等待接球 >0 接球状态，目标球ID 
     catchSoccerID:number;
+    //解锁
+    unlock:boolean;
+    //上阵
+    join:boolean;
+    //伤害等级
+    harmLevel:number;
+    //暴击等级
+    criticalLevel:number;
+    //会心等级
+    breakOutLevel:number;
+    //HP等级
+    HPLevel:number;
+    //属性满级记录数组
+    propertyTopArr:Array<number>;
+    //技能满级记录数组
+    skillTopArr:Array<number>;
 }
 
 //敌人
@@ -210,23 +228,30 @@ export interface soccerStructure {
 }
 
 //技能
-export interface skillStructure {
+export interface heroSkillStructure {
     //技能ID
     skillID:number;
-    //技能图标路径
-    skillPath, 
     //技能类型
     skillType:number;
-    //技能等级
-    skillLevel:number; 
-    //技能伤害
-    harm:number;
+    //技能名
+    skillName:string; 
+    //技能图标路径
+    skillIconPath:string; 
+    //技能描述
+    describe:string; 
+    //技能效果
+    effectArr:Array<any>;
     //技能持续秒数
-    second:number;
+    // second:number;
     //技能作用范围
-    scope:number;
+    // scope:number;
     //技能冷却CD
-    CD:number;
+    // CD:number;
+    /**
+     * 动态属性
+     */
+    //技能等级
+    skillLevel:number;
 }
 
 //宠物
@@ -301,6 +326,26 @@ export interface ampCardProTableStructure {
     qualityRed:number;
     //黄卡占比
     qualityYellow:number;
+}
+
+//英雄属性增幅
+export interface heroPropertyTableStructure {
+    //属性类型
+    propertyType:number;
+    //属性图标路径
+    propertyIconPath,
+    //属性名
+    propertyName:string; 
+    //属性描述
+    describe:string; 
+    //属性等级增幅效果
+    growUpArr:Array<heroLevelPropertyStructure>; 
+}
+
+//英雄等级对应增幅属性
+export interface heroLevelPropertyStructure {
+    level:number;
+    multiple:number;
 }
 
 //材质类

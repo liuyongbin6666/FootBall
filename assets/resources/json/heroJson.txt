@@ -1,0 +1,7 @@
+[
+	{"heroID":101, "heroName": "张飞", "heroIntroduce":"这是一个很牛逼的英雄", "heroHeadImgPath":"", "quality":1, "heroType":1, "restrainType":1, "maxHP":50, "harm":10, "speed":1.2, "skillArr":[101,102]},
+	{"heroID":102, "heroName": "吕布", "heroIntroduce":"这是一个很牛逼的英雄", "heroHeadImgPath":"", "quality":1, "heroType":1, "restrainType":1, "maxHP":60, "harm":9, "speed":1.1, "skillArr":[]},
+	{"heroID":103, "heroName": "赵云", "heroIntroduce":"这是一个很牛逼的英雄", "heroHeadImgPath":"", "quality":2, "heroType":1, "restrainType":1, "maxHP":70, "harm":8, "speed":1, "skillArr":[]},
+	{"heroID":201, "heroName": "孙悟空", "heroIntroduce":"这是一个狂拽酷炫吊炸天的英雄", "heroHeadImgPath":"", "quality":3, "heroType":1, "restrainType":1, "maxHP":80, "harm":7, "speed":0.9, "skillArr":[]},
+	{"heroID":202, "heroName": "唐僧", "heroIntroduce":"这是一个废话很多的英雄", "heroHeadImgPath":"", "quality":4, "heroType":1, "restrainType":1, "maxHP":90, "harm":6, "speed":0.8, "skillArr":[]}
+]

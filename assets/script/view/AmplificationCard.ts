@@ -3,6 +3,7 @@ import { GameCustomEvent } from '../manager/GameCustomEvent';
 import { GameEventName } from '../manager/GameEventName';
 import { GlobalData } from '../data/GlobalData';
 import { ampCardProTableStructure, heroStructure } from '../data/GlobalStructure';
+import { LoadImgTool } from '../tool/LoadImgTool';
 const { ccclass, property } = _decorator;
 
 @ccclass('AmplificationCard')
@@ -29,12 +30,41 @@ export class AmplificationCard extends Component {
     }
     
     private _onEvent() {
-        // this.btn_close.node.on(Node.EventType.TOUCH_END, this.closeView, this);
+        this.btn_card1.node.on(Node.EventType.TOUCH_END, this.selectHeroCard, this);
+        this.btn_card2.node.on(Node.EventType.TOUCH_END, this.selectHeroCard, this);
+        this.btn_card3.node.on(Node.EventType.TOUCH_END, this.selectHeroCard, this);
         this.btn_getAll.node.on(Node.EventType.TOUCH_END, this.getAllCard, this);
         this.btn_fresh.node.on(Node.EventType.TOUCH_END, this.freshCard, this);
     }
 
     start() {
+        this.drawHeroCard(this.btn_card1.node);
+        this.drawHeroCard(this.btn_card2.node);
+        this.drawHeroCard(this.btn_card3.node);
+    }
+
+    selectHeroCard(e)
+    {
+        //发送单个英雄选择
+        // let ampCardEvent = new GameEventName({ eventCode: 1,result:sHeroarr[0] });
+        // GameCustomEvent.Instance.node.emit(GameEventName.AMPLIFICATION_CARD_RESULT_EVENT,ampCardEvent);
+        this.closeView();
+    }
+
+    //获得全部卡牌
+    getAllCard()
+    {
+        //看广告
+        //发送全部英雄选择
+        // let ampCardEvent = new GameEventName({ eventCode: 1,result:sHeroarr });
+        // GameCustomEvent.Instance.node.emit(GameEventName.AMPLIFICATION_CARD_RESULT_EVENT,ampCardEvent);
+        this.closeView();
+    }
+
+    //刷新卡牌
+    freshCard()
+    {
+        //看广告
         this.drawHeroCard(this.btn_card1.node);
         this.drawHeroCard(this.btn_card2.node);
         this.drawHeroCard(this.btn_card3.node);
@@ -77,54 +107,202 @@ export class AmplificationCard extends Component {
         {
             heroQuality = 6;
         }
+        //该品级已解锁所有英雄（目前版本默认全解锁）
+        var heroQualityArr:Array<heroStructure> = this.findAllLevelHero(heroQuality);
+        while(heroQualityArr.length <= 0 && heroQuality > 1)
+        {
+            //查找上一个品级的英雄解锁情况
+            heroQuality--;
+            heroQualityArr = [];
+            heroQualityArr = this.findAllLevelHero(heroQuality);
+        }
+        //该品级的满级英雄
+        var isTopFull:boolean = true;
+        while(isTopFull && heroQuality > 1)
+        {
+           var topHeroTotal:number = 0;
+            //检查该品级的所有英雄属性和技能是否都已叠满
+            for(var tps:number = 0;tps < heroQualityArr.length;tps++)
+            {
+                if(heroQualityArr[tps].propertyTopArr.length > 5)
+                {
+                    topHeroTotal++;
+                }
+            }
+            if(topHeroTotal >= heroQualityArr.length)
+            {
+                isTopFull = true;
+                //查找上一个品级的英雄解锁情况
+                heroQuality--;
+                heroQualityArr = [];
+                heroQualityArr = this.findAllLevelHero(heroQuality);
+            }else{
+                isTopFull = false;
+            }
+        }
+        if(topHeroTotal >= heroQualityArr.length && heroQuality == 1)
+        {
+            //若所有白色英雄已满级，且未解锁更高等级的英雄，酒馆显示暂无已上阵英雄可提升
+            return;
+        }
+    
+        //提升属性的上阵英雄
+        var proJoinHero:heroStructure;
+        var isJoin:boolean = false;
+        //随机该品级英雄
+        var rqHero:number = Math.floor(Math.random() * heroQualityArr.length);
+        // if(heroQualityArr[rqHero].propertyTopArr.length > 5)
+        // {
+        //     //若所有属性和技能都已叠满，添加到满级英雄中记录
+        //     GlobalData.Instance.topHeroArr.push(rqHero);
+        // }
+        //判断该英雄是否已上阵
+        for(var findJoinHero:number = 0;findJoinHero < GlobalData.Instance.joinHeroArr.length;findJoinHero++)
+        {
+            if(GlobalData.Instance.joinHeroArr[findJoinHero].heroID == heroQualityArr[rqHero].heroID)
+            {
+                isJoin = true;
+                if(GlobalData.Instance.joinHeroArr[findJoinHero].propertyTopArr.length > 5)
+                {
+                    //若所有属性和技能都已叠满，重新随机其他英雄
+                }
+                proJoinHero = GlobalData.Instance.joinHeroArr[findJoinHero];
+                //英雄名
+                cardNode.getChildByName("lab_heroName").getComponent(Label).string = proJoinHero.heroName;
+                //英雄头像
+                LoadImgTool.Instance.loadSpriteFrame(proJoinHero.heroImgPath,
+                    cardNode.getChildByName("mask_headPortrait").getChildByName("headPortrait").getComponent(Sprite).node);
+                break;
+            }
+        }
+        if(isJoin)
+        {
+            cardNode.getChildByName("icon_newHero").getComponent(Sprite).node.active = false;
+            //提升范围 白色英雄没有技能
+            var proMax:number = 4;
+            if(heroQuality > 1)
+            {
+                proMax = 5;
+            }
+            //已经提升到顶级的属性/技能
+            var topPromote:boolean = true;
+            //随机提升 1 攻击 2 暴击 3 会心 4 HP 5 解锁/升级技能
+            var promote:number = 1;
+            while(topPromote == false)
+            {
+                topPromote = false;
+                promote = Math.floor(Math.random() * proMax) + 1;
+                for(var tp:number = 0;tp < proJoinHero.propertyTopArr.length;tp++)
+                {
+                    if(proJoinHero.propertyTopArr[tp] == promote)
+                    {
+                        topPromote = true;
+                        break;
+                    }
+                }
+            }
+            if(promote < 5)
+            {
+                //属性成长
+                for(var hpgu:number = 0;hpgu < GlobalData.Instance.heroProGrowUpTableArr.length;hpgu++)
+                {
+                    if(GlobalData.Instance.heroProGrowUpTableArr[hpgu].propertyType == promote)
+                    {
+                        this.cardComposing(cardNode,GlobalData.Instance.heroProGrowUpTableArr[hpgu].propertyIconPath,
+                            GlobalData.Instance.heroProGrowUpTableArr[hpgu].propertyName);
+                        var proPass:boolean = false;
+                        //英雄属性增幅描述
+                        for(var gu:number = 0;gu < GlobalData.Instance.heroProGrowUpTableArr[hpgu].growUpArr.length;gu++)
+                        {
+                            //查找下一级属性等级，所有属性默认初始等级0
+                            if((proJoinHero.harmLevel + 1) == GlobalData.Instance.heroProGrowUpTableArr[hpgu].growUpArr[gu].level)
+                            {
+                                cardNode.getChildByName("lab_describe").getComponent(Label).string = 
+                                    GlobalData.Instance.heroProGrowUpTableArr[hpgu].describe;
+                                proPass = true;
+                                break;
+                            }
+                        }
+                        //若该项属性已叠满，重新随机其他属性增加
+                        if(proPass == false)
+                        {
+                            proJoinHero.propertyTopArr.push(promote);
+                        }
+                        //若所有属性已叠满，重新随机其他技能增加
+                        break;
+                    }
+                }
+            }else{
+                //当英雄拥有两个或两个以上的技能
+                var skillIndex:number = 0;
+                if(proJoinHero.skillArr.length > 1)
+                {
+                    skillIndex = Math.floor(Math.random() * proJoinHero.skillArr.length);
+                }
+                var skiPass:boolean = false;
+                //在技能表中找到技能
+                for(var hs:number = 0;hs < GlobalData.Instance.heroSkillTableArr.length;hs++)
+                {
+                    if(GlobalData.Instance.heroSkillTableArr[hs].skillID == proJoinHero.skillArr[skillIndex])
+                    {
+                        this.cardComposing(cardNode,GlobalData.Instance.heroSkillTableArr[hs].skillIconPath,
+                            GlobalData.Instance.heroSkillTableArr[hs].skillName
+                        )
+                        for(var sl:number = 0;sl < GlobalData.Instance.heroSkillTableArr[hs].effectArr.length;sl++)
+                        {
+                            //查找下一级技能等级，所有技能默认初始等级0
+                            if((GlobalData.Instance.heroSkillTableArr[hs].skillLevel + 1) == GlobalData.Instance.heroSkillTableArr[hs].effectArr[sl].level)
+                            {
+                                skiPass = true;
+                                break;
+                            }
+                        }
+                        //描述
+                        cardNode.getChildByName("lab_describe").getComponent(Label).string = GlobalData.Instance.heroSkillTableArr[hs].describe;
+                    }
+                }
+                //若该项技能已叠满，重新随机其他技能增加
+                if(skiPass == false)
+                {
+                    proJoinHero.skillTopArr.push(proJoinHero.skillArr[skillIndex]);
+                }
+                //若所有技能已叠满，重新随机其他技能增加
+                proJoinHero.propertyTopArr.push(promote);
+            }
+        }else{
+            //若未上阵，上阵该英雄
+            cardNode.getChildByName("icon_newHero").getComponent(Sprite).node.active = true;
+            cardNode.getChildByName("icon_skill").getComponent(Sprite).node.active = false;
+            cardNode.getChildByName("lab_skillName").getComponent(Label).string = "上阵此英雄";
+            //无描述
+            cardNode.getChildByName("lab_describe").getComponent(Label).string = "";
+        }
+        this.cardQuality(heroQuality,cardNode.getChildByName("img_cardQuality").getComponent(Sprite).node);
+    }
+
+    //有属性/技能的显示排布
+    cardComposing(cardNode:Node,iconPath:string,psName:string)
+    {
+        //英雄属性/技能图标
+        LoadImgTool.Instance.loadSpriteFrame(iconPath,cardNode.getChildByName("icon_skill").getComponent(Sprite).node);
+        cardNode.getChildByName("icon_skill").getComponent(Sprite).node.active = true;
+        //英雄属性名
+        cardNode.getChildByName("lab_skillName").getComponent(Label).string = psName;
+    }
+
+    //查找当前品级的所有英雄
+    findAllLevelHero(heroQua:number):Array<heroStructure>
+    {
         var heroQuaArr:Array<heroStructure> = [];
         //判断是否有该品级的英雄
         for(var addHeroPro:number = 0;addHeroPro < GlobalData.Instance.unlockHeroArr.length;addHeroPro++)
         {
-            if(GlobalData.Instance.unlockHeroArr[addHeroPro].quality == heroQuality)
+            if(GlobalData.Instance.unlockHeroArr[addHeroPro].quality == heroQua)
             {
                 heroQuaArr.push(GlobalData.Instance.unlockHeroArr[addHeroPro]);
             }
         }
-        if(heroQuaArr.length > 0)
-        {
-            var isJoin:boolean = false;
-            //随机该品级英雄
-            var rqHero:number = Math.floor(Math.random() * heroQuaArr.length);
-            //判断该英雄是否已上阵
-            for(var findJoinHero:number = 0;findJoinHero < GlobalData.Instance.joinHeroArr.length;findJoinHero++)
-            {
-                if(GlobalData.Instance.joinHeroArr[findJoinHero].heroID == heroQuaArr[rqHero].heroID)
-                {
-                    isJoin = true;
-                    break;
-                }
-            }
-            if(isJoin)
-            {
-                //随机提升攻击、暴击、会心或解锁升级技能
-            }else{
-                //若未上阵，上阵该英雄
-                cardNode.getChildByName("layout_skill").getChildByName("icon_skill").getComponent(Sprite).node.active = false;
-                cardNode.getChildByName("layout_skill").getChildByName("node_temp").active = true;
-                cardNode.getChildByName("layout_skill").getChildByName("lab_describe").getComponent(Label).string = "上阵此英雄";
-            }
-        }else{}
-    }
-
-    //获得全部卡牌
-    getAllCard()
-    {
-        //看广告
-    }
-
-    //刷新卡牌
-    freshCard()
-    {
-        //看广告
-        this.drawHeroCard(this.btn_card1.node);
-        this.drawHeroCard(this.btn_card2.node);
-        this.drawHeroCard(this.btn_card3.node);
+        return heroQuaArr;
     }
 
     //更新当前抽卡概率数据
@@ -140,6 +318,36 @@ export class AmplificationCard extends Component {
             }
         
         }
+    }
+
+    //卡牌背景品级颜色
+    cardQuality(heroQuality:number,cardQualityNode:Node)
+    {
+        switch (heroQuality) {
+            case 1:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_whiteCard",cardQualityNode);
+                break;
+            case 2:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_greenCard",cardQualityNode);
+                break;
+            case 3:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_blueCard",cardQualityNode);
+                break;
+            case 4:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_purpleCard",cardQualityNode);
+                break;
+            case 5:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_redCard",cardQualityNode);
+                break;
+            case 6:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_yellowCard",cardQualityNode);
+                break;
+        }
+    }
+
+    closeView()
+    {
+        this.node.active = false;
     }
 
     update(deltaTime: number) {

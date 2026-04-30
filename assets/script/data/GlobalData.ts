@@ -1,5 +1,5 @@
 import { _decorator } from 'cc';
-import { heroStructure, ampCardProTableStructure, enemyStructure, userStructure } from './GlobalStructure';//,chapterTableStructure,gameRecordStructure, propTableStructure, mapTableStructure
+import { heroStructure, ampCardProTableStructure, enemyStructure, userStructure, heroPropertyTableStructure, heroSkillStructure } from './GlobalStructure';//,chapterTableStructure,gameRecordStructure, propTableStructure, mapTableStructure
 const { ccclass, property } = _decorator;
 
 /**
@@ -22,11 +22,15 @@ export class GlobalData{
     /**
      * json数据读取存储或服务器发送的随机数据表
     */
+    //英雄表
+    public heroTableArr:Array<heroStructure> = [];
+    //英雄技能表
+    public heroSkillTableArr:Array<heroSkillStructure> = [];
+    //英雄属性增幅表
+    public heroProGrowUpTableArr:Array<heroPropertyTableStructure> = [];
     //抽卡概率表
     public ampCardProTableArr:Array<ampCardProTableStructure> = [];
 
-    //英雄表
-    public heroTableArr:Array<heroStructure> = [];
     //怪物表
     public taskTableArr:Array<enemyStructure> = [];
     //章节表
@@ -40,6 +44,8 @@ export class GlobalData{
     public unlockHeroArr:Array<heroStructure> = [];
     //上阵英雄表
     public joinHeroArr:Array<heroStructure> = [];
+    //英雄满级记录
+    public topHeroArr:Array<number> = [];
 
     //酒馆等级
     public amplificationCardLevel:number = 1;

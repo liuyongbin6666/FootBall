@@ -30,8 +30,10 @@ export class FrightView extends Component {
     @property(Prefab)
     private harmItemPre: Prefab = null;
 
-    // private btn_close:Button;
-    //背景
+    private btn_close:Button;
+    //静态背景
+    private img_soccerField:Sprite;
+    //动态背景
     private img_frightBg:Sprite;
     //衔接背景
     private img_frightLinkUpBg:Sprite;
@@ -55,6 +57,10 @@ export class FrightView extends Component {
     private btn_prop3:Button;
     private btn_prop4:Button;
     private btn_prop5:Button;
+    //设置
+    private btn_set:Button;
+    //广告
+    private btn_adv:Button;
 
     /**
      * 数据
@@ -80,7 +86,7 @@ export class FrightView extends Component {
     //当前血量
     private HP:number = 100;
     //上限血量
-    private maxHP:number = 100;
+    private maxHP:number = 0;
     //当前经验
     private EXP:number = 0;
     //升级所需经验
@@ -107,7 +113,8 @@ export class FrightView extends Component {
     }
 
     private _initObect() {
-        // this.btn_close = find('top/btn_close', this.node).getComponent(Button);
+        this.btn_close = find('node_top/btn_close', this.node).getComponent(Button);
+        this.img_soccerField = find('img_soccerField', this.node).getComponent(Sprite);
         this.img_frightBg = find('img_frightBg', this.node).getComponent(Sprite);
         this.img_frightLinkUpBg = find('img_frightLinkUpBg', this.node).getComponent(Sprite);
         this.node_enemy = find('node_enemy', this.node);
@@ -120,31 +127,35 @@ export class FrightView extends Component {
         this.lab_HPProportion = find('node_bottom/lab_HPProportion', this.node).getComponent(Label);
         this.pro_EXP = find('node_bottom/pro_EXP', this.node).getComponent(ProgressBar);
         this.lab_EXPProportion = find('node_bottom/lab_EXPProportion', this.node).getComponent(Label);
-        this.btn_prop1 = find('node_bottom/lay_propGroove/prop1/mask_prop/btn_prop1', this.node).getComponent(Button);
-        this.btn_prop2 = find('node_bottom/lay_propGroove/prop2/mask_prop/btn_prop2', this.node).getComponent(Button);
-        this.btn_prop3 = find('node_bottom/lay_propGroove/prop3/mask_prop/btn_prop3', this.node).getComponent(Button);
-        this.btn_prop4 = find('node_bottom/lay_propGroove/prop4/mask_prop/btn_prop4', this.node).getComponent(Button);
-        this.btn_prop5 = find('node_bottom/lay_propGroove/prop5/mask_prop/btn_prop5', this.node).getComponent(Button);
+        this.btn_prop1 = find('node_bottom/lay_propGroove/btn_prop1', this.node).getComponent(Button);
+        this.btn_prop2 = find('node_bottom/lay_propGroove/btn_prop2', this.node).getComponent(Button);
+        this.btn_prop3 = find('node_bottom/lay_propGroove/btn_prop3', this.node).getComponent(Button);
+        this.btn_prop4 = find('node_bottom/lay_propGroove/btn_prop4', this.node).getComponent(Button);
+        this.btn_prop5 = find('node_bottom/lay_propGroove/btn_prop5', this.node).getComponent(Button);
+        this.btn_set = find('node_bottom/btn_set', this.node).getComponent(Button);
+        this.btn_adv = find('node_bottom/btn_adv', this.node).getComponent(Button);
     }
 
     private _onEvent() {
-        // this.btn_close.node.on(Node.EventType.TOUCH_END, this.closeView, this);
+        this.btn_close.node.on(Node.EventType.TOUCH_END, this.closeView, this);
         this.btn_prop1.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_prop2.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_prop3.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_prop4.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_prop5.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        this.btn_set.node.on(Node.EventType.TOUCH_END, this.openSet, this);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.FRIGHT_SUBTRACT_BOOLD_EVENT,this.frightControllerFun,this);
+        GameCustomEvent.Instance.addCustomEvent(GameEventName.AMPLIFICATION_CARD_RESULT_EVENT,this.heroAmplificationFun,this);
     }
 
     start() {
         this.resetGame();
         //模拟数据
         var es1:enemyStructure = {enemyID:1,heroHeadImgPath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:150,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:3,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",enemyItem:null,
+            maxHP:150,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:6,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",enemyItem:null,
             HP:10,attakState:0};
         var es2:enemyStructure = {enemyID:2,heroHeadImgPath:"",enemyName:"敌人2",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
-            maxHP:100,moveSpeed:0.3,attackSpeed:1,attackDistance:10,harm:1,EXP:2,gold:1,prop:1,skillProbability:10,speak:"冲啊！",enemyItem:null,
+            maxHP:100,moveSpeed:0.3,attackSpeed:1,attackDistance:10,harm:1,EXP:8,gold:1,prop:1,skillProbability:10,speak:"冲啊！",enemyItem:null,
             HP:10,attakState:0};
         var es3:enemyStructure = {enemyID:3,heroHeadImgPath:"",enemyName:"敌人3",enemyIntroduce:"敌人介绍",experience:100,enemyType:1,enemyOccupation:1,
             maxHP:180,moveSpeed:0.4,attackSpeed:1,attackDistance:10,harm:1,EXP:4,gold:1,prop:1,skillProbability:10,speak:"Biu~Biu~",enemyItem:null,
@@ -152,20 +163,27 @@ export class FrightView extends Component {
         this.enemyArr.push(es1);
         this.enemyArr.push(es2);
         this.enemyArr.push(es3);
-        var he1:heroStructure = {heroID:1,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄1",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:300,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:100,catchSoccerID:0};
-        var he2:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄2",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:200,skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:1,HP:120,catchSoccerID:0};
-        var he3:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄3",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:250,skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:2,HP:110,catchSoccerID:0};
-        var he4:heroStructure = {heroID:4,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄4",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:300,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:3,HP:100,catchSoccerID:0};
-        var he5:heroStructure = {heroID:5,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄5",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:200,skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:4,HP:120,catchSoccerID:0};
-        var he6:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄6",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:250,skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:5,HP:110,catchSoccerID:0};
-        var he7:heroStructure = {heroID:7,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄7",heroIntroduce:"英雄介绍",heroType:1,quality:1,
-            maxHP:300,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:6,HP:100,catchSoccerID:0};
+        var he1:heroStructure = {heroID:1,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄1",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
+            maxHP:30,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:10,catchSoccerID:0,unlock:true,
+            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
+        var he2:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄2",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
+            maxHP:20,skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:1,HP:10,catchSoccerID:0,unlock:true,
+            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
+        var he3:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄3",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
+            maxHP:50,skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:2,HP:10,catchSoccerID:0,unlock:true,
+            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
+        var he4:heroStructure = {heroID:4,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄4",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
+            maxHP:30,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:3,HP:10,catchSoccerID:0,unlock:true,
+            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
+        var he5:heroStructure = {heroID:5,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄5",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
+            maxHP:20,skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:4,HP:10,catchSoccerID:0,unlock:true,
+            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
+        var he6:heroStructure = {heroID:2,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄6",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
+            maxHP:50,skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:5,HP:10,catchSoccerID:0,unlock:true,
+            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
+        var he7:heroStructure = {heroID:7,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄7",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
+            maxHP:30,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:6,HP:10,catchSoccerID:0,unlock:true,
+            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
         this.heroArr.push(he1);
         this.heroArr.push(he2);
         this.heroArr.push(he3);
@@ -183,6 +201,11 @@ export class FrightView extends Component {
         this.freshEXP();
         this.soccerGameState = gameState.start;
         this.schedule(this.soccerGame,this.timeHS);
+    }
+
+    openSet()
+    {
+        Layer.Instance.show("set",Layer.Instance.layerView);
     }
 
     //游戏重置
@@ -217,6 +240,7 @@ export class FrightView extends Component {
             item["heroID"] = this.heroArr[he].heroID;
             this.heroArr[he].HP = this.heroArr[he].maxHP;
             this.maxHP += this.heroArr[he].maxHP;
+            this.HP += this.heroArr[he].maxHP;
             // item.getChildByName("lab_nickname").getComponent(Label).string = "" + this.heroArr[he].heroName;
             // LoadImgTool.Instance.loadSpriteFrame(this.heroArr[he].heroImgPath, item.getChildByName("mask_head").getChildByName("icon_head").getComponent(Sprite).node);
             if(this.heroArr[he].skillArr.length > 0)
@@ -362,6 +386,9 @@ export class FrightView extends Component {
             return frontEnemyID;
         }
     }
+
+    heroAmplificationFun(amplificationEvent: GameEventName)
+    {}
 
     frightControllerFun(controllerEvent: GameEventName)
     {
@@ -758,17 +785,26 @@ export class FrightView extends Component {
         }
     }
 
-    //关卡数字转汉字
-    levelChineseCharacter():string
+    //抽卡属性增加成功
+    propertylevelUp(promote)
     {
-        switch(this.playerLevel)
+        switch(promote)
         {
             case 1:
-                return "一";
+                //攻击力
+            case 4:
+                //HP
+                //x + x * multiple /100
+                break;
             case 2:
-                return "二";
+                //暴击
             case 3:
-                return "三";
+                //会心
+                //multiple /100
+                break;
+            case 5:
+                //技能
+                break;
         }
     }
 

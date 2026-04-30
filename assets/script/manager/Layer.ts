@@ -50,8 +50,8 @@ export class Layer extends Component {
 
     start() {
         //加载首页
-        // var pathLoading = this.getGamePrePath("loading");
-        // LoadImgTool.Instance.loadPrefab("loading",pathLoading,Layer.Instance.layerView);
+        var pathLoading = this.getGamePrePath("loading");
+        LoadImgTool.Instance.loadPrefab("loading",pathLoading,Layer.Instance.layerView);
         
         //预加载弹窗
         var pathTips = this.getGamePrePath("tips");

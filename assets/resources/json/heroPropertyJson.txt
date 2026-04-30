@@ -1,0 +1,18 @@
+[
+	{"propertyType":1, "propertyName": "攻击力提升", "describe":"攻击力提升至{0}倍", "propertyIconPath":"", 
+		"growUpArr":[{"level":1,"multiple":50},
+					{"level":2,"multiple":100},
+					{"level":3,"multiple":150}]},
+	{"propertyType":2, "propertyName": "暴击提升", "describe":"暴击率提升至{0}倍", "propertyIconPath":"", 
+		"growUpArr":[{"level":1,"multiple":20}, 
+					{"level":2,"multiple":40},
+					{"level":3,"multiple":60}]},
+	{"propertyType":3, "propertyName": "会心提升", "describe":"会心率提升至{0}倍", "propertyIconPath":"", 
+		"growUpArr":[{"level":1,"multiple":10}, 
+					{"level":2,"multiple":20},
+					{"level":3,"multiple":30}]},
+	{"propertyType":4, "propertyName": "血量提升", "describe":"血量上限提升至{0}倍", "propertyIconPath":"", 
+		"growUpArr":[{"level":1,"multiple":50},
+					{"level":2,"multiple":100},
+					{"level":3,"multiple":150}]}
+]
