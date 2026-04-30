@@ -65,12 +65,9 @@ export class LoadingView extends Component {
             //预加载登录界面
             // let pathLogin = Layer.Instance.getGamePrePath("login");
             // LoadImgTool.Instance.loadPrefab("login",pathLogin,Layer.Instance.layerView,true);
-            //预加载战斗
-            // let pathFrightCartoon = Layer.Instance.getGamePrePath("fright");
-            // LoadImgTool.Instance.loadPrefab("fright",pathFrightCartoon,Layer.Instance.layerView,true);
             //抽卡
-            let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
-            LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,true);
+            // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
+            // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,true);
             //预加载渐变过渡
             // let pathDynamicFigure = Layer.Instance.getGamePrePath("dynamicFigure");
             // LoadImgTool.Instance.loadPrefab("dynamicFigure",pathDynamicFigure,Layer.Instance.layerTips,false);

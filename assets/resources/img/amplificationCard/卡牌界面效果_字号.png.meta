@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "35e26d2f-fde8-4228-ac15-053acb0a35cd",
+  "uuid": "1b0550e0-b874-4fe5-b83f-15c7431b45c9",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "35e26d2f-fde8-4228-ac15-053acb0a35cd@6c48a",
-      "displayName": "middle_moster1",
+      "uuid": "1b0550e0-b874-4fe5-b83f-15c7431b45c9@6c48a",
+      "displayName": "卡牌界面效果_字号",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "35e26d2f-fde8-4228-ac15-053acb0a35cd",
+        "imageUuidOrDatabaseUri": "1b0550e0-b874-4fe5-b83f-15c7431b45c9",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,21 +34,22 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "35e26d2f-fde8-4228-ac15-053acb0a35cd@f9941",
-      "displayName": "middle_moster1",
+      "uuid": "1b0550e0-b874-4fe5-b83f-15c7431b45c9@f9941",
+      "displayName": "卡牌界面效果_字号",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
+        "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
         "offsetX": 0,
         "offsetY": 0,
         "trimX": 0,
         "trimY": 0,
-        "width": 84,
-        "height": 83,
-        "rawWidth": 84,
-        "rawHeight": 83,
+        "width": 796,
+        "height": 1376,
+        "rawWidth": 796,
+        "rawHeight": 1376,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
@@ -60,17 +61,17 @@
         "meshType": 0,
         "vertices": {
           "rawPosition": [
-            -42,
-            -41.5,
+            -398,
+            -688,
             0,
-            42,
-            -41.5,
+            398,
+            -688,
             0,
-            -42,
-            41.5,
+            -398,
+            688,
             0,
-            42,
-            41.5,
+            398,
+            688,
             0
           ],
           "indexes": [
@@ -83,12 +84,12 @@
           ],
           "uv": [
             0,
-            83,
-            84,
-            83,
+            1376,
+            796,
+            1376,
             0,
             0,
-            84,
+            796,
             0
           ],
           "nuv": [
@@ -102,20 +103,19 @@
             1
           ],
           "minPos": [
-            -42,
-            -41.5,
+            -398,
+            -688,
             0
           ],
           "maxPos": [
-            42,
-            41.5,
+            398,
+            688,
             0
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "35e26d2f-fde8-4228-ac15-053acb0a35cd@6c48a",
-        "atlasUuid": "",
-        "trimType": "auto"
+        "imageUuidOrDatabaseUri": "1b0550e0-b874-4fe5-b83f-15c7431b45c9@6c48a",
+        "atlasUuid": ""
       },
       "ver": "1.0.12",
       "imported": true,
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "35e26d2f-fde8-4228-ac15-053acb0a35cd@6c48a"
+    "redirect": "1b0550e0-b874-4fe5-b83f-15c7431b45c9@6c48a"
   }
 }
