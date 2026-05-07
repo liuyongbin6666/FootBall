@@ -1,6 +1,11 @@
 import { _decorator, Component, find, Node, Prefab } from 'cc';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { preItemStructure, preStructure } from '../data/GlobalStructure';
+import { SDK, SDKInterface } from '../../BHY_Framework/Sdk/SDK';
+import SDKInfo from '../../BHY_Framework/FrameConfig/FrameData';
+import { GameStorage } from '../../BHY_Framework/Sdk/GameSave';
+import BuildSetting from '../../BHY_Framework/Sdk/BuildSetting';
+import { ResMgr } from '../../BHY_Framework/Manager/ResMgr';
 const { ccclass, property } = _decorator;
 /**
  * 层级管理
@@ -35,7 +40,7 @@ export class Layer extends Component {
     preNodeArr:Array<preStructure> = [];
     //已加载过的材质item（多个使用，例如人物、物品） prefab
     preItemArr:Array<preItemStructure> = [];
-    protected onLoad() {
+    protected async onLoad() {
         // 在游戏加载时将当前组件实例设置为全局访问点
         Layer.Instance = this;
 
@@ -46,6 +51,40 @@ export class Layer extends Component {
         Layer.Instance.layerTips = find('layerTips', this.node);
         Layer.Instance.layerTransition = find('layerTransition', this.node);
         // Layer.Instance.layerLog = find('layerLog', this.node);
+
+        //传入名字加载bundle，后续页面需要加载，单独设一个bundle，加载完图片后再加载材质
+        // ResMgr.Ins.loadBundle();
+
+        BuildSetting.ShareGameName = "足球鸡仔";
+        BuildSetting.appid = "tt9868eed5060ea37302";
+        BuildSetting.secret = "";
+        BuildSetting.geAccessToken = "";
+
+//         BuildSetting.Logo = this.Logo
+//         BuildSetting.Icon = this.Icon
+
+
+      await this.addComponent(SDKInterface).init()
+        this.addComponent(GameStorage)
+    //    SDK.Videoid = this.Videoid
+    //         SDK.Bannerid = this.Bannerid
+    //         SDK.Insertid = this.Insertid
+
+      await SDK.CheckPrivacy()
+
+        let now = Date.now()
+        await SDK.Login();
+        await SDK.checkSession();
+        console.log(`【加载计时】SDK.Login 完成耗时: ${Date.now() - now}`)
+        SDK.Game_register();
+ await GameStorage.Ins.Load();
+        SDKInfo.Init(() => {
+            // 侧边栏奖励回调 获得奖励方法
+
+        }, () => {
+            // 桌面入口奖励回调 获得奖励方法
+
+        });
     }
 
     start() {

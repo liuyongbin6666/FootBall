@@ -23,6 +23,14 @@ export interface userStructure {
     headIcon:string;
 }
 
+//游戏记录
+export interface gameRecordStructure{
+    //章节ID
+    chapterID:number;
+    //关卡ID
+    levelID:number;
+}
+
 //章节
 export interface chapterStructure {
     //章节ID
@@ -33,6 +41,10 @@ export interface chapterStructure {
     levelArr:Array<number>;
     //章节通关评分
     // passScore:number;
+    //初始英雄
+    initialHeroArr:Array<number>;
+    //下一个章节ID
+    nextChapterID:number;
 }
 
 //关卡
@@ -44,10 +56,34 @@ export interface levelStructure {
     //掉落金币
     dropGold:number;
     //掉落物品
-    dropGoodsArr;
+    dropGoodsArr:Array<number>;
+    //波次ID
+    waveArr:Array<number>;
+}
+
+//波数
+export interface waveStructure {
+    //波数ID
+    waveID:number;
     //敌人ID 敌人出现概率 敌人在本波数出现上限个数 
-    //关卡主角技能
-    roleSkillArr:Array<number>;
+    //小怪池
+    enemyAriseArr:Array<ariseStructure>;
+    //小怪总数
+    total:number;
+    //小怪间隔时间(s)
+    intervalTime:number;
+    //BossID 0 无Boss
+    BossID:number;
+    //Boss出现时间
+    BossBornTime:number;
+}
+
+//权重
+export interface ariseStructure {
+    //ID
+    ID:number;
+    //权重百分比
+    percent:number;
 }
 
 //英雄
@@ -62,7 +98,7 @@ export interface heroStructure {
     heroName:string;
     //英雄介绍
     heroIntroduce:string;
-    //英雄类型
+    //英雄类型 0 空
     heroType:number;
     //英雄品质
     quality:number;
@@ -219,10 +255,8 @@ export interface soccerStructure {
     goalEnemyID:number;
     //回球目标英雄ID，未碰到之前，属性仍然是前一个英雄的属性
     goalHeroID:number;
-    //墙x
-    wallX:number;
-    //墙y
-    wallY:number;
+    //球最后一次的x方向移速（失去目标飞向墙）
+    speedWallX:number;
     //移动次数累计
     moveTotal:number;
 }
@@ -240,18 +274,27 @@ export interface heroSkillStructure {
     //技能描述
     describe:string; 
     //技能效果
-    effectArr:Array<any>;
-    //技能持续秒数
-    // second:number;
-    //技能作用范围
-    // scope:number;
-    //技能冷却CD
-    // CD:number;
+    effectArr:Array<skillEffectStructure>;
     /**
      * 动态属性
      */
     //技能等级
     skillLevel:number;
+}
+
+//技能效果
+export interface skillEffectStructure {
+    //技能等级
+    level:number;
+    //效果
+    effect:number;
+    //作用范围
+    scope:number;
+    //持续秒数
+    second:number;
+    //技能冷却CD
+    // CD:number;
+    
 }
 
 //宠物

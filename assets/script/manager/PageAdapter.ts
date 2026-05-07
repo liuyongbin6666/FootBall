@@ -57,6 +57,7 @@ class PageAdapter extends Component {
     }
 }
 declare global {
+    //@ts-ignore
     module gi {
         class PageAdapter extends Component {
             static AdapterMode: typeof AdapterMode;
@@ -64,4 +65,5 @@ declare global {
         }
     }
 }
+
 ((globalThis as any).gi ||= {}).PageAdapter ||= Object.assign(PageAdapter, { AdapterMode: AdapterMode });

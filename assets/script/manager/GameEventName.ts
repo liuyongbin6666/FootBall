@@ -5,7 +5,7 @@ const { ccclass, property } = _decorator;
  * 事件名
 */
 @ccclass('GameEventName')
-export class GameEventName extends Event {
+export class GameEventName {
 
     /** 敌人扣血事件 */
     static FRIGHT_SUBTRACT_BOOLD_EVENT = "fright_subtract_boold_event";
@@ -32,7 +32,7 @@ export class GameEventName extends Event {
     
     private customProperty:any;
     constructor(customProperty:any){
-        super(customProperty);
+        // super(customProperty);
         this.customProperty = customProperty;
     }
 

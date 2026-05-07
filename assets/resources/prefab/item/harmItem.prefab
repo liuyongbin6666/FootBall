@@ -170,7 +170,7 @@
     "_overflow": 2,
     "_enableWrapText": true,
     "_font": {
-      "__uuid__": "4050ec8f-e347-4dfc-8726-3451c602fcab",
+      "__uuid__": "81b8f104-0622-47a2-8542-38d9923159c4",
       "__expectedType__": "cc.BitmapFont"
     },
     "_isSystemFontUsed": false,
@@ -218,8 +218,6 @@
       "__id__": 0
     },
     "fileId": "f7A8Ntw2pGP6GtV6GgwHQG",
-    "instance": null,
-    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {

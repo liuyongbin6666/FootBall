@@ -1,5 +1,6 @@
 import { _decorator } from 'cc';
-import { heroStructure, ampCardProTableStructure, enemyStructure, userStructure, heroPropertyTableStructure, heroSkillStructure } from './GlobalStructure';//,chapterTableStructure,gameRecordStructure, propTableStructure, mapTableStructure
+import { gameRecordStructure, chapterStructure, heroStructure, ampCardProTableStructure, enemyStructure, userStructure, heroPropertyTableStructure, 
+    heroSkillStructure, levelStructure, waveStructure} from './GlobalStructure';//propTableStructure, mapTableStructure,
 const { ccclass, property } = _decorator;
 
 /**
@@ -32,9 +33,13 @@ export class GlobalData{
     public ampCardProTableArr:Array<ampCardProTableStructure> = [];
 
     //怪物表
-    public taskTableArr:Array<enemyStructure> = [];
+    public enemyTableArr:Array<enemyStructure> = [];
     //章节表
-    // public chapterTableArr:Array<chapterTableStructure> = [];
+    public chapterTableArr:Array<chapterStructure> = [];
+    //关卡表
+    public levelTableArr:Array<levelStructure> = [];
+    //波数表
+    public waveTableArr:Array<waveStructure> = [];
     //道具表
     // public propTableArr:Array<propTableStructure> = [];
     //地图表
@@ -60,9 +65,7 @@ export class GlobalData{
     public userInfo:userStructure = {userId:10001,nickName:"玩家abc",gold:1000,headIcon:""};
 
     //游戏当前记录
-    // public gameRecord:gameRecordStructure = {gameRecordID:1,saveTime:"2001-3-1 11:09",teamRoles:[],chapterArr:[],chapterID:0,speakID:10001,
-    //     speakOverArr:[],speakRecordArr:[],roleVPArr:[],bagPropArr:[],propGainArr:[],taskID:0,taskOverID:0,taskCompleteness:0,
-    //     taskReceiveArr:[],taskConcludeArr:[],mapID:10011,destinationID:0,placeReachArr:[],resurgenceCount:[]};
+    public gameRecord:gameRecordStructure = {chapterID:1,levelID:101};//teamRoles:[],
 
     /**
      * 临时数据，下线清零

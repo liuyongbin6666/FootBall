@@ -65,6 +65,8 @@ export class LoadingView extends Component {
             //预加载登录界面
             // let pathLogin = Layer.Instance.getGamePrePath("login");
             // LoadImgTool.Instance.loadPrefab("login",pathLogin,Layer.Instance.layerView,true);
+            let pathLogin = Layer.Instance.getGamePrePath("fright");
+            LoadImgTool.Instance.loadPrefab("fright",pathLogin,Layer.Instance.layerView,true);
             //抽卡
             // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
             // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,true);
@@ -129,33 +131,41 @@ export class LoadingView extends Component {
         //     console.log("章节：",chapterArr);
         //     GlobalData.Instance.chapterTableArr = chapterArr;
         //     _this.loadCount++;
-        //     //根据当前章节，找到对应路径
-        //     for(var f:number = 0;f < GlobalData.Instance.chapterTableArr.length;f++)
-        //     {
-        //         if(GlobalData.Instance.chapterTableArr[f].chapterID == GlobalData.Instance.gameRecord.chapterID)
-        //         {
         //             //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
         //             //转换读取json路径
-        //             var newSpeakPath:string = CharacterTool.Instance.pathCharacter(GlobalData.Instance.chapterTableArr[f].speakPath);
-        //             //加载目前章节对话
-        //             LoadTableTool.Instance.loadTextFile(newSpeakPath,(value)=>{
-        //                 var speakArr = JSON.parse(value);
-        //                 console.log("对话：",speakArr);
-        //                 for(var si:number = 0;si < speakArr.length;si++)
-        //                 {
-        //                     if(speakArr[si].speakImg != "" && speakArr[si].speakImg != "uniformity")
-        //                     {
-        //                         //转换图片路径
-        //                         speakArr[si].speakImg = CharacterTool.Instance.pathCharacter(speakArr[si].speakImg);
-        //                     }
-        //                 }
-        //                 // var newSpeakArr:chapterSpeakStructure = {chapterID:GlobalData.Instance.gameRecord.chapterID,speakArr:speakArr};
-        //                 // GlobalData.Instance.speakTableArr.push(newSpeakArr);
-        //                 _this.loadCount++;
-        //             });
-        //             break;
-        //         }
-        //     }
+        //             // var newSpeakPath:string = CharacterTool.Instance.pathCharacter(GlobalData.Instance.chapterTableArr[f].speakPath);
+        //             // //加载目前章节对话
+        //             // LoadTableTool.Instance.loadTextFile(newSpeakPath,(value)=>{
+        //             //     var speakArr = JSON.parse(value);
+        //             //     console.log("对话：",speakArr);
+        //             //     for(var si:number = 0;si < speakArr.length;si++)
+        //             //     {
+        //             //         if(speakArr[si].speakImg != "" && speakArr[si].speakImg != "uniformity")
+        //             //         {
+        //             //             //转换图片路径
+        //             //             speakArr[si].speakImg = CharacterTool.Instance.pathCharacter(speakArr[si].speakImg);
+        //             //         }
+        //             //     }
+        //             //     // var newSpeakArr:chapterSpeakStructure = {chapterID:GlobalData.Instance.gameRecord.chapterID,speakArr:speakArr};
+        //             //     // GlobalData.Instance.speakTableArr.push(newSpeakArr);
+        //             //     _this.loadCount++;
+        //             // });
+        // });
+
+        //加载关卡表
+        // LoadTableTool.Instance.loadTextFile("json/levelJson",(value)=>{
+        //     var levelArr = JSON.parse(value);
+        //     console.log("关卡表：",levelArr);
+        //     GlobalData.Instance.levelTableArr = levelArr;
+        //     _this.loadCount++;
+        // });
+
+        //加载波数表
+        // LoadTableTool.Instance.loadTextFile("json/waveJson",(value)=>{
+        //     var waveArr = JSON.parse(value);
+        //     console.log("波数表：",waveArr);
+        //     GlobalData.Instance.waveTableArr = waveArr;
+        //     _this.loadCount++;
         // });
         
         //加载道具表

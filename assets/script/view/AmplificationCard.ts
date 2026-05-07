@@ -65,9 +65,14 @@ export class AmplificationCard extends Component {
     freshCard()
     {
         //看广告
-        this.drawHeroCard(this.btn_card1.node);
+//         SDK.ShowVideoAd(1,end=>{
+//             if(end){
+ this.drawHeroCard(this.btn_card1.node);
         this.drawHeroCard(this.btn_card2.node);
         this.drawHeroCard(this.btn_card3.node);
+//             }
+//         })
+       
     }
 
     //英雄抽卡
@@ -177,6 +182,7 @@ export class AmplificationCard extends Component {
         }
         if(isJoin)
         {
+            cardNode.getChildByName("icon_newHero").getComponent(Sprite).node.active = false;
             //提升范围 白色英雄没有技能
             var proMax:number = 4;
             if(heroQuality > 1)
@@ -216,7 +222,7 @@ export class AmplificationCard extends Component {
                             //查找下一级属性等级，所有属性默认初始等级0
                             if((proJoinHero.harmLevel + 1) == GlobalData.Instance.heroProGrowUpTableArr[hpgu].growUpArr[gu].level)
                             {
-                                cardNode.getChildByName("layout_skill").getChildByName("lab_describe").getComponent(Label).string = 
+                                cardNode.getChildByName("lab_describe").getComponent(Label).string = 
                                     GlobalData.Instance.heroProGrowUpTableArr[hpgu].describe;
                                 proPass = true;
                                 break;
@@ -257,7 +263,7 @@ export class AmplificationCard extends Component {
                             }
                         }
                         //描述
-                        cardNode.getChildByName("layout_skill").getChildByName("lab_describe").getComponent(Label).string = GlobalData.Instance.heroSkillTableArr[hs].describe;
+                        cardNode.getChildByName("lab_describe").getComponent(Label).string = GlobalData.Instance.heroSkillTableArr[hs].describe;
                     }
                 }
                 //若该项技能已叠满，重新随机其他技能增加
@@ -270,25 +276,23 @@ export class AmplificationCard extends Component {
             }
         }else{
             //若未上阵，上阵该英雄
-            cardNode.getChildByName("layout_skill").getChildByName("icon_skill").getComponent(Sprite).node.active = false;
-            //间隔出现
-            cardNode.getChildByName("layout_skill").getChildByName("node_temp").active = true;
-            cardNode.getChildByName("layout_skill").getChildByName("lab_skillName").getComponent(Label).string = "上阵此英雄";
+            cardNode.getChildByName("icon_newHero").getComponent(Sprite).node.active = true;
+            cardNode.getChildByName("icon_skill").getComponent(Sprite).node.active = false;
+            cardNode.getChildByName("lab_skillName").getComponent(Label).string = "上阵此英雄";
             //无描述
-            cardNode.getChildByName("layout_skill").getChildByName("lab_describe").getComponent(Label).string = "";
+            cardNode.getChildByName("lab_describe").getComponent(Label).string = "";
         }
+        this.cardQuality(heroQuality,cardNode.getChildByName("img_cardQuality").getComponent(Sprite).node);
     }
 
     //有属性/技能的显示排布
     cardComposing(cardNode:Node,iconPath:string,psName:string)
     {
         //英雄属性/技能图标
-        LoadImgTool.Instance.loadSpriteFrame(iconPath,cardNode.getChildByName("layout_skill").getChildByName("icon_skill").getComponent(Sprite).node);
-        cardNode.getChildByName("layout_skill").getChildByName("icon_skill").getComponent(Sprite).node.active = true;
-        //间隔隐藏（仅控制间距）
-        cardNode.getChildByName("layout_skill").getChildByName("node_temp").getComponent(Sprite).node.active = false;
+        LoadImgTool.Instance.loadSpriteFrame(iconPath,cardNode.getChildByName("icon_skill").getComponent(Sprite).node);
+        cardNode.getChildByName("icon_skill").getComponent(Sprite).node.active = true;
         //英雄属性名
-        cardNode.getChildByName("layout_skill").getChildByName("lab_skillName").getComponent(Label).string = psName;
+        cardNode.getChildByName("lab_skillName").getComponent(Label).string = psName;
     }
 
     //查找当前品级的所有英雄
@@ -318,6 +322,31 @@ export class AmplificationCard extends Component {
                 break;
             }
         
+        }
+    }
+
+    //卡牌背景品级颜色
+    cardQuality(heroQuality:number,cardQualityNode:Node)
+    {
+        switch (heroQuality) {
+            case 1:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_whiteCard",cardQualityNode);
+                break;
+            case 2:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_greenCard",cardQualityNode);
+                break;
+            case 3:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_blueCard",cardQualityNode);
+                break;
+            case 4:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_purpleCard",cardQualityNode);
+                break;
+            case 5:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_redCard",cardQualityNode);
+                break;
+            case 6:
+                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_yellowCard",cardQualityNode);
+                break;
         }
     }
 
