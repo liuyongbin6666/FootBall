@@ -32,7 +32,7 @@ export class HeroCollision extends Component {
     
         // 碰撞开始
         private onBeginContact(selfCollider: Collider2D, otherCollider: Collider2D) {
-            console.log('英雄发生碰撞！',selfCollider.group,otherCollider.group,otherCollider.tag);//2 足球 4 敌人 8 英雄 0 标签
+            // console.log('英雄发生碰撞！',selfCollider.group,otherCollider.group,otherCollider.tag);//2 足球 x 敌人子弹 8 英雄 0 标签
             // if(otherCollider.group == 4)
             // {
             //     //发送触碰事件，敌人的ID

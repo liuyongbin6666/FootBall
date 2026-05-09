@@ -1,6 +1,6 @@
 import { _decorator } from 'cc';
 import { gameRecordStructure, chapterStructure, heroStructure, ampCardProTableStructure, enemyStructure, userStructure, heroPropertyTableStructure, 
-    heroSkillStructure, levelStructure, waveStructure} from './GlobalStructure';//propTableStructure, mapTableStructure,
+    heroSkillStructure, levelStructure, waveStructure, propStructure} from './GlobalStructure';//mapTableStructure,
 const { ccclass, property } = _decorator;
 
 /**
@@ -23,25 +23,25 @@ export class GlobalData{
     /**
      * json数据读取存储或服务器发送的随机数据表
     */
-    //英雄表
-    public heroTableArr:Array<heroStructure> = [];
-    //英雄技能表
-    public heroSkillTableArr:Array<heroSkillStructure> = [];
-    //英雄属性增幅表
-    public heroProGrowUpTableArr:Array<heroPropertyTableStructure> = [];
-    //抽卡概率表
-    public ampCardProTableArr:Array<ampCardProTableStructure> = [];
-
-    //怪物表
-    public enemyTableArr:Array<enemyStructure> = [];
     //章节表
     public chapterTableArr:Array<chapterStructure> = [];
     //关卡表
     public levelTableArr:Array<levelStructure> = [];
     //波数表
     public waveTableArr:Array<waveStructure> = [];
+    //英雄表
+    public heroTableArr:Array<heroStructure> = [];
+    //怪物表
+    public enemyTableArr:Array<enemyStructure> = [];
+    //英雄技能表
+    public heroSkillTableArr:Array<heroSkillStructure> = [];
+    //英雄属性增幅表
+    public heroProGrowUpTableArr:Array<heroPropertyTableStructure> = [];
+    //抽卡概率表
+    public ampCardProTableArr:Array<ampCardProTableStructure> = [];
     //道具表
-    // public propTableArr:Array<propTableStructure> = [];
+    public propArr:Array<propStructure> = [];
+
     //地图表
     // public mapTableArr:Array<mapTableStructure> = [];
 

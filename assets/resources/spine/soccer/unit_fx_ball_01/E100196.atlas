@@ -1,0 +1,160 @@
+
+E100196.png
+size: 218,951
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+A_glow
+  rotate: false
+  xy: 182, 189
+  size: 30, 30
+  orig: 38, 38
+  offset: 4, 4
+  index: -1
+A_glow_orange_small
+  rotate: false
+  xy: 182, 157
+  size: 30, 30
+  orig: 38, 38
+  offset: 4, 4
+  index: -1
+A_green_lizi_00001
+  rotate: true
+  xy: 2, 514
+  size: 106, 108
+  orig: 134, 131
+  offset: 10, 14
+  index: -1
+A_green_lizi_00002
+  rotate: false
+  xy: 2, 406
+  size: 106, 106
+  orig: 134, 131
+  offset: 10, 15
+  index: -1
+A_green_lizi_00003
+  rotate: true
+  xy: 129, 728
+  size: 100, 77
+  orig: 134, 131
+  offset: 11, 29
+  index: -1
+A_green_lizi_00004
+  rotate: true
+  xy: 2, 69
+  size: 63, 76
+  orig: 134, 131
+  offset: 47, 30
+  index: -1
+A_huan_dis0002
+  rotate: true
+  xy: 103, 221
+  size: 79, 88
+  orig: 93, 93
+  offset: 10, 3
+  index: -1
+A_huan_dis0003
+  rotate: true
+  xy: 81, 81
+  size: 59, 85
+  orig: 93, 93
+  offset: 27, 5
+  index: -1
+A_huan_dis0004
+  rotate: false
+  xy: 147, 2
+  size: 52, 77
+  orig: 93, 93
+  offset: 32, 9
+  index: -1
+A_juji
+  rotate: true
+  xy: 2, 622
+  size: 106, 109
+  orig: 154, 154
+  offset: 19, 19
+  index: -1
+Alizi
+  rotate: false
+  xy: 2, 134
+  size: 77, 72
+  orig: 77, 77
+  offset: 0, 0
+  index: -1
+dian1
+  rotate: true
+  xy: 2, 831
+  size: 118, 128
+  orig: 154, 154
+  offset: 22, 13
+  index: -1
+dian2
+  rotate: true
+  xy: 2, 730
+  size: 99, 125
+  orig: 154, 154
+  offset: 40, 14
+  index: -1
+dian3
+  rotate: false
+  xy: 132, 830
+  size: 81, 119
+  orig: 154, 154
+  offset: 57, 19
+  index: -1
+dian4
+  rotate: false
+  xy: 80, 16
+  size: 65, 63
+  orig: 154, 154
+  offset: 59, 19
+  index: -1
+kuan_00000
+  rotate: false
+  xy: 112, 515
+  size: 104, 105
+  orig: 106, 106
+  offset: 1, 0
+  index: -1
+kuan_00001
+  rotate: false
+  xy: 112, 408
+  size: 104, 105
+  orig: 106, 106
+  offset: 1, 0
+  index: -1
+kuan_00002
+  rotate: false
+  xy: 110, 302
+  size: 104, 104
+  orig: 106, 106
+  offset: 1, 1
+  index: -1
+kuan_00003
+  rotate: true
+  xy: 113, 622
+  size: 104, 103
+  orig: 106, 106
+  offset: 1, 1
+  index: -1
+kuan_00004
+  rotate: false
+  xy: 2, 305
+  size: 103, 99
+  orig: 106, 106
+  offset: 2, 4
+  index: -1
+kuan_00005
+  rotate: false
+  xy: 2, 208
+  size: 99, 95
+  orig: 106, 106
+  offset: 4, 6
+  index: -1
+mask_07_lxc
+  rotate: false
+  xy: 103, 142
+  size: 77, 77
+  orig: 77, 77
+  offset: 0, 0
+  index: -1

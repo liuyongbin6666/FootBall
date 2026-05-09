@@ -1,0 +1,10 @@
+[
+	{"buffID":101, "buffType":1, "buffName": "天神下凡", "buffIconPath":"",
+		"buffEffectArr":[{"level":1,"seconds":1},
+					{"level":2,"seconds":2},
+					{"level":3,"seconds":3}]},
+	{"buffID":102, "buffType":1, "buffName": "英雄无敌", "buffIconPath":"",
+		"buffEffectArr":[{"level":1,"seconds":1},
+					{"level":2,"seconds":2},
+					{"level":3,"seconds":3}]}
+]

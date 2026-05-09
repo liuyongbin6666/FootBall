@@ -1,0 +1,22 @@
+[
+	{"waveID":10101, "total":10, "intervalTime":0.5, "BossID":0, "BossBornTime":0,
+		"enemyAriseArr":[{"ID":1001,"percent":100}]},
+	{"waveID":10102, "total":10, "intervalTime":0.5, "BossID":0, "BossBornTime":0,
+		"enemyAriseArr":[{"ID":1001,"percent":60},
+					{"ID":1002,"percent":40}]},
+	{"waveID":10103, "total":10, "intervalTime":0.5, "BossID":0, "BossBornTime":0,
+		"enemyAriseArr":[{"ID":1001,"percent":50},
+					{"ID":1002,"percent":30},
+					{"ID":1003,"percent":20}]},
+	{"waveID":10104, "total":10, "intervalTime":0.5, "BossID":0, "BossBornTime":0,
+		"enemyAriseArr":[{"ID":1001,"percent":40},
+					{"ID":1002,"percent":30},
+					{"ID":1003,"percent":20},
+					{"ID":1004,"percent":10}]},
+	{"waveID":10105, "total":10, "intervalTime":0.5, "BossID":0, "BossBornTime":20,
+		"enemyAriseArr":[{"ID":1001,"percent":30},
+					{"ID":1002,"percent":30},
+					{"ID":1003,"percent":20},
+					{"ID":1004,"percent":10},
+					{"ID":1005,"percent":10}]}
+]

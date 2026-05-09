@@ -6,8 +6,8 @@ import { ampCardProTableStructure, heroStructure } from '../data/GlobalStructure
 import { LoadImgTool } from '../tool/LoadImgTool';
 const { ccclass, property } = _decorator;
 
-@ccclass('AmplificationCard')
-export class AmplificationCard extends Component {
+@ccclass('AmplificationCardView')
+export class AmplificationCardView extends Component {
     private btn_card1:Button;
     private btn_card2:Button;
     private btn_card3:Button;
@@ -359,5 +359,3 @@ export class AmplificationCard extends Component {
         
     }
 }
-
-

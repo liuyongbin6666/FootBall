@@ -14,8 +14,8 @@ export class GameEventName {
     static AMPLIFICATION_CARD_RESULT_EVENT = "amplification_card_result_event";
     /** 关闭通关结算界面 */
     static CHAPTER_RESULT_CLOSE_EVENT = "chapter_result_close_event";
-    /** 通关结算播放完毕 */ 
-    static CHAPTER_RESULT_PLAY_OVER_EVENT = "chapter_result_play_over";
+    /** 英雄动作 */
+    static HERO_SKE_EVENT = "hero_ske_event";
 
     /** 注册事件 */
     static REGISTER_EVENT = "register_event";

@@ -1,0 +1,12 @@
+[
+	{"levelID":101, "levelName":"1", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
+		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[102]},
+	{"levelID":102, "levelName":"2", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
+		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[103,104]},
+	{"levelID":103, "levelName":"3", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
+		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[105]},
+	{"levelID":104, "levelName":"4", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
+		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[106]},
+	{"levelID":105, "levelName":"5", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
+		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[0]}
+]

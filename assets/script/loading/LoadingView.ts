@@ -27,7 +27,7 @@ export class LoadingView extends Component {
     */
     private loadState:boolean = false;
     //资源初次加载总文件数量
-    private loadTotalCount:number = 4;
+    private loadTotalCount:number = 8;
     //资源已加载总文件数量
     private loadCount:number = 0;
     protected onLoad(): void {
@@ -86,10 +86,53 @@ export class LoadingView extends Component {
     loadFile() {
         var _this = this;
 
+        //加载章节表
+        LoadTableTool.Instance.loadTextFile("json/chapterJson",(value)=>{
+            var chapterArr = JSON.parse(value);
+            console.log("章节：",chapterArr);
+            GlobalData.Instance.chapterTableArr = chapterArr;
+            _this.loadCount++;
+            //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
+            //转换读取json路径
+            // var newSpeakPath:string = CharacterTool.Instance.pathCharacter(GlobalData.Instance.chapterTableArr[f].speakPath);
+            // //加载目前章节对话
+            // LoadTableTool.Instance.loadTextFile(newSpeakPath,(value)=>{
+            //     var speakArr = JSON.parse(value);
+            //     console.log("对话：",speakArr);
+            //     for(var si:number = 0;si < speakArr.length;si++)
+            //     {
+            //         if(speakArr[si].speakImg != "" && speakArr[si].speakImg != "uniformity")
+            //         {
+            //             //转换图片路径
+            //             speakArr[si].speakImg = CharacterTool.Instance.pathCharacter(speakArr[si].speakImg);
+            //         }
+            //     }
+            //     // var newSpeakArr:chapterSpeakStructure = {chapterID:GlobalData.Instance.gameRecord.chapterID,speakArr:speakArr};
+            //     // GlobalData.Instance.speakTableArr.push(newSpeakArr);
+            //     _this.loadCount++;
+            // });
+        });
+
+        //加载关卡表
+        LoadTableTool.Instance.loadTextFile("json/levelJson",(value)=>{
+            var levelArr = JSON.parse(value);
+            console.log("关卡表：",levelArr);
+            GlobalData.Instance.levelTableArr = levelArr;
+            _this.loadCount++;
+        });
+
+        //加载波数表
+        LoadTableTool.Instance.loadTextFile("json/waveJson",(value)=>{
+            var waveArr = JSON.parse(value);
+            console.log("波数表：",waveArr);
+            GlobalData.Instance.waveTableArr = waveArr;
+            _this.loadCount++;
+        });
+
         //加载英雄表
         LoadTableTool.Instance.loadTextFile("json/heroJson",(value)=>{
             var heroArr = JSON.parse(value);
-            console.log("英雄：",heroArr);
+            console.log("英雄表：",heroArr);
             //找到图片路径
             // for(var r:number = 0;r < heroArr.length;r++)
             // {
@@ -98,6 +141,14 @@ export class LoadingView extends Component {
             //     heroArr[r].heroHeadImgPath = newImgPath;
             // }
             GlobalData.Instance.heroTableArr = heroArr;
+            _this.loadCount++;
+        });
+
+        //加载敌人表
+        LoadTableTool.Instance.loadTextFile("json/enemyJson",(value)=>{
+            var enemyArr = JSON.parse(value);
+            console.log("怪物表：",enemyArr);
+            GlobalData.Instance.enemyTableArr = enemyArr;
             _this.loadCount++;
         });
 
@@ -124,65 +175,22 @@ export class LoadingView extends Component {
             GlobalData.Instance.ampCardProTableArr = ampCardProArr;
             _this.loadCount++;
         });
-
-        //加载章节表
-        // LoadTableTool.Instance.loadTextFile("json/chapterJson",(value)=>{
-        //     var chapterArr = JSON.parse(value);
-        //     console.log("章节：",chapterArr);
-        //     GlobalData.Instance.chapterTableArr = chapterArr;
-        //     _this.loadCount++;
-        //             //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
-        //             //转换读取json路径
-        //             // var newSpeakPath:string = CharacterTool.Instance.pathCharacter(GlobalData.Instance.chapterTableArr[f].speakPath);
-        //             // //加载目前章节对话
-        //             // LoadTableTool.Instance.loadTextFile(newSpeakPath,(value)=>{
-        //             //     var speakArr = JSON.parse(value);
-        //             //     console.log("对话：",speakArr);
-        //             //     for(var si:number = 0;si < speakArr.length;si++)
-        //             //     {
-        //             //         if(speakArr[si].speakImg != "" && speakArr[si].speakImg != "uniformity")
-        //             //         {
-        //             //             //转换图片路径
-        //             //             speakArr[si].speakImg = CharacterTool.Instance.pathCharacter(speakArr[si].speakImg);
-        //             //         }
-        //             //     }
-        //             //     // var newSpeakArr:chapterSpeakStructure = {chapterID:GlobalData.Instance.gameRecord.chapterID,speakArr:speakArr};
-        //             //     // GlobalData.Instance.speakTableArr.push(newSpeakArr);
-        //             //     _this.loadCount++;
-        //             // });
-        // });
-
-        //加载关卡表
-        // LoadTableTool.Instance.loadTextFile("json/levelJson",(value)=>{
-        //     var levelArr = JSON.parse(value);
-        //     console.log("关卡表：",levelArr);
-        //     GlobalData.Instance.levelTableArr = levelArr;
-        //     _this.loadCount++;
-        // });
-
-        //加载波数表
-        // LoadTableTool.Instance.loadTextFile("json/waveJson",(value)=>{
-        //     var waveArr = JSON.parse(value);
-        //     console.log("波数表：",waveArr);
-        //     GlobalData.Instance.waveTableArr = waveArr;
-        //     _this.loadCount++;
-        // });
         
         //加载道具表
-        // LoadTableTool.Instance.loadTextFile("json/propJson",(value)=>{
-        //     var propArr = JSON.parse(value);
-        //     console.log("道具：",propArr);
-        //     for(var propReplace:number = 0;propReplace < propArr.length;propReplace++)
-        //     {
-        //         if(propArr[propReplace].propIcon != "")
-        //         {
-        //             //转换图片路径
-        //             propArr[propReplace].propIcon = CharacterTool.Instance.pathCharacter(propArr[propReplace].propIcon);
-        //         }
-        //     }
-        //     GlobalData.Instance.propTableArr = propArr;
-        //     _this.loadCount++;
-        // });
+        LoadTableTool.Instance.loadTextFile("json/propJson",(value)=>{
+            var propArr = JSON.parse(value);
+            console.log("道具：",propArr);
+            // for(var propReplace:number = 0;propReplace < propArr.length;propReplace++)
+            // {
+            //     if(propArr[propReplace].propIcon != "")
+            //     {
+            //         //转换图片路径
+            //         propArr[propReplace].propIcon = CharacterTool.Instance.pathCharacter(propArr[propReplace].propIcon);
+            //     }
+            // }
+            GlobalData.Instance.propArr = propArr;
+            _this.loadCount++;
+        });
 
     }
 

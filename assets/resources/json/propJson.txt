@@ -1,0 +1,10 @@
+[
+	{"propID":101, "skillType":1, "skillName": "核蛋", "describe":"", "skillIconPath":"",
+		"skillArr":[{"level":1,"effect":0.1},
+					{"level":2,"effect":0.2},
+					{"level":3,"effect":0.3}]},
+	{"propID":102, "skillType":1, "skillName": "鸡动时刻", "describe":"", "skillIconPath":"",
+		"skillArr":[{"level":1,"effect":0.1},
+					{"level":2,"effect":0.2},
+					{"level":3,"effect":0.3}]}
+]

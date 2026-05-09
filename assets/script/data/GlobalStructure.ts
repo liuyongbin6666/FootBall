@@ -51,24 +51,35 @@ export interface chapterStructure {
 export interface levelStructure {
     //关卡ID
     levelID:number;
+    //关卡名
+    levelName:string;
     //关卡类型 1 割草关卡 2 障碍关卡 3 常规关卡 4 Boss关卡 5 奖杯关卡
     levelType:number;
+    //地图是否静止
+    stillLife:boolean;
+    //最大时限
+    maxTime:number;
+    //可选择的下一个关卡
+    nextLevelArr:Array<number>;
+    //波次ID
+    waveArr:Array<number>;
+    //关卡背景路径
+    levelImgPath:string;
+    //关卡背景音乐路径
+    levelMusicPath:string;
     //掉落金币
     dropGold:number;
     //掉落物品
     dropGoodsArr:Array<number>;
-    //波次ID
-    waveArr:Array<number>;
 }
 
 //波数
 export interface waveStructure {
     //波数ID
     waveID:number;
-    //敌人ID 敌人出现概率 敌人在本波数出现上限个数 
-    //小怪池
-    enemyAriseArr:Array<ariseStructure>;
-    //小怪总数
+    //小怪池 敌人ID 敌人出现概率
+    enemyAriseArr:Array<relevanceProStructure>;
+    //小怪在本波数出现的上限个数 
     total:number;
     //小怪间隔时间(s)
     intervalTime:number;
@@ -80,10 +91,6 @@ export interface waveStructure {
 
 //权重
 export interface ariseStructure {
-    //ID
-    ID:number;
-    //权重百分比
-    percent:number;
 }
 
 //英雄
@@ -175,13 +182,13 @@ export interface enemyStructure {
     //敌人ID
     enemyID:number; 
     //敌人头像图片路径
-    heroHeadImgPath:string;
+    enemyHeadImgPath:string;
     //敌人名
     enemyName:string;
     //敌人介绍
     enemyIntroduce:string;
-    //敌人经验
-    experience:number; 
+    //敌人体型
+    outline:number;
     //敌人类型
     enemyType:number;
     //敌人职业
@@ -218,7 +225,7 @@ export interface enemyStructure {
     attakState:number;
 }
 
-//敌人
+//敌人子弹
 export interface bulletStructure {
     //子弹ID
     bulletID:number;
@@ -241,7 +248,11 @@ export interface soccerStructure {
      */
     //足球节点
     soccerItem:Node;
-    //足球状态 0 等待发球 1 发球 2 回球 3 漏球-发球 4 漏球-回球
+    /**
+     * 足球状态 0 等待发球 1 发球（有目标敌人） 2 回球（有目标英雄） 
+     * 3 发球时漏球（向目标敌人运动，未到时敌人已死亡），保持运动轨迹 4 发球漏球后碰墙（触发前提为状态3），改变运动轨迹向英雄折返 
+     * 5 回球时漏球（向英雄位置运动，该位置无放置英雄），保持运动轨迹 6 回球时漏球后碰墙（触发前提为状态5），随机x点返回
+     */
     soccerState :number;
     //足球(y轴)速度
     speed:number;
@@ -251,14 +262,16 @@ export interface soccerStructure {
     yDirection:number;
     //踢出球后，决定球属性的英雄ID
     relevanceHeroID:number;
-    //目标敌人ID，当目标敌人死亡后，暂时失去目标ID为0
-    goalEnemyID:number;
+    //目标敌人编号，当目标敌人死亡后，暂时失去目标编号为0
+    goalEnemySerialNum:number;
     //回球目标英雄ID，未碰到之前，属性仍然是前一个英雄的属性
     goalHeroID:number;
     //球最后一次的x方向移速（失去目标飞向墙）
     speedWallX:number;
     //移动次数累计
     moveTotal:number;
+    //向敌人发球时，漏球的x判断
+    // lineX:number;
 }
 
 //技能
@@ -297,6 +310,27 @@ export interface skillEffectStructure {
     
 }
 
+//道具
+export interface propStructure {
+    //道具ID
+    propID:number;
+    //道具名
+    propName:string;
+    //道具描述
+    describe:string; 
+    //道具图标
+    propIconPath:number;
+    //道具类型
+    propType:number;
+    //道具释放CD
+    releaseCD:number;
+    /**
+     * 动态属性
+     */
+    //道具个数
+    count:number;
+}
+
 //宠物
 export interface petStructure {
     //宠物ID
@@ -305,20 +339,22 @@ export interface petStructure {
     harm:number;
 }
 
-//BUFF
-export interface BUFFStructure {
-}
-
 //英雄BUFF
-export interface heroBUFFStructure {
-    //会心
-    breakOutHarm:number;
-    //无敌
-    invincible:number;
+export interface heroBUFFTableStructure {
+    //BuffID
+    buffID:number;
+    //Buff类型
+    buffType:number;
+    //Buff名
+    buffName:string;
+    //buff图标
+    buffIconPath:number;
+    //buff随等级变化的效果
+    buffEffectArr:Array<relevanceProStructure>; 
 }
 
 //敌人BUFF
-export interface enemyBUFFStructure {
+export interface enemyBUFFTableStructure {
     //沉默
     silence:number;
     //冰冻
@@ -382,13 +418,21 @@ export interface heroPropertyTableStructure {
     //属性描述
     describe:string; 
     //属性等级增幅效果
-    growUpArr:Array<heroLevelPropertyStructure>; 
+    growUpArr:Array<relevanceProStructure>; 
 }
 
-//英雄等级对应增幅属性
-export interface heroLevelPropertyStructure {
+//关联属性（随着x属性变化，增加y属性,z属性……等）
+export interface relevanceProStructure {
+    //ID
+    ID:number;
+    //等级
     level:number;
+    //倍数
     multiple:number;
+    //权重百分比
+    percent:number;
+    //秒数
+    seconds:number;
 }
 
 //材质类
