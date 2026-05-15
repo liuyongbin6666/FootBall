@@ -1,6 +1,7 @@
 import { _decorator } from 'cc';
 import { gameRecordStructure, chapterStructure, heroStructure, ampCardProTableStructure, enemyStructure, userStructure, heroPropertyTableStructure, 
-    heroSkillStructure, levelStructure, waveStructure, propStructure} from './GlobalStructure';//mapTableStructure,
+    heroSkillStructure, levelStructure, waveStructure, propStructure,
+    heroProTopStructure} from './GlobalStructure';//mapTableStructure,
 const { ccclass, property } = _decorator;
 
 /**
@@ -49,8 +50,8 @@ export class GlobalData{
     public unlockHeroArr:Array<heroStructure> = [];
     //上阵英雄表
     public joinHeroArr:Array<heroStructure> = [];
-    //英雄满级记录
-    public topHeroArr:Array<number> = [];
+    //英雄属性满级记录
+    public heroProTopArr:Array<heroProTopStructure> = [];
 
     //酒馆等级
     public amplificationCardLevel:number = 1;

@@ -107,6 +107,13 @@ export class CharacterTool extends Component {
         var newStr:string = originalStr.replace(/-n/g,"\n");
         return newStr;
     }
+
+    //更换指定字符或字符串 originalStr 原字符串 dropStr 去掉的字符 repStr 替代的字符
+    replaceCharacter(originalStr:string,dropStr:string,repStr:string)
+    {
+        var newStr:string = originalStr.replace(dropStr, repStr);
+        return newStr;
+    }
 }
 
 

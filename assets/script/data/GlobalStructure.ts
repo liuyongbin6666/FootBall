@@ -107,22 +107,14 @@ export interface heroStructure {
     heroIntroduce:string;
     //英雄类型 0 空
     heroType:number;
-    //英雄品质
-    quality:number;
     //属性克制
     restrainType:number;
-    //英雄血量上限
-    maxHP:number;
     //速度
     speed:number;
     //初始伤害
     harm:number;
     //英雄技能
     skillArr:Array<number>;
-    //暴击率
-    criticalChance:number;
-    //会心率
-    breakOutHarmChance:number;
     //克制类型
     // restrainType:number;
 
@@ -168,6 +160,22 @@ export interface heroStructure {
     breakOutLevel:number;
     //HP等级
     HPLevel:number;
+    //暴击率(初始为0，按升级叠加)
+    criticalChance:number;
+    //会心率(初始为0，按升级叠加)
+    breakOutHarmChance:number;
+    //英雄血量上限
+    maxHP:number;
+    //英雄品质
+    quality:number;
+    //英雄技能随等级成长
+    skillProArr:Array<relevanceProStructure>;
+}
+
+//英雄满级
+export interface heroProTopStructure {
+    //英雄ID
+    heroID:number;
     //属性满级记录数组
     propertyTopArr:Array<number>;
     //技能满级记录数组
@@ -222,7 +230,9 @@ export interface enemyStructure {
     //敌人血量
     HP:number;
     //敌人攻击状态 0 闲置（未到发子弹地点） 1 发射子弹中 2 发射子弹完毕
-    attakState:number;
+    // attackState:number;
+    //敌人攻击计时
+    attackSpeedTime:number;
 }
 
 //敌人子弹
@@ -256,10 +266,6 @@ export interface soccerStructure {
     soccerState :number;
     //足球(y轴)速度
     speed:number;
-    //x轴方向 1 右 -1 左
-    xDirection:number;
-    //y轴方向 1 上 -1 下
-    yDirection:number;
     //踢出球后，决定球属性的英雄ID
     relevanceHeroID:number;
     //目标敌人编号，当目标敌人死亡后，暂时失去目标编号为0
@@ -287,12 +293,7 @@ export interface heroSkillStructure {
     //技能描述
     describe:string; 
     //技能效果
-    effectArr:Array<skillEffectStructure>;
-    /**
-     * 动态属性
-     */
-    //技能等级
-    skillLevel:number;
+    skillArr:Array<skillEffectStructure>;
 }
 
 //技能效果
@@ -405,6 +406,26 @@ export interface ampCardProTableStructure {
     qualityRed:number;
     //黄卡占比
     qualityYellow:number;
+}
+
+//卡牌增幅属性数据记录
+export interface cardAddProStructure {
+    //提升英雄ID
+    heroID:number;
+    //新上阵
+    newJoin:boolean;
+    //品质
+    quality:number;
+    //提升类型 1 攻击 2 暴击 3 会心 4 HP 5 解锁/升级技能
+    promote:number;
+    //等级
+    level:number;
+    //倍数
+    multiple:number;
+    //技能ID
+    skillID:number;
+    //是否叠满
+    isTop:boolean;
 }
 
 //英雄属性增幅

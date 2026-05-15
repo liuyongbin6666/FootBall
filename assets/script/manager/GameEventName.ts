@@ -10,6 +10,8 @@ export class GameEventName {
     /** 敌人扣血事件 */
     static FRIGHT_SUBTRACT_BOOLD_EVENT = "fright_subtract_boold_event";
 
+    /** 刷新酒馆选卡 */
+    static AMPLIFICATION_CARD_FRESH_EVENT = "amplification_card_fresh_event";
     /** 酒馆选卡结果 */
     static AMPLIFICATION_CARD_RESULT_EVENT = "amplification_card_result_event";
     /** 关闭通关结算界面 */

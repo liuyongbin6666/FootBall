@@ -1343,7 +1343,7 @@
       "a": 255
     },
     "_string": "沉默期间不能使用\n攻击力提升",
-    "_horizontalAlign": 0,
+    "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 16,
     "_fontSize": 16,
@@ -1410,7 +1410,7 @@
       "__id__": 17
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 55
@@ -3044,7 +3044,7 @@
       "a": 255
     },
     "_string": "沉默期间不能使用\n攻击力提升",
-    "_horizontalAlign": 0,
+    "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 16,
     "_fontSize": 16,
@@ -3111,7 +3111,7 @@
       "__id__": 85
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 123
@@ -4745,7 +4745,7 @@
       "a": 255
     },
     "_string": "沉默期间不能使用\n攻击力提升",
-    "_horizontalAlign": 0,
+    "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 16,
     "_fontSize": 16,
@@ -4812,7 +4812,7 @@
       "__id__": 153
     },
     "_children": [],
-    "_active": true,
+    "_active": false,
     "_components": [
       {
         "__id__": 191

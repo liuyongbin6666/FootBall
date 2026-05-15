@@ -134,13 +134,15 @@ export class LoadingView extends Component {
             var heroArr = JSON.parse(value);
             console.log("英雄表：",heroArr);
             //找到图片路径
-            // for(var r:number = 0;r < heroArr.length;r++)
-            // {
-            //     //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
-            //     var newImgPath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroHeadImgPath);
-            //     heroArr[r].heroHeadImgPath = newImgPath;
-            // }
+            for(var r:number = 0;r < heroArr.length;r++)
+            {
+                //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
+                var newImgPath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroHeadImgPath);
+                heroArr[r].heroHeadImgPath = newImgPath;
+            }
             GlobalData.Instance.heroTableArr = heroArr;
+            //当前版本默认全解锁
+            GlobalData.Instance.unlockHeroArr = heroArr;
             _this.loadCount++;
         });
 
@@ -156,6 +158,12 @@ export class LoadingView extends Component {
         LoadTableTool.Instance.loadTextFile("json/heroSkillJson",(value)=>{
             var heroSkillArr = JSON.parse(value);
             console.log("英雄技能表：",heroSkillArr);
+            for(var hs:number = 0;hs < heroSkillArr.length;hs++)
+            {
+                //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
+                var newImgPath:string = CharacterTool.Instance.pathCharacter(heroSkillArr[hs].skillIconPath);
+                heroSkillArr[hs].skillIconPath = newImgPath;
+            }
             GlobalData.Instance.heroSkillTableArr = heroSkillArr;
             _this.loadCount++;
         });

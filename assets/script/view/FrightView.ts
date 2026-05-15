@@ -1,5 +1,5 @@
-import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color, UIOpacity, sp } from 'cc';
-import { bulletStructure, enemyStructure, heroStructure, soccerStructure, waveStructure } from '../data/GlobalStructure';
+import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color, UIOpacity, sp, v3 } from 'cc';
+import { bulletStructure, enemyStructure, heroStructure, relevanceProStructure, soccerStructure, waveStructure } from '../data/GlobalStructure';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { OperationTool } from '../tool/OperationTool';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
@@ -39,6 +39,8 @@ export class FrightView extends Component {
     private img_frightBg:Sprite;
     //衔接背景
     private img_frightLinkUpBg:Sprite;
+    //雾
+    private img_fog:Sprite;
     //上墙
     private topWall:Node;
     //下墙
@@ -54,6 +56,9 @@ export class FrightView extends Component {
     private lab_gold:Label;
     private lab_level:Label;
     private lab_wave:Label;
+    
+    //通关波数时提示
+    private icon_danger:Sprite;
     //HP血条
     private pro_HP:ProgressBar = null;
     //HP比例
@@ -123,6 +128,8 @@ export class FrightView extends Component {
     private bulletSpeed:number = 5;
     //敌人产生间隔
     private enemyIntervalTime:number = -1;
+    //漏球次数
+    private leakSoccer:number = 0;
 
     //暂存波次
     private saveWave:waveStructure = null;
@@ -136,6 +143,7 @@ export class FrightView extends Component {
         this.img_soccerField = find('img_soccerField', this.node).getComponent(Sprite);
         this.img_frightBg = find('img_frightBg', this.node).getComponent(Sprite);
         this.img_frightLinkUpBg = find('img_frightLinkUpBg', this.node).getComponent(Sprite);
+        this.img_fog = find('img_fog', this.node).getComponent(Sprite);
         this.topWall = find('node_wall/topWall', this.node);
         this.bottomWall = find('node_wall/bottomWall', this.node);
         this.leftWall = find('node_wall/leftWall', this.node);
@@ -146,6 +154,7 @@ export class FrightView extends Component {
         this.lab_gold = find('node_top/lab_gold', this.node).getComponent(Label);
         this.lab_level = find('node_top/lab_level', this.node).getComponent(Label);
         this.lab_wave = find('node_top/lab_wave', this.node).getComponent(Label);
+        this.icon_danger = find('node_middle/icon_danger', this.node).getComponent(Sprite);
         this.pro_HP = find('node_bottom/pro_HP', this.node).getComponent(ProgressBar);
         this.lab_HPProportion = find('node_bottom/lab_HPProportion', this.node).getComponent(Label);
         this.pro_EXP = find('node_bottom/pro_EXP', this.node).getComponent(ProgressBar);
@@ -177,11 +186,12 @@ export class FrightView extends Component {
         this.leftWall["wallID"] = 3;
         this.rightWall["wallID"] = 4;
 
+        this.icon_danger.node.active = false;
+
         this.resetGame();
         this.readRecord();
-        //创建一个敌人
+        //创建每波第一个敌人（怪物产生间隔从第二个开始）
         this.ariseEnemy();
-        //模拟数据
         // var es1:enemyStructure = {enemyID:1,enemyHeadImgPath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",outline:1,enemyType:1,enemyOccupation:1,
         //     maxHP:50,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",enemyItem:null,
         //     HP:10,attakState:0};
@@ -206,24 +216,12 @@ export class FrightView extends Component {
         // var he4:heroStructure = {heroID:4,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄4",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
         //     maxHP:30,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:3,HP:10,catchSoccerID:0,unlock:true,
         //     join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
-        // var he5:heroStructure = {heroID:5,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄5",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
-        //     maxHP:20,skillArr:[],speed:2,harm:20,criticalChance:15,breakOutHarmChance:20,heroItem:null,heroIndex:4,HP:10,catchSoccerID:0,unlock:true,
-        //     join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
-        // var he6:heroStructure = {heroID:6,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄6",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
-        //     maxHP:50,skillArr:[],speed:3,harm:30,criticalChance:10,breakOutHarmChance:15,heroItem:null,heroIndex:5,HP:10,catchSoccerID:0,unlock:true,
-        //     join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
-        // var he7:heroStructure = {heroID:7,heroImgPath:"",heroHeadImgPath:"",heroName:"英雄7",heroIntroduce:"英雄介绍",heroType:1,quality:1,restrainType:1,
-        //     maxHP:30,skillArr:[],speed:1,harm:10,criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:6,HP:10,catchSoccerID:0,unlock:true,
-        //     join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
-        // this.heroArr.push(he1);
-        // this.heroArr.push(he2);
-        // this.heroArr.push(he3);
         // this.heroArr.push(he4);
         // this.heroArr.push(he5);
         // this.heroArr.push(he6);
         // this.heroArr.push(he7);
 
-        this.createHero();
+        this.heroShow();
         this.createSoccer();
         this.updatePlayerMaxEXP();
         this.freshWave();
@@ -289,16 +287,22 @@ export class FrightView extends Component {
                     //第一次加载默认第1波
                     this.waveID = GlobalData.Instance.levelTableArr[findLevel].waveArr[0];
                 }
-                //根据波
+                //根据波次获取怪物产出数据
                 for(var findWave:number = 0;findWave < GlobalData.Instance.waveTableArr.length;findWave++)
                 {
-                    if(this.waveID == GlobalData.Instance.levelTableArr[findLevel].waveArr[findWave])
+                    if(this.waveID == GlobalData.Instance.waveTableArr[findWave].waveID)
                     {
-                        this.saveWave = GlobalData.Instance.waveTableArr[findWave];
-                        //按毫秒算
-                        this.saveWave.intervalTime *= 1000;
+                        var waveOne:waveStructure = {waveID:GlobalData.Instance.waveTableArr[findWave].waveID,
+                            enemyAriseArr:GlobalData.Instance.waveTableArr[findWave].enemyAriseArr,
+                            total:GlobalData.Instance.waveTableArr[findWave].total,
+                            intervalTime:GlobalData.Instance.waveTableArr[findWave].intervalTime,
+                            BossID:GlobalData.Instance.waveTableArr[findWave].BossID,
+                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime}
+                        this.saveWave = waveOne;//GlobalData.Instance.waveTableArr[findWave]
+                        //按10毫秒一次算
+                        this.saveWave.intervalTime *= 100;
                         this.enemyIntervalTime = this.saveWave.intervalTime;
-                        this.saveWave.BossBornTime *= 1000;
+                        this.saveWave.BossBornTime *= 100;
                         break;
                     }
                 }
@@ -308,7 +312,7 @@ export class FrightView extends Component {
     }
 
     //读取下一个章节
-    readNextChapter()
+    readNextChapter():boolean
     {
         for(var findChapter:number = 0;findChapter < GlobalData.Instance.chapterTableArr.length;findChapter++)
         {
@@ -318,32 +322,35 @@ export class FrightView extends Component {
                 if(GlobalData.Instance.chapterTableArr[findChapter].nextChapterID != 0)
                 {
                     GlobalData.Instance.gameRecord.chapterID = GlobalData.Instance.chapterTableArr[findChapter].nextChapterID;
+                    return true;
                 }else{
                     //已到最后一章
                 }
                 break;
             }
         }
+        return false;
     }
 
     //读取下一个关卡
-    readNextLevel()
+    readNextLevel():boolean
     {
+        // var isLastLv:boolean = false;
         for(var findChapter:number = 0;findChapter < GlobalData.Instance.chapterTableArr.length;findChapter++)
         {
             //当前章节
             if(GlobalData.Instance.chapterTableArr[findChapter].chapterID == GlobalData.Instance.gameRecord.chapterID)
             {
-                //所有关卡 
-                for(var findChapterLevel:number = 0;findChapterLevel < GlobalData.Instance.chapterTableArr[findChapter].levelArr.length;findChapterLevel++){
+                //该章节所有的关卡 
+                for(var findChapterLevel:number = 0;findChapterLevel < GlobalData.Instance.chapterTableArr[findChapter].levelArr.length;findChapterLevel++)
+                {
                     if(GlobalData.Instance.chapterTableArr[findChapter].levelArr[findChapterLevel] == GlobalData.Instance.gameRecord.levelID)
                     {
+                        //判断是否为该章节最后一关
                         if(findChapterLevel + 1 < GlobalData.Instance.chapterTableArr[findChapter].levelArr.length)
                         {
                             GlobalData.Instance.gameRecord.levelID = GlobalData.Instance.chapterTableArr[findChapter].levelArr[findChapterLevel + 1];
-                        }else{
-                            //已到该章节最后一关，读取下一章节
-                            this.readNextChapter();
+                            return true;
                         }
                         break;
                     }
@@ -351,33 +358,125 @@ export class FrightView extends Component {
                 break;
             }
         }
+
+        //目前章节为主页面选取，暂不自动读取下一章
+        // if(isLastLv == false)
+        // {
+        //     //已到该章节最后一关，读取下一章节
+        //     var readNextChaOver:boolean = this.readNextChapter();
+        //     if(readNextChaOver)
+        //     {
+        //         //重新加载一次关卡
+        //         this.readNextLevel();
+        //     }
+        // }
+        return false;
     }
 
     //读取下一波
     readNextWave()
     {
-        //
-        for(var findLevel:number = 0;findLevel < GlobalData.Instance.levelTableArr.length;findLevel++){
+        var isLastWave:boolean = false;
+        //先查找关卡
+        for(var findLevel:number = 0;findLevel < GlobalData.Instance.levelTableArr.length;findLevel++)
+        {
+            //当前关卡
+            if(GlobalData.Instance.levelTableArr[findLevel].levelID == GlobalData.Instance.gameRecord.levelID)
+            {
+                //在关卡所有的波数数组中，找到下一个波数数组
+                for(var nw:number = 0;nw < GlobalData.Instance.levelTableArr[findLevel].waveArr.length;nw++)
+                {
+                    if(this.waveID == GlobalData.Instance.levelTableArr[findLevel].waveArr[nw])
+                    {
+                        //判断是否为该关卡最后一波
+                        if(nw + 1 < GlobalData.Instance.levelTableArr[findLevel].waveArr.length)
+                        {
+                            this.waveID = GlobalData.Instance.levelTableArr[findLevel].waveArr[nw + 1];
+                            //波数+1，更新显示
+                            this.wave++;
+                            this.freshWave();
+                            //根据新波次获取怪物产出数据
+                            for(var findWave:number = 0;findWave < GlobalData.Instance.waveTableArr.length;findWave++)
+                            {
+                                if(this.waveID == GlobalData.Instance.waveTableArr[findWave].waveID)
+                                {
+                                    //下一个波次ID
+                                    var waveOne:waveStructure = {waveID:GlobalData.Instance.waveTableArr[findWave].waveID,
+                                        enemyAriseArr:GlobalData.Instance.waveTableArr[findWave].enemyAriseArr,
+                                        total:GlobalData.Instance.waveTableArr[findWave].total,
+                                        intervalTime:GlobalData.Instance.waveTableArr[findWave].intervalTime,
+                                        BossID:GlobalData.Instance.waveTableArr[findWave].BossID,
+                                        BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime}
+                                    this.saveWave = waveOne;
+                                    //按10毫秒一次算
+                                    this.saveWave.intervalTime *= 100;
+                                    this.enemyIntervalTime = this.saveWave.intervalTime;
+                                    this.saveWave.BossBornTime *= 100;
+                                    this.passWaveAni();
+                                    isLastWave = true;
+                                    break;
+                                }
+                            }
+                        }
+                        break;
+                    }
+                }
+                break;
+            }
+        }
+
+        if(isLastWave == false)
+        {
+            //已到该关卡最后一波，读取下一关卡
+            var readNextLvOver:boolean = this.readNextLevel();
+            if(readNextLvOver)
+            {
+                //波次重置
+                this.wave = 1;
+                this.fogAni();
+                setTimeout(() => {
+                    //重新加载一次波数
+                    this.readNewWave();
+                }, 4500);
+            }else{
+                //回到主页面
+            }
+        }
+    }
+
+    readNewWave()
+    {
+        //先查找关卡
+        for(var findLevel:number = 0;findLevel < GlobalData.Instance.levelTableArr.length;findLevel++)
+        {
             //当前关卡
             if(GlobalData.Instance.levelTableArr[findLevel].levelID == GlobalData.Instance.gameRecord.levelID)
             {
                 this.freshLevel(GlobalData.Instance.levelTableArr[findLevel].levelName);
+                this.maxWave = GlobalData.Instance.levelTableArr[findLevel].waveArr.length;
+                this.freshWave();
+                //波次重置时，默认为新关卡第一波
+                this.waveID = GlobalData.Instance.levelTableArr[findLevel].waveArr[0];
+                //根据波次获取怪物产出数据
                 for(var findWave:number = 0;findWave < GlobalData.Instance.waveTableArr.length;findWave++)
                 {
-                    if(findWave + 1 < GlobalData.Instance.levelTableArr[findLevel].waveArr.length)
+                    if(this.waveID == GlobalData.Instance.waveTableArr[findWave].waveID)
                     {
-                        //波数+1，更新显示
-                        this.wave++;
-                        this.freshWave();
-                        //下一个波次ID
-                        this.waveID = GlobalData.Instance.levelTableArr[findLevel].waveArr[findWave + 1];
-                    }else{
-                        //已到该关卡最后一波，读取下一关卡
-                        this.readNextLevel();
+                        var waveOne:waveStructure = {waveID:GlobalData.Instance.waveTableArr[findWave].waveID,
+                            enemyAriseArr:GlobalData.Instance.waveTableArr[findWave].enemyAriseArr,
+                            total:GlobalData.Instance.waveTableArr[findWave].total,
+                            intervalTime:GlobalData.Instance.waveTableArr[findWave].intervalTime,
+                            BossID:GlobalData.Instance.waveTableArr[findWave].BossID,
+                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime}
+                        this.saveWave = waveOne;
+                        //按10毫秒一次算
+                        this.saveWave.intervalTime *= 100;
+                        this.enemyIntervalTime = this.saveWave.intervalTime;
+                        this.saveWave.BossBornTime *= 100;
+                        this.passWaveAni();
+                        break;
                     }
-                    break;
                 }
-                break;
             }
         }
     }
@@ -394,12 +493,12 @@ export class FrightView extends Component {
             {
                 csHeroID = iHeroArr[ch];
             }
-            this.joinHeroToBattle(csHeroID,ch);
+            this.createHeroOrTemp(csHeroID,ch);
         }
     }
 
     //英雄显示
-    createHero()
+    heroShow()
     {
         for(var he:number = 0;he < this.heroArr.length;he++)
         {
@@ -412,9 +511,6 @@ export class FrightView extends Component {
                 item.getChildByName("ske_hero").active = false;
             }else{
                 item["temp"] = false;
-                this.heroArr[he].HP = this.heroArr[he].maxHP;
-                this.maxHP += this.heroArr[he].maxHP;
-                this.HP += this.heroArr[he].maxHP;
                 // item.getChildByName("lab_nickname").getComponent(Label).string = "" + this.heroArr[he].heroName;
                 // LoadImgTool.Instance.loadSpriteFrame(this.heroArr[he].heroImgPath, item.getChildByName("mask_head").getChildByName("icon_head").getComponent(Sprite).node);
                 item.getChildByName("btn_hero").getComponent(Button).node.active = true;
@@ -429,13 +525,13 @@ export class FrightView extends Component {
         }
     }
 
-    //上阵英雄
-    joinHeroToBattle(hid:number,hIndex:number)
+    //创建英雄或英雄空位
+    createHeroOrTemp(hid:number,hIndex:number)
     {
         var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",
-            heroName:"英雄1",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
+            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
-            join:true,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,propertyTopArr:[],skillTopArr:[]};
+            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[]};
         for(var ht:number = 0;ht < GlobalData.Instance.heroTableArr.length;ht++)
         {
             if(GlobalData.Instance.heroTableArr[ht].heroID == hid)
@@ -450,15 +546,106 @@ export class FrightView extends Component {
                 hero.quality = GlobalData.Instance.heroTableArr[ht].quality;
                 hero.restrainType = GlobalData.Instance.heroTableArr[ht].restrainType;
                 hero.maxHP = GlobalData.Instance.heroTableArr[ht].maxHP;
+                hero.HP = GlobalData.Instance.heroTableArr[ht].maxHP;
+                this.maxHP += GlobalData.Instance.heroTableArr[ht].maxHP;
+                this.HP += GlobalData.Instance.heroTableArr[ht].maxHP;
                 hero.skillArr = GlobalData.Instance.heroTableArr[ht].skillArr;
+                for(var asl:number = 0;asl < GlobalData.Instance.heroTableArr[ht].skillArr.length;asl++)
+                {
+                    var newSkillLevel:relevanceProStructure = {ID:GlobalData.Instance.heroTableArr[ht].skillArr[asl],level:0,multiple:0,percent:0,seconds:0};
+                    hero.skillProArr.push(newSkillLevel);
+                }
                 hero.speed = GlobalData.Instance.heroTableArr[ht].speed;
                 hero.harm = GlobalData.Instance.heroTableArr[ht].harm;
                 hero.criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
                 hero.breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
+                hero.join = true;
                 hero.unlock = true;
+                if(hero.heroType > 0)
+                {
+                    //如果不为空位，将英雄添加到已上阵数组
+                    GlobalData.Instance.joinHeroArr.push(hero);
+                }
+                break;
             }
         }
         this.heroArr.push(hero);
+    }
+    //上阵英雄
+    joinHeroToBattle(hid:number,hIndex:number)
+    {
+        for(var ht:number = 0;ht < GlobalData.Instance.heroTableArr.length;ht++)
+        {
+            if(GlobalData.Instance.heroTableArr[ht].heroID == hid)
+            {
+                //修改空位为英雄属性
+                //如果有球正在飞往空位ID，需要替换为英雄ID
+                for(var sote:number = 0;sote < this.soccerArr.length;sote++)
+                {
+                    if(this.soccerArr[sote].goalHeroID == this.heroArr[hIndex].heroID)
+                    {
+                        this.soccerArr[sote].goalHeroID = GlobalData.Instance.heroTableArr[ht].heroID;
+                        break;
+                    }
+                }
+                this.heroArr[hIndex].heroID = GlobalData.Instance.heroTableArr[ht].heroID;
+                this.heroArr[hIndex].heroImgPath = GlobalData.Instance.heroTableArr[ht].heroImgPath;
+                this.heroArr[hIndex].heroHeadImgPath = GlobalData.Instance.heroTableArr[ht].heroHeadImgPath;
+                this.heroArr[hIndex].heroName = GlobalData.Instance.heroTableArr[ht].heroName;
+                this.heroArr[hIndex].heroIntroduce = GlobalData.Instance.heroTableArr[ht].heroIntroduce;
+                this.heroArr[hIndex].heroType = GlobalData.Instance.heroTableArr[ht].heroType;
+                this.heroArr[hIndex].quality = GlobalData.Instance.heroTableArr[ht].quality;
+                this.heroArr[hIndex].restrainType = GlobalData.Instance.heroTableArr[ht].restrainType;
+                this.heroArr[hIndex].maxHP = GlobalData.Instance.heroTableArr[ht].maxHP;
+                this.heroArr[hIndex].HP = GlobalData.Instance.heroTableArr[ht].maxHP;
+                //将最大HP添加到总HP中
+                this.maxHP += GlobalData.Instance.heroTableArr[ht].maxHP;
+                this.HP += this.heroArr[hIndex].maxHP;
+                this.heroArr[hIndex].skillArr = GlobalData.Instance.heroTableArr[ht].skillArr;
+                for(var asl:number = 0;asl < GlobalData.Instance.heroTableArr[ht].skillArr.length;asl++)
+                {
+                    var newSkillLevel:relevanceProStructure = {ID:GlobalData.Instance.heroTableArr[ht].skillArr[asl],level:0,multiple:0,percent:0,seconds:0};
+                    this.heroArr[hIndex].skillProArr.push(newSkillLevel);
+                }
+                this.heroArr[hIndex].speed = GlobalData.Instance.heroTableArr[ht].speed;
+                this.heroArr[hIndex].harm = GlobalData.Instance.heroTableArr[ht].harm;
+                this.heroArr[hIndex].criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
+                this.heroArr[hIndex].breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
+                this.heroArr[hIndex].join = true;
+                this.heroArr[hIndex].heroItem["temp"] = false;
+                this.heroArr[hIndex].heroItem.getChildByName("ske_hero").active = true;
+                //将英雄添加到上阵数组中
+                GlobalData.Instance.joinHeroArr.push(this.heroArr[hIndex]);
+                break;
+            }
+        }
+    }
+
+    findSoccerToTempToHero()
+    {
+    }
+
+    //下阵英雄
+    eradicateHero()
+    {
+        //扣掉原英雄maxHP和HP
+        //下阵
+        // this.heroArr[hIndex].join = false;
+    }
+
+    //查找英雄空位下标（按空位优先级顺序下标最小的返回）
+    findTempHeroIndex():number
+    {
+        var tempHeroIndex:number = -1;
+        for(var thsi:number = 0;thsi < this.heroArr.length;thsi++)
+        {
+            if(this.heroArr[thsi].heroType == 0)
+            {
+                tempHeroIndex = thsi;
+                break;
+            }
+        }
+        return tempHeroIndex;
     }
 
     //位置站位
@@ -507,7 +694,6 @@ export class FrightView extends Component {
     //         let item = instantiate(this.enemyItemPre);
     //         //随机位置
     //         item.setPosition(-200 + Math.floor(Math.random() * 410),355);
-    //         console.log(item.getPosition().x,item.getPosition().y);
     //         item["enemyID"] = this.enemyArr[en].enemyID;
     //         this.enemyArr[en].HP = this.enemyArr[en].maxHP;
     //         item.getChildByName("pro_blood").getComponent(ProgressBar).progress = OperationTool.Instance.retainDecimal(2,this.enemyArr[en].HP/this.enemyArr[en].maxHP);
@@ -536,7 +722,8 @@ export class FrightView extends Component {
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyOccupation = GlobalData.Instance.enemyTableArr[eta].enemyOccupation;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].maxHP = GlobalData.Instance.enemyTableArr[eta].maxHP;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].moveSpeed = GlobalData.Instance.enemyTableArr[eta].moveSpeed;
-                //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].attackSpeed = GlobalData.Instance.enemyTableArr[eta].attackSpeed;
+                //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].attackSpeed = GlobalData.Instance.enemyTableArr[eta].attackSpeed * 100;
+                //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].attackSpeedTime = GlobalData.Instance.enemyTableArr[eta].attackSpeed;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].attackDistance = GlobalData.Instance.enemyTableArr[eta].attackDistance;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].harm = GlobalData.Instance.enemyTableArr[eta].harm;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].EXP = GlobalData.Instance.enemyTableArr[eta].EXP;
@@ -564,7 +751,7 @@ export class FrightView extends Component {
                     //创建新敌人数据
                     var es:enemyStructure = {enemyID:1,enemyHeadImgPath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",outline:1,enemyType:1,enemyOccupation:1,
                         maxHP:50,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",
-                        enemyItem:null,HP:10,attakState:0};
+                        enemyItem:null,HP:10,attackSpeedTime:0};
                     
                     es.enemyID = GlobalData.Instance.enemyTableArr[eta].enemyID;
                     es.enemyHeadImgPath = GlobalData.Instance.enemyTableArr[eta].enemyHeadImgPath;
@@ -574,7 +761,9 @@ export class FrightView extends Component {
                     es.enemyOccupation = GlobalData.Instance.enemyTableArr[eta].enemyOccupation;
                     es.maxHP = GlobalData.Instance.enemyTableArr[eta].maxHP;
                     es.moveSpeed = GlobalData.Instance.enemyTableArr[eta].moveSpeed;
-                    es.attackSpeed = GlobalData.Instance.enemyTableArr[eta].attackSpeed;
+                    //按10毫秒一次算
+                    es.attackSpeed = GlobalData.Instance.enemyTableArr[eta].attackSpeed * 100;
+                    es.attackSpeedTime = es.attackSpeed;
                     es.attackDistance = GlobalData.Instance.enemyTableArr[eta].attackDistance;
                     es.harm = GlobalData.Instance.enemyTableArr[eta].harm;
                     es.EXP = GlobalData.Instance.enemyTableArr[eta].EXP;
@@ -639,6 +828,7 @@ export class FrightView extends Component {
                     break;
                 }
             }
+            
             this.createEnemy(this.saveWave.enemyAriseArr[enemyOutline].ID);
         }else{
             this.enemyIntervalTime = -1;
@@ -665,7 +855,7 @@ export class FrightView extends Component {
         item.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item["soccerID"] = this.soccerArr.length + 1;
         var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:5,soccerItem:item,soccerState:0,
-            xDirection:-1,yDirection:1,relevanceHeroID:noTempheroArr[newHeroIndex].heroID,goalEnemySerialNum:1,goalHeroID:0,speedWallX:0,moveTotal:0};
+            relevanceHeroID:noTempheroArr[newHeroIndex].heroID,goalEnemySerialNum:0,goalHeroID:0,speedWallX:0,moveTotal:0};
         this.soccerArr.push(newSoccer);
         this.node_soccer.addChild(item);
     }
@@ -778,21 +968,6 @@ export class FrightView extends Component {
             {
                 //经验条增加经验
                 this.EXP += this.enemyArr[findDeadEnemy].EXP;
-                //判断是否升级
-                if(this.EXP >= this.maxEXP)
-                {
-                    //本级升级溢出的经验添，加到下一级升级的经验中
-                    this.overflowEXP = this.EXP - this.maxEXP;
-                    this.EXP = this.overflowEXP;
-                    //升级
-                    this.playerLevel++;
-                    this.updatePlayerMaxEXP();
-                    //显示酒馆选牌界面
-                    this.soccerGameState = gameState.result;
-                    // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
-                    // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,false);
-                    Layer.Instance.show("amplificationCard",Layer.Instance.layerView);
-                }
                 this.freshEXP();
                 //不能直接移除显示材质，因为为共享资源，移除时会进行资源释放，导致其他同类材质显示不正常
                 //移除敌人显示
@@ -806,17 +981,203 @@ export class FrightView extends Component {
                 this.enemyArr.splice(findDeadEnemy,1);
             }
         }
-        // for(var f:number = 0;f < this.enemyArr.length;f++)
-        // {
-        //     console.log("剩余敌人：",this.enemyArr[f]);
-        // }
     }
 
     heroAmplificationFun(amplificationEvent: GameEventName)
-    {}
+    {
+        console.log("英雄属性提升：",amplificationEvent);
+        for(var ae:number = 0;ae < amplificationEvent.getCustomProperty().pcArr.length;ae++)
+        {
+            var addPro:boolean = false;
+            for(var proHero:number= 0;proHero < this.heroArr.length;proHero++)
+            {
+                if(this.heroArr[proHero].heroID == amplificationEvent.getCustomProperty().pcArr[ae].heroID && amplificationEvent.getCustomProperty().pcArr[ae].newJoin == false)
+                {
+                    //品质提升
+                    this.heroArr[proHero].quality = amplificationEvent.getCustomProperty().pcArr[ae].quality;
+                    //根据提升类型找到相关属性
+                    if(amplificationEvent.getCustomProperty().pcArr[ae].promote == 1)
+                    {
+                        this.heroArr[proHero].harmLevel++;
+                        //x + x * multiple /100
+                        var addHarmPro:number = this.heroArr[proHero].harm * amplificationEvent.getCustomProperty().pcArr[ae].multiple / 100;
+                        this.heroArr[proHero].harm += addHarmPro;
+                    }else if(amplificationEvent.getCustomProperty().pcArr[ae].promote == 2){
+                        this.heroArr[proHero].criticalLevel++;
+                        //multiple /100
+                        var lastCriticalPro:number = amplificationEvent.getCustomProperty().pcArr[ae].multiple / 100;
+                        this.heroArr[proHero].harm = lastCriticalPro;
+                    }else if(amplificationEvent.getCustomProperty().pcArr[ae].promote == 3){
+                        this.heroArr[proHero].breakOutLevel++;
+                        var lastbreakOutPro:number = amplificationEvent.getCustomProperty().pcArr[ae].multiple / 100;
+                        this.heroArr[proHero].breakOutHarmChance = lastbreakOutPro;
+                    }else if(amplificationEvent.getCustomProperty().pcArr[ae].promote == 4){
+                        this.heroArr[proHero].HPLevel++;
+                        var addHPPro:number = this.heroArr[proHero].maxHP * amplificationEvent.getCustomProperty().pcArr[ae].multiple / 100;
+                        this.heroArr[proHero].maxHP += addHPPro;
+                        this.heroArr[proHero].HP += addHPPro;
+                        this.freshHP();
+                    }else if(amplificationEvent.getCustomProperty().pcArr[ae].promote == 5)
+                    {
+                        //根据技能ID找到技能，再对其等级进行提升
+                        for(var sk:number = 0;sk < this.heroArr[proHero].skillProArr.length;sk++)
+                        {
+                            if(amplificationEvent.getCustomProperty().pcArr[ae].skillID == this.heroArr[proHero].skillProArr[sk].ID)
+                            {
+                                this.heroArr[proHero].skillProArr[sk].level++;
+                                break;
+                            }
+                        }
+                    }
+                    addPro = true;
+                    break;
+                }
+            }
+            if(addPro == false)
+            {
+                //查找空位
+                var thIndex:number = this.findTempHeroIndex();
+                if(thIndex >= 0)
+                {
+                    this.joinHeroToBattle(amplificationEvent.getCustomProperty().pcArr[ae].heroID,thIndex);
+                }
+            }
+        }
+        this.soccerGameState = gameState.start;
+    }
+
+    //查找球状态
+    findSoccerState(sid:number):number
+    {
+        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
+        {
+            if(this.soccerArr[findSoccer].soccerID == sid)
+            {
+                return this.soccerArr[findSoccer].soccerState;
+            }
+        }
+        return 0;
+    }
+
+    //改变球状态
+    changeSoccerState(sid:number,state:number)
+    {
+        //根据足球ID找到足球
+        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
+        {
+            if(this.soccerArr[findSoccer].soccerID == sid)
+            {
+                this.soccerArr[findSoccer].soccerState = state;
+            }
+        }
+    }
+
+    //查找离敌人最近的所有英雄
+    findNearHero(heroX:number):Array<heroStructure>
+    {
+        var nearHeroArr:Array<heroStructure> = [];
+        for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
+        {
+            //敌人和英雄x轴相差距离小于130
+            if(Math.abs(heroX - this.heroArr[findHero].heroItem.getPosition().x) <= 110)
+            {
+                nearHeroArr.push(this.heroArr[findHero]);
+            }
+        }
+        return nearHeroArr;
+    }
+
+    //震动-普攻
+    earthquakeAttack()
+    {
+        tween(this.img_soccerField.node).to(0.05,{position:new Vec3(-1,-1,0)}).to(0.05,{position:new Vec3(0,1,0)})
+            .to(0.05,{position:new Vec3(-1,-1,0)}).to(0.05,{position:new Vec3(0,1,0)})
+            .to(0.05,{position:new Vec3(0,0,0)}).start();
+    }
+
+    //震动-暴击
+    earthquakeCritical()
+    {
+        tween(this.img_soccerField.node).to(0.05,{position:new Vec3(-2,-2,0)}).to(0.05,{position:new Vec3(0,2,0)})
+            .to(0.05,{position:new Vec3(-2,-2,0)}).to(0.05,{position:new Vec3(0,2,0)})
+            .to(0.05,{position:new Vec3(0,0,0)}).start();
+    }
+    //震动-会心
+    earthquakeBreakOut()
+    {
+        tween(this.img_soccerField.node).to(0.05,{position:new Vec3(-3,-3,0)}).to(0.05,{position:new Vec3(0,3,0)})
+            .to(0.05,{position:new Vec3(-3,-3,0)}).to(0.05,{position:new Vec3(0,3,0)})
+            .to(0.05,{position:new Vec3(0,0,0)}).start();
+    }
+
+    fogAni()
+    {
+        var _this = this;
+        tween(this.img_fog.node).to(2,{position:new Vec3(0,0,0)}).delay(0.5).to(2,{position:new Vec3(750,0,0)}).start();
+    }
+
+    passWaveAni()
+    {
+        this.icon_danger.node.active = true;
+        tween(this.icon_danger.node).to(0.5,{scale:v3(0.8,0.8,0)}).to(0.5,{scale:v3(1,1,0)}).to(0.5,{scale:v3(0.8,0.8,0)}).to(0.5,{scale:v3(1,1,0)}).start();
+
+        setTimeout(() => {
+            this.icon_danger.node.active = false;
+            this.passWave();
+            this.soccerGameState = gameState.start;
+        }, 2000);
+    }
+
+    passWave()
+    {
+        //清零所有怪物
+        // this.node_enemy.removeAllChildren();
+        // this.enemyArr = [];
+        // this.recycleEnemyArr = [];
+        //如果是章节结算，清零所有英雄
+        //每波第一个敌人（怪物产生间隔从第二个开始）
+        this.ariseEnemy();
+        //球重新发球
+        //非空英雄位
+        var noTempheroArr:Array<heroStructure> = [];
+        //查找非空位的英雄
+        for(var fh:number = 0;fh < this.heroArr.length;fh++)
+        {
+            if(this.heroArr[fh].heroItem["temp"] == false)
+            {
+                noTempheroArr.push(this.heroArr[fh]);
+            }
+        }
+        //球回到英雄发球位
+        for(var soc:number = 0;soc < this.soccerArr.length;soc++)
+        {
+            //多个球时，从第一个开始发球
+            if(soc == 0)
+            {
+                //随机一个英雄发球
+                var newHeroIndex:number = Math.floor(Math.random() * noTempheroArr.length);
+                //获取该英雄的x,y，使球起始位置在英雄脚下
+                this.soccerArr[0].soccerItem.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,
+                    noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
+                //球状态改为发球
+                this.soccerArr[0].soccerState = 1;
+                //继承新发球的英雄属性
+                this.soccerArr[0].relevanceHeroID = noTempheroArr[newHeroIndex].heroID;
+                //找到最前面的敌人
+                this.soccerArr[0].goalEnemySerialNum = this.findFrontEnemySerialNum();
+                this.soccerArr[0].goalHeroID = 0;
+            }else{
+                //后面的球隐藏，等待发球
+            }
+        }
+    }
 
     frightControllerFun(controllerEvent: GameEventName)
     {
+        if(this.soccerGameState != gameState.start)
+        {
+            return;
+        }
         switch(controllerEvent.getCustomProperty().eventCode)
         {
             case 1:
@@ -864,7 +1225,6 @@ export class FrightView extends Component {
                                 this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
                                     OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
                                         this.heroArr[newHeroIndex].heroItem.getPosition().x, this.heroArr[newHeroIndex].heroItem.getPosition().y);
-                            // console.log("新英雄ID：",this.soccerArr[findSoccer].goalHeroID);
                             //英雄状态变为接球
                             this.heroArr[newHeroIndex].catchSoccerID = this.soccerArr[findSoccer].soccerID;
                             break;
@@ -884,7 +1244,6 @@ export class FrightView extends Component {
                         {
                             //基础伤害
                             baseHarm = this.heroArr[findHero].harm;
-                            console.log("球碰撞敌人状态",soState);
                             if(soState == 1)
                             {
                                 //漏球时正面碰撞敌人，不算暴击和会心、技能
@@ -896,7 +1255,6 @@ export class FrightView extends Component {
                             break;
                         }
                     }
-                    
                     //最终伤害值 = 基础伤害 * 技能倍数
                     var lastHarm:number = 0;
                     var harmType:number = 1;
@@ -904,14 +1262,17 @@ export class FrightView extends Component {
                     {
                         lastHarm = baseHarm * 3;
                         harmType = 3;
+                        this.earthquakeBreakOut();
                     }else if(isCritical)
                     {
                         lastHarm = baseHarm * 2;
                         harmType = 2;
+                        this.earthquakeCritical();
                     }else{
                         lastHarm = baseHarm;
                     }
-                    console.log("球对敌人造成的伤害",lastHarm);
+                    //取整，避免小数点
+                    lastHarm = Math.floor(lastHarm);
                     //根据敌人ID查找敌人
                     for(var findEnemy:number = 0;findEnemy < this.enemyArr.length;findEnemy++)
                     {
@@ -933,18 +1294,9 @@ export class FrightView extends Component {
                                 this.heroArr[newHeroIndex].catchSoccerID = this.soccerArr[fSoccer].soccerID;
                             }
 
-                            console.log("球原来的状态",soState);
-                            //如果方向为想上运动，要改为向下
-                            // if(soState == 3)
-                            // {
-                            //     console.log("球原来的y速度",this.soccerArr[fSoccer].speed);
-                            //     var bs:number = 0 - this.soccerArr[fSoccer].speed;
-                            //     this.soccerArr[fSoccer].speed = bs;
-                            //     console.log("改变后的y速度",this.soccerArr[fSoccer].speed);
-                            // }
                             //球状态变为回球
                             this.soccerArr[fSoccer].soccerState = 2;
-                            console.log("球状态变为回球2222");
+                            this.leakSoccer = 0;
 
                             var newHP:number = this.enemyArr[findEnemy].HP - lastHarm;
                             //敌人受到伤害，并扣除血量，如扣除后的血量低于0，敌人消失
@@ -1003,22 +1355,20 @@ export class FrightView extends Component {
                         //找到位置最前面的敌人发球
                         this.soccerArr[soccerBack].goalEnemySerialNum = this.findFrontEnemySerialNum();
                         //如果敌人已进入攻击状态，则选最近的攻击状态的敌人
-                        if(this.soccerArr[soccerBack].goalEnemySerialNum == -1 && this.saveWave.total == 0)
-                        {
-                            //所有怪物已死亡，进入结算
-                            console.log("所有怪物已死亡，进入结算");
-                            // return;
-                        }
                         console.log("目标敌人",this.soccerArr[soccerBack].goalEnemySerialNum);
-                        //球角度
-                        //查找目标敌人在当前的位置
-                        for(var findEnemy:number = 0;findEnemy < this.enemyArr.length;findEnemy++)
+                        //如果没有目标敌人（比如第一个死亡，第二个怪还没出），固定中心墙点（10,316）踢球
+                        if(this.soccerArr[soccerBack].goalEnemySerialNum >= 0)
                         {
-                            if(this.enemyArr[findEnemy].enemyItem["enemySerialNum"] == this.soccerArr[soccerBack].goalEnemySerialNum)
+                            //球角度
+                            //查找目标敌人在当前的位置
+                            for(var findEnemy:number = 0;findEnemy < this.enemyArr.length;findEnemy++)
                             {
-                                this.soccerArr[soccerBack].soccerItem.getChildByName("sp_tail").angle = 
+                                if(this.enemyArr[findEnemy].enemyItem["enemySerialNum"] == this.soccerArr[soccerBack].goalEnemySerialNum)
+                                {
+                                    this.soccerArr[soccerBack].soccerItem.getChildByName("sp_tail").angle = 
                                     OperationTool.Instance.calculateAngle(this.soccerArr[soccerBack].soccerItem.getPosition().x, this.soccerArr[soccerBack].soccerItem.getPosition().y,
                                         this.enemyArr[findEnemy].enemyItem.getPosition().x, this.enemyArr[findEnemy].enemyItem.getPosition().y);
+                                }
                             }
                         }
                         
@@ -1034,17 +1384,21 @@ export class FrightView extends Component {
                         }
                         if(this.soccerArr[soccerBack].soccerState > 0)
                         {
-                            //非初始发球
-                            //目标英雄ID变为球新继承的属性英雄ID
-                            this.soccerArr[soccerBack].relevanceHeroID = this.soccerArr[soccerBack].goalHeroID;
-                            //目标英雄ID归0
-                            this.soccerArr[soccerBack].goalHeroID = 0;
+                            //接球发球(碰墙时目标英雄为0,不继承属性)
+                            if(this.soccerArr[soccerBack].goalHeroID != 0)
+                            {
+                                //目标英雄ID变为球新继承的属性英雄ID
+                                this.soccerArr[soccerBack].relevanceHeroID = this.soccerArr[soccerBack].goalHeroID;
+                                //目标英雄ID归0
+                                this.soccerArr[soccerBack].goalHeroID = 0;
+                            }
                         }else{
                             //初始发球时，需要让球继承英雄属性
                             this.soccerArr[soccerBack].relevanceHeroID = controllerEvent.getCustomProperty().heroID;
                         }
                         //球不论任何状态，碰到英雄均视为发球，球状态改变
                         this.soccerArr[soccerBack].soccerState = 1;
+                        this.leakSoccer = 0;
                         break;
                     }
                 }
@@ -1063,16 +1417,50 @@ export class FrightView extends Component {
                 {
                     if(this.soccerArr[findSoccer].soccerID == controllerEvent.getCustomProperty().soccerID)
                     {
-                            console.log("找到足球了,墙ID",controllerEvent.getCustomProperty().wallID);
                         if(controllerEvent.getCustomProperty().wallID == 1)
                         {
-                            //y向下，随机一个英雄返回
-                            // var newBSpeed:number = 0 - Math.abs(this.soccerArr[findSoccer].speed);
-                            // this.soccerArr[findSoccer].speed = newBSpeed;
-                            var newBAngle:number = 0 - Math.abs(this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle);
-                            this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = newBAngle + 180;
-                            this.changeSoccerState(controllerEvent.getCustomProperty().soccerID,5);
-                            console.log("足球碰墙，球向下，状态5",this.soccerArr[findSoccer].speed);
+                            //漏球次数增加
+                            if(this.leakSoccer < 2)
+                            {
+                                //y向下，随机一个英雄返回
+                                // var newBSpeed:number = 0 - Math.abs(this.soccerArr[findSoccer].speed);
+                                // this.soccerArr[findSoccer].speed = newBSpeed;
+                                this.leakSoccer ++;
+                                var newBAngle:number = 0 - Math.abs(this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle);
+                                this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = newBAngle + 180;
+                                this.changeSoccerState(controllerEvent.getCustomProperty().soccerID,5);
+                                console.log("足球碰墙，球向下，状态5",this.soccerArr[findSoccer].speed);
+                            }else{
+                                //漏球达到2次，返回英雄
+                                //根据足球ID找到足球
+                                for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
+                                {
+                                    if(this.soccerArr[findSoccer].soccerID == controllerEvent.getCustomProperty().soccerID)
+                                    {
+                                        //目标敌人ID归0
+                                        this.soccerArr[findSoccer].goalEnemySerialNum = 0;
+                                        //球状态变为回球
+                                        this.soccerArr[findSoccer].soccerState = 2;
+                                        //球随机一个英雄返回
+                                        var newWtoHIndex = Math.floor(Math.random() * this.heroArr.length);
+                                        //若随机的英雄已经在接球中，重选其他英雄
+                                        // while(this.heroArr[newWtoHIndex].catchSoccerID != 0){
+                                        //     newWtoHIndex = Math.floor(Math.random() * this.heroArr.length);
+                                        // }
+                                        //
+                                        //目标英雄
+                                        this.soccerArr[findSoccer].goalHeroID = this.heroArr[newWtoHIndex].heroID;
+                                            this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                                                OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
+                                                    this.heroArr[newWtoHIndex].heroItem.getPosition().x, this.heroArr[newWtoHIndex].heroItem.getPosition().y);
+                                        // console.log("新英雄ID：",this.soccerArr[findSoccer].goalHeroID);
+                                        //英雄状态变为接球
+                                        this.heroArr[newWtoHIndex].catchSoccerID = this.soccerArr[findSoccer].soccerID;
+                                        break;
+                                    }
+                                }
+                                this.leakSoccer = 0;
+                            }
                         }else if(controllerEvent.getCustomProperty().wallID == 2)
                         {
                             //y向上，随机一个x点，如果中途穿过英雄，赋予英雄属性，如果中途穿过敌人，造成1/5的伤害
@@ -1107,51 +1495,53 @@ export class FrightView extends Component {
         }
     }
 
-    //查找球状态
-    findSoccerState(sid:number):number
-    {
-        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
-        {
-            if(this.soccerArr[findSoccer].soccerID == sid)
-            {
-                return this.soccerArr[findSoccer].soccerState;
-            }
-        }
-        return 0;
-    }
-
-    //改变球状态
-    changeSoccerState(sid:number,state:number)
-    {
-        //根据足球ID找到足球
-        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
-        {
-            if(this.soccerArr[findSoccer].soccerID == sid)
-            {
-                this.soccerArr[findSoccer].soccerState = state;
-            }
-        }
-    }
-
-    //查找离敌人最近的所有英雄
-    findNearHero(heroX:number):Array<heroStructure>
-    {
-        var nearHeroArr:Array<heroStructure> = [];
-        for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
-        {
-            //敌人和英雄x轴相差距离小于130
-            if(Math.abs(heroX - this.heroArr[findHero].heroItem.getPosition().x) <= 110)
-            {
-                nearHeroArr.push(this.heroArr[findHero]);
-            }
-        }
-        return nearHeroArr;
-    }
-
     soccerGame()
     {
         if(this.soccerGameState == gameState.start)
         {
+            //弹出界面互斥 游戏失败 > 升级选牌 > 通关
+            //判断游戏是否失败
+            if(this.HP <= 0)
+            {
+                this.soccerGameState = gameState.over;
+                //弹出失败页面
+            }
+            //判断是否升级
+            else if(this.EXP >= this.maxEXP)
+            {
+                //本级升级溢出的经验添，加到下一级升级的经验中
+                this.overflowEXP = this.EXP - this.maxEXP;
+                this.EXP = this.overflowEXP;
+                //升级
+                this.playerLevel++;
+                this.updatePlayerMaxEXP();
+                this.freshEXP();
+                //弹出酒馆选牌界面
+                this.soccerGameState = gameState.stop;
+                // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
+                // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,false);
+                Layer.Instance.show("amplificationCard",Layer.Instance.layerView);
+                //刷新卡牌
+                GameCustomEvent.Instance.node.emit(GameEventName.AMPLIFICATION_CARD_FRESH_EVENT);
+                return;
+            }
+            //判断波次是否通关
+            else if(this.saveWave.BossID == 0)
+            {
+                //没有Boss的普通小怪关卡
+                if(this.enemyArr.length == 0 && this.saveWave.total == 0)
+                {
+                    console.log("所有怪物已死亡，进入结算");
+                    this.soccerGameState = gameState.result;
+                    //读取下一波数据
+                    this.readNextWave();
+                }
+            }else if(this.saveWave.BossID >= 0)
+            {
+                //判断Boss是否死亡
+                //Boss死亡直接通关，不管其余小怪是否死亡
+            }
+            
             if(this.enemyIntervalTime > 0)
             {
                 this.enemyIntervalTime--;
@@ -1162,13 +1552,19 @@ export class FrightView extends Component {
                     this.ariseEnemy();
                 }
             }
-            //Boss在规定时间出现，若所有小怪死亡，有Boss提前出现
-            if(this.saveWave.BossID != 0)
+            //Boss在规定时间出现
+            if(this.saveWave.BossID != 0 && this.saveWave.BossBornTime > 0)
             {
                 this.saveWave.BossBornTime--;
                 if(this.saveWave.BossBornTime <= 0)
                 {
                     this.createEnemy(this.saveWave.BossID);
+                }else if(this.enemyArr.length == 0 && this.saveWave.total == 0)
+                {
+                    //若所有小怪死亡，Boss提前出现
+                    this.createEnemy(this.saveWave.BossID);
+                    //不再进入Boss出现计时
+                    this.saveWave.BossBornTime = -1;
                 }
             }
             //检测敌人是否死亡
@@ -1194,15 +1590,24 @@ export class FrightView extends Component {
             {
                 if(this.enemyArr[moveEnemy].enemyItem != null)
                 {
-                    //如果走到了发动攻击位置，y不再变，向英雄投射子弹
+                    //如果走到了发动攻击位置，y不再变，攻击水晶
                     if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < this.enemyStopY)
                     {
-                        //判断敌人状态
-                        if(this.enemyArr[moveEnemy].attakState == 0 || this.enemyArr[moveEnemy].attakState == 2)
+                        //敌人进入攻击计时
+                        if(this.enemyArr[moveEnemy].attackSpeedTime > 0)
                         {
+                            this.enemyArr[moveEnemy].attackSpeedTime--;
+                            if(this.enemyArr[moveEnemy].attackSpeedTime <= 0)
+                            {
+                                this.enemyArr[moveEnemy].attackSpeedTime = this.enemyArr[moveEnemy].attackSpeed;
+                                //水晶扣血
+                                this.HP -= this.enemyArr[moveEnemy].harm;
+                                this.freshHP();
+                                console.log("扣血：",this.HP);
+                            }
                             //投射子弹
-                            this.createBullet(this.enemyArr[moveEnemy].enemyItem);
-                            this.enemyArr[moveEnemy].attakState = 1;
+                            // this.createBullet(this.enemyArr[moveEnemy].enemyItem);
+                            // this.enemyArr[moveEnemy].attakState = 1;
                         }
                     }else{
                         this.enemyArr[moveEnemy].enemyItem.setPosition(this.enemyArr[moveEnemy].enemyItem.getPosition().x,
@@ -1250,10 +1655,10 @@ export class FrightView extends Component {
                 if(this.soccerArr[so].soccerState == 1)
                 {
                     //是否有目标敌人，若失去进攻敌人，变为漏球碰墙
-                    if(this.soccerArr[so].goalEnemySerialNum == 0)
+                    if(this.soccerArr[so].goalEnemySerialNum <= 0)
                     {
                         //没有目标敌人时，以之前的x,y速度向墙运动，墙边界 y 0 上 1334 下 x 0 左 750 右
-                        console.log("失去进攻敌人，漏球碰墙1：");
+                        console.log("失去进攻敌人，漏球碰墙：");
                         this.changeSoccerState(this.soccerArr[so].soccerID,3);
                         let lastWallX:number = 0;
                         let lastWallY:number = 0;
@@ -1298,7 +1703,13 @@ export class FrightView extends Component {
                     if(this.soccerArr[so].goalHeroID == 0)
                     {
                         //没有目标英雄时，取墙的x,y
-                        console.log("墙2：");
+                        console.log("没有目标英雄时，向墙运动2：");
+                        this.changeSoccerState(this.soccerArr[so].soccerID,3);
+                        let lastWallX:number = 0;
+                        let lastWallY:number = 0;
+                        lastWallX = this.soccerArr[so].soccerItem.getPosition().x - this.soccerArr[so].speedWallX;
+                        lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
+                        this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
                     }else{
                         //查找目标英雄在当前的位置
                         for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
@@ -1346,9 +1757,12 @@ export class FrightView extends Component {
                     this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
                 }
             }
-        }else if(this.soccerGameState == gameState.result)
+        }else if(this.soccerGameState == gameState.stop)
         {
             //打开抽卡（酒馆）界面
+        }else if(this.soccerGameState == gameState.result)
+        {
+            //结算
         }
     }
 
