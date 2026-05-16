@@ -250,7 +250,7 @@ export class Layer extends Component {
                 return "prefab/view/fight/fight";
             //战斗英雄状态
             case "battleHeroState":
-                return "prefab/view/battleHeroState";
+                return "prefab/view/battleHeroState/battleHeroState";
             //酒馆抽卡
             case "amplificationCard":
                 return "prefab/view/amplificationCard";

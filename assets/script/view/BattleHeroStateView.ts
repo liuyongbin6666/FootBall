@@ -102,7 +102,6 @@ export class BattleHeroStateView extends Component {
         //todo 技能
         this.btn_remove = find('node_window/window/operate/btn_remove', this.node)?.getComponent(Button) || null;
     }
-
     
     private updateHeros(): void {
         //清空列表
@@ -117,7 +116,7 @@ export class BattleHeroStateView extends Component {
 
     private createHeroListItem(index: number): void {
         let item = instantiate(this.heroListItem);
-        //todo 设置英雄信息
+        item.on(Node.EventType.TOUCH_END, this.openHeroView, this);
         this.lay_heroList.node.addChild(item);
     }
 
@@ -134,6 +133,7 @@ export class BattleHeroStateView extends Component {
     }
 
     private _onEvent(): void {
+        
         //this.btn_heroView2.node.on(Node.EventType.TOUCH_END, this.openHeroView, this);
         // 退出按钮点击事件
         this.btn_exit.node.on(Node.EventType.TOUCH_END, this.closeView, this);
