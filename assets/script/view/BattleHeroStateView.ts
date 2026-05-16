@@ -1,4 +1,5 @@
 import { _decorator, Component, Node, Label, Button, find, Color, Sprite } from 'cc';
+import { Layer } from '../manager/Layer';
 const { ccclass, property } = _decorator;
 
 // 英雄基础数据结构
@@ -153,6 +154,11 @@ private _initTabs(): void {
 }
 
     private _onEvent(): void {
+        // 退出按钮点击事件
+        if (this.btn_exit) {
+            this.btn_exit.node.on(Node.EventType.TOUCH_END, this.closeView, this);
+        }
+
         for (let i = 0; i < this.tabButtons.length; i++) {
             if (i < this.heroDataList.length) {
                 this.tabButtons[i].on(Node.EventType.TOUCH_END, () => {
@@ -160,6 +166,10 @@ private _initTabs(): void {
                 }, this);
             }
         }
+    }
+
+    private closeView(): void {
+        Layer.Instance.close("battle_heroState", Layer.Instance.layerView);
     }
 
     private onTabClick(index: number): void {
