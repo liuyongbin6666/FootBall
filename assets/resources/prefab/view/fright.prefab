@@ -4321,7 +4321,7 @@
     "_string": "英雄1",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -4693,7 +4693,7 @@
     "_string": "英雄2",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -5850,7 +5850,7 @@
     "_string": "9999.9",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 37,
+    "_actualFontSize": 31,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 30,
@@ -6550,7 +6550,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 403.9541568990422,
+      "width": 404,
       "height": 54.4
     },
     "_anchorPoint": {
@@ -6589,7 +6589,7 @@
     "_string": "一大波怪物正在靠近！",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 48.81559220389805,
+    "_actualFontSize": 40,
     "_fontSize": 40,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -7218,8 +7218,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 77.38277277841028,
-      "height": 34.239999999999995
+      "width": 77.40625,
+      "height": 34.24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7257,7 +7257,7 @@
     "_string": "80/100",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 29.28935532233883,
+    "_actualFontSize": 24,
     "_fontSize": 24,
     "_fontFamily": "Arial",
     "_lineHeight": 24,
@@ -7377,8 +7377,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 58.650502235356356,
-      "height": 34.239999999999995
+      "width": 58.66796875,
+      "height": 34.24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7416,7 +7416,7 @@
     "_string": "血 量",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 29.28935532233883,
+    "_actualFontSize": 24,
     "_fontSize": 24,
     "_fontFamily": "Arial",
     "_lineHeight": 24,
@@ -7840,8 +7840,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 77.38277277841028,
-      "height": 34.239999999999995
+      "width": 77.40625,
+      "height": 34.24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -7879,7 +7879,7 @@
     "_string": "60/100",
     "_horizontalAlign": 0,
     "_verticalAlign": 1,
-    "_actualFontSize": 29.28935532233883,
+    "_actualFontSize": 24,
     "_fontSize": 24,
     "_fontFamily": "Arial",
     "_lineHeight": 24,
@@ -7999,8 +7999,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 58.650502235356356,
-      "height": 34.239999999999995
+      "width": 58.66796875,
+      "height": 34.24
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8038,7 +8038,7 @@
     "_string": "经 验",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 29.28935532233883,
+    "_actualFontSize": 24,
     "_fontSize": 24,
     "_fontFamily": "Arial",
     "_lineHeight": 24,
@@ -8834,8 +8834,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 31.131951503144432,
-      "height": 24.160000000000004
+      "width": 31.140625,
+      "height": 24.16
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -8873,7 +8873,7 @@
     "_string": "+99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 19.52623688155922,
+    "_actualFontSize": 16,
     "_fontSize": 16,
     "_fontFamily": "Arial",
     "_lineHeight": 16,
@@ -8993,8 +8993,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51.98466630415483,
-      "height": 19.119999999999997
+      "width": 52,
+      "height": 19.12
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9032,7 +9032,7 @@
     "_string": "炮弹之力",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 14.644677661169416,
+    "_actualFontSize": 12,
     "_fontSize": 12,
     "_fontFamily": "Arial",
     "_lineHeight": 12,
@@ -9723,8 +9723,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 31.131951503144432,
-      "height": 24.160000000000004
+      "width": 31.140625,
+      "height": 24.16
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9762,7 +9762,7 @@
     "_string": "+99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 19.52623688155922,
+    "_actualFontSize": 16,
     "_fontSize": 16,
     "_fontFamily": "Arial",
     "_lineHeight": 16,
@@ -9882,8 +9882,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51.98466630415483,
-      "height": 19.119999999999997
+      "width": 52,
+      "height": 19.12
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -9921,7 +9921,7 @@
     "_string": "炮弹之力",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 14.644677661169416,
+    "_actualFontSize": 12,
     "_fontSize": 12,
     "_fontFamily": "Arial",
     "_lineHeight": 12,
@@ -10612,8 +10612,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 31.131951503144432,
-      "height": 24.160000000000004
+      "width": 31.140625,
+      "height": 24.16
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -10651,7 +10651,7 @@
     "_string": "+99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 19.52623688155922,
+    "_actualFontSize": 16,
     "_fontSize": 16,
     "_fontFamily": "Arial",
     "_lineHeight": 16,
@@ -10771,8 +10771,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51.98466630415483,
-      "height": 19.119999999999997
+      "width": 52,
+      "height": 19.12
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -10810,7 +10810,7 @@
     "_string": "炮弹之力",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 14.644677661169416,
+    "_actualFontSize": 12,
     "_fontSize": 12,
     "_fontFamily": "Arial",
     "_lineHeight": 12,
@@ -11501,8 +11501,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 31.131951503144432,
-      "height": 24.160000000000004
+      "width": 31.140625,
+      "height": 24.16
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -11540,7 +11540,7 @@
     "_string": "+99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 19.52623688155922,
+    "_actualFontSize": 16,
     "_fontSize": 16,
     "_fontFamily": "Arial",
     "_lineHeight": 16,
@@ -11660,8 +11660,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51.98466630415483,
-      "height": 19.119999999999997
+      "width": 52,
+      "height": 19.12
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -11699,7 +11699,7 @@
     "_string": "炮弹之力",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 14.644677661169416,
+    "_actualFontSize": 12,
     "_fontSize": 12,
     "_fontFamily": "Arial",
     "_lineHeight": 12,
@@ -12390,8 +12390,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 31.131951503144432,
-      "height": 24.160000000000004
+      "width": 31.140625,
+      "height": 24.16
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -12429,7 +12429,7 @@
     "_string": "+99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 19.52623688155922,
+    "_actualFontSize": 16,
     "_fontSize": 16,
     "_fontFamily": "Arial",
     "_lineHeight": 16,
@@ -12549,8 +12549,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 51.98466630415483,
-      "height": 19.119999999999997
+      "width": 52,
+      "height": 19.12
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -12588,7 +12588,7 @@
     "_string": "炮弹之力",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 14.644677661169416,
+    "_actualFontSize": 12,
     "_fontSize": 12,
     "_fontFamily": "Arial",
     "_lineHeight": 12,

@@ -131,9 +131,6 @@ export class FrightView extends Component {
     //漏球次数
     private leakSoccer:number = 0;
 
-    private btn_heroView1:Button;
-    private btn_heroView2:Button;
-
     //暂存波次
     private saveWave:waveStructure = null;
     protected onLoad(): void {
@@ -169,8 +166,6 @@ export class FrightView extends Component {
         this.btn_prop5 = find('node_bottom/lay_propGroove/btn_prop5', this.node).getComponent(Button);
         this.btn_set = find('node_bottom/btn_set', this.node).getComponent(Button);
         this.btn_adv = find('node_bottom/btn_adv', this.node).getComponent(Button);
-        this.btn_heroView1 = find('node_top/btn_heroView1', this.node).getComponent(Button);
-        this.btn_heroView2 = find('node_top/btn_heroView2', this.node).getComponent(Button);
     }
 
     private _onEvent() {
@@ -181,8 +176,6 @@ export class FrightView extends Component {
         this.btn_prop4.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_prop5.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_set.node.on(Node.EventType.TOUCH_END, this.openSet, this);
-        this.btn_heroView1.node.on(Node.EventType.TOUCH_END, this.openHeroView, this);
-        this.btn_heroView2.node.on(Node.EventType.TOUCH_END, this.openHeroView, this);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.FRIGHT_SUBTRACT_BOOLD_EVENT,this.frightControllerFun,this);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.AMPLIFICATION_CARD_RESULT_EVENT,this.heroAmplificationFun,this);
     }
@@ -257,7 +250,7 @@ export class FrightView extends Component {
 
     openHeroView()
     {
-        Layer.Instance.show("battle_heroState",Layer.Instance.layerView);
+        Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
     }
 
     //游戏重置

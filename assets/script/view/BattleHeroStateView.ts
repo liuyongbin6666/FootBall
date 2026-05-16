@@ -85,6 +85,10 @@ export class BattleHeroStateView extends Component {
     private btn_7: Button | null = null;//btn_7 序列7的英雄的按钮
     private lab_7: Label | null = null;//lab_7 序列7的英雄名
 
+    private btn_heroView1:Button;
+    private btn_heroView2:Button;
+    private node_heroState:Node;
+
     protected onLoad(): void {
         this._initObject();
         this._initTabs();
@@ -92,6 +96,7 @@ export class BattleHeroStateView extends Component {
     }
 
     start() {
+        // this.node_heroState.active = false;
         this.refreshHeroInfo(0);
     }
 
@@ -126,6 +131,10 @@ export class BattleHeroStateView extends Component {
         this.lab_6 = find('lay_window/lay_tab/btn_6/lab_6', this.node)?.getComponent(Label) || null;
         this.btn_7 = find('lay_window/lay_tab/btn_7', this.node)?.getComponent(Button) || null;
         this.lab_7 = find('lay_window/lay_tab/btn_7/lab_7', this.node)?.getComponent(Label) || null;
+
+        this.btn_heroView1 = find('btn_heroView1', this.node).getComponent(Button);
+        this.btn_heroView2 = find('btn_heroView2', this.node).getComponent(Button);
+        this.node_heroState = find('node_heroState', this.node);
     }
 
 private _initTabs(): void {
@@ -154,6 +163,8 @@ private _initTabs(): void {
 }
 
     private _onEvent(): void {
+        this.btn_heroView1.node.on(Node.EventType.TOUCH_END, this.openHeroView, this);
+        this.btn_heroView2.node.on(Node.EventType.TOUCH_END, this.openHeroView, this);
         // 退出按钮点击事件
         if (this.btn_exit) {
             this.btn_exit.node.on(Node.EventType.TOUCH_END, this.closeView, this);
@@ -167,9 +178,18 @@ private _initTabs(): void {
             }
         }
     }
+    openHeroView()
+    {
+        if(this.node_heroState.active)
+        {
+            this.node_heroState.active = false;
+        }else{
+            this.node_heroState.active = true;
+        }
+    }
 
     private closeView(): void {
-        Layer.Instance.close("battle_heroState", Layer.Instance.layerView);
+        Layer.Instance.close("battleHeroState", Layer.Instance.layerView);
     }
 
     private onTabClick(index: number): void {
