@@ -346,9 +346,9 @@
       "__uuid__": "35a4d11a-fde9-4d08-ba08-bb80b74b869b@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
-    "_type": 0,
+    "_type": 1,
     "_fillType": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
       "x": 0,
@@ -1961,7 +1961,7 @@
       "b": 255,
       "a": 255
     },
-    "_string": "音乐：",
+    "_string": "音效：",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
     "_actualFontSize": 28,
@@ -2075,7 +2075,6 @@
       "__id__": 0
     },
     "fileId": "951wwxQP5Jn6ZFPvNE2D+q",
-    "instance": null,
-    "targetOverrides": null
+    "instance": null
   }
 ]

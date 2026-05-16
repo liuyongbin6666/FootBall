@@ -1,0 +1,90 @@
+
+unit_anim_ monster_02.png
+size: 754,287
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+kuzi
+  rotate: false
+  xy: 534, 152
+  size: 215, 133
+  orig: 216, 141
+  offset: 0, 8
+  index: -1
+shangyi
+  rotate: false
+  xy: 2, 83
+  size: 309, 202
+  orig: 309, 202
+  offset: 0, 0
+  index: -1
+shetou
+  rotate: false
+  xy: 496, 66
+  size: 41, 42
+  orig: 41, 42
+  offset: 0, 0
+  index: -1
+shou_you
+  rotate: true
+  xy: 316, 3
+  size: 105, 113
+  orig: 105, 113
+  offset: 0, 0
+  index: -1
+shou_zuo
+  rotate: true
+  xy: 2, 7
+  size: 74, 122
+  orig: 74, 122
+  offset: 0, 0
+  index: -1
+shouzhi_you
+  rotate: false
+  xy: 431, 38
+  size: 63, 70
+  orig: 64, 70
+  offset: 1, 0
+  index: -1
+tou
+  rotate: true
+  xy: 313, 110
+  size: 175, 219
+  orig: 176, 220
+  offset: 0, 0
+  index: -1
+wuqi
+  rotate: true
+  xy: 546, 25
+  size: 125, 206
+  orig: 125, 206
+  offset: 0, 0
+  index: -1
+yachi1
+  rotate: true
+  xy: 489, 5
+  size: 31, 55
+  orig: 31, 55
+  offset: 0, 0
+  index: -1
+yachi2
+  rotate: true
+  xy: 431, 4
+  size: 32, 56
+  orig: 32, 56
+  offset: 0, 0
+  index: -1
+youer
+  rotate: true
+  xy: 126, 2
+  size: 79, 94
+  orig: 80, 95
+  offset: 1, 1
+  index: -1
+zuoer
+  rotate: true
+  xy: 222, 4
+  size: 77, 92
+  orig: 77, 94
+  offset: 0, 0
+  index: -1

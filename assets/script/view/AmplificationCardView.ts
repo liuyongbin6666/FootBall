@@ -29,8 +29,6 @@ export class AmplificationCardView extends Component {
         this._onEvent();
     }
     private _initObect() {
-        // this.img_frightBg = find('img_frightBg', this.node).getComponent(Sprite);
-        // this.node_enemy = find('node_enemy', this.node);
         this.btn_card1 = find('lay_card/btn_card1', this.node).getComponent(Button);
         this.btn_card2 = find('lay_card/btn_card2', this.node).getComponent(Button);
         this.btn_card3 = find('lay_card/btn_card3', this.node).getComponent(Button);

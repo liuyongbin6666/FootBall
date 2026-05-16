@@ -246,8 +246,8 @@ export class Layer extends Component {
             case "chapterSylloge":
                 return "prefab/view/chapterSylloge/chapterSylloge";
             //战斗
-            case "fright":
-                return "prefab/view/fright";
+            case "fight":
+                return "prefab/view/fight/fight";
             //战斗英雄状态
             case "battleHeroState":
                 return "prefab/view/battleHeroState";

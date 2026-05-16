@@ -8,7 +8,7 @@ const { ccclass, property } = _decorator;
 export class GameEventName {
 
     /** 敌人扣血事件 */
-    static FRIGHT_SUBTRACT_BOOLD_EVENT = "fright_subtract_boold_event";
+    static FIGHT_SUBTRACT_BOOLD_EVENT = "fight_subtract_boold_event";
 
     /** 刷新酒馆选卡 */
     static AMPLIFICATION_CARD_FRESH_EVENT = "amplification_card_fresh_event";

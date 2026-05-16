@@ -24,8 +24,27 @@ export class AudioMG extends Component {
     // effectList: AudioClip[] = [];
     //音效存储
     clipArr:Array<clipNameStructure> = [];
+    // 音频上下文
+    // audioContext: AudioContext | null = null;
 
     start() {
+        // 页面加载后，给任意一个按钮/点击区域绑定一次初始化
+        // document.addEventListener('click', this.initAudio, { once: true });
+    }
+
+    initAudio() {
+        //有的浏览器有拦截音频自动播放，需要点击交互后才可播放音效，这里做一个浏览器点击的初始化，激活音效播放
+        // try {
+        //     if (!this.audioContext) {
+        //         this.audioContext = new AudioContext();
+        //     }
+        //     // 核心：恢复音频上下文
+        //     if (this.audioContext.state === 'suspended') {
+        //         this.audioContext.resume();
+        //     }
+        // } catch (err) {
+        //     console.warn('音频初始化失败', err);
+        // }
     }
 
     // 单个背景音乐播放（根据音频资源路径加载音频资源）
@@ -42,11 +61,11 @@ export class AudioMG extends Component {
             _this.main_audio.clip = clip;
             _this.main_audio.loop = true;
             _this.main_audio.play();
-            console.log("音乐加载完毕！",_this.main_audio);
+            // console.log("音乐加载完毕！",_this.main_audio);
         });
     }
     
-    // 单个音效播放
+    // 单个音效播放 audioPath 音效路径（不用加后缀.wav等，能自动识别）
     public playSoundAudio(audioPath:string,name:string)
     {
         if(this.sound_once == null)
@@ -80,7 +99,7 @@ export class AudioMG extends Component {
             {
                 this.sound_once.clip = this.clipArr[cn].clip;
                 this.sound_once.play();
-                console.log("音效已加载过！",this.sound_once);
+                // console.log("音效已加载过！",this.sound_once);
                 return;
             }
         }
@@ -89,15 +108,20 @@ export class AudioMG extends Component {
         var _soundOne = soundOne;
         resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
         {
-            // _this.sound_once.clip = clip;
-            _soundOne.clip = clip;
-            // _this.sound_once.loop = false;
-            _soundOne.loop = false;
-            // _this.sound_once.play();
-            _soundOne.play();
-            var newClip:clipNameStructure = {name:name,clip:clip};
-            _this.clipArr.push(newClip);
-            console.log("音效加载完毕！",_soundOne);
+            if(clip == null || clip == undefined)
+            {
+                // console.log("加载音效失败：",audioPath,clip);
+            }else{
+                // _this.sound_once.clip = clip;
+                _soundOne.clip = clip;
+                // _this.sound_once.loop = false;
+                _soundOne.loop = false;
+                // _this.sound_once.play();
+                _soundOne.play();
+                var newClip:clipNameStructure = {name:name,clip:clip};
+                _this.clipArr.push(newClip);
+                // console.log("音效加载完毕！",_soundOne);
+            }
         });
     }
 
