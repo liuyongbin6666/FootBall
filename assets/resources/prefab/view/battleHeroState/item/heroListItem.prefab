@@ -68,7 +68,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Label",
+    "_name": "lab_totalLevel",
     "_objFlags": 512,
     "__editorExtras__": {},
     "_parent": {
@@ -169,7 +169,7 @@
     "_string": "0",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 30,
+    "_actualFontSize": 36.61169415292354,
     "_fontSize": 30,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -377,6 +377,7 @@
       "__id__": 0
     },
     "fileId": "33glAOFAFG6YUFcJEQK4rt",
+    "instance": null,
     "targetOverrides": null
   }
 ]
