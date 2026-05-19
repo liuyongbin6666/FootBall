@@ -8,6 +8,9 @@ import { OperationTool } from '../tool/OperationTool';
 import { CharacterTool } from '../tool/CharacterTool';
 const { ccclass, property } = _decorator;
 
+/**
+ * 酒馆界面
+ */
 @ccclass('AmplificationCardView')
 export class AmplificationCardView extends Component {
     private btn_card1:Button;
@@ -65,21 +68,18 @@ export class AmplificationCardView extends Component {
         switch(e.target.name)
         {
             case "btn_card1":
-                // ampCardEvent = new GameEventName({ eventCode: 1,pcArr:[this.produceCardArr[0]] });
-                ampCardEvent = new GameEventName({ pcArr:[this.produceCardArr[0]] });
+                ampCardEvent = new GameEventName({ eventCode: 1,pcArr:[this.produceCardArr[0]] });
                 break;
             case "btn_card2":
-                // ampCardEvent = new GameEventName({ eventCode: 1,pcArr:[this.produceCardArr[1]] });
-                ampCardEvent = new GameEventName({ pcArr:[this.produceCardArr[1]] });
+                ampCardEvent = new GameEventName({ eventCode: 1,pcArr:[this.produceCardArr[1]] });
                 break;
             case "btn_card3":
-                // ampCardEvent = new GameEventName({ eventCode: 1,pcArr:[this.produceCardArr[2]] });
-                ampCardEvent = new GameEventName({ pcArr:[this.produceCardArr[2]] });
+                ampCardEvent = new GameEventName({ eventCode: 1,pcArr:[this.produceCardArr[2]] });
                 break;
         }
         this.cardTopPromoteOrSkill();
         //发送单个英雄属性提升选择
-        GameCustomEvent.Instance.node.emit(GameEventName.AMPLIFICATION_CARD_RESULT_EVENT,ampCardEvent);
+        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,ampCardEvent);
         this.closeView();
     }
 
@@ -88,10 +88,9 @@ export class AmplificationCardView extends Component {
     {
         //看广告
         //发送3个英雄属性提升
-        // let ampCardEvent = new GameEventName({ eventCode: 1,pcArr: this.produceCardArr });
         this.cardTopPromoteOrSkill();
-        let ampCardEvent = new GameEventName({ pcArr: this.produceCardArr });
-        GameCustomEvent.Instance.node.emit(GameEventName.AMPLIFICATION_CARD_RESULT_EVENT,ampCardEvent);
+        let ampCardEvent = new GameEventName({ eventCode: 1,pcArr: this.produceCardArr });
+        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,ampCardEvent);
         this.closeView();
     }
 
@@ -648,6 +647,7 @@ export class AmplificationCardView extends Component {
                         GlobalData.Instance.heroProTopArr[ahpt].propertyTopArr.push(proNum);
                     }
                 }
+                //如果该英雄5项属性全满，添加到满级英雄中，不再抽取
             }
         }
         if(isOldHeroTop == false)

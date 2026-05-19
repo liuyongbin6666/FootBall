@@ -575,7 +575,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 279.91049509259346,
+      "width": 280,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -614,7 +614,7 @@
     "_string": "——点击任意空白区域关闭——",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1053,7 +1053,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 99.96803396164053,
+      "width": 100,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1092,7 +1092,7 @@
     "_string": "英雄的名字",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1545,7 +1545,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 39.98721358465621,
+      "width": 40,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1584,7 +1584,7 @@
     "_string": "力量",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -1704,7 +1704,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 27.7987351476121,
+      "width": 27.8076171875,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -1743,7 +1743,7 @@
     "_string": "99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 30.509745127436283,
+    "_actualFontSize": 25,
     "_fontSize": 25,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2097,7 +2097,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 39.98721358465621,
+      "width": 40,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2136,7 +2136,7 @@
     "_string": "体能",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2256,7 +2256,7 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 27.7987351476121,
+      "width": 27.8076171875,
       "height": 50.4
     },
     "_anchorPoint": {
@@ -2295,7 +2295,7 @@
     "_string": "99",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 30.509745127436283,
+    "_actualFontSize": 25,
     "_fontSize": 25,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -2590,7 +2590,7 @@
     "_string": "英雄的故事，英雄的故事，英雄的故事，英雄的故事，英雄的故事，",
     "_horizontalAlign": 0,
     "_verticalAlign": 0,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,
@@ -3675,7 +3675,7 @@
     "_string": "下阵",
     "_horizontalAlign": 1,
     "_verticalAlign": 1,
-    "_actualFontSize": 24.407796101949025,
+    "_actualFontSize": 20,
     "_fontSize": 20,
     "_fontFamily": "Arial",
     "_lineHeight": 40,

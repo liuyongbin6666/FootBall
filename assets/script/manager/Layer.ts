@@ -245,9 +245,12 @@ export class Layer extends Component {
             //章节总览
             case "chapterSylloge":
                 return "prefab/view/chapterSylloge/chapterSylloge";
-            //战斗
+            //战斗-英雄静止版
             case "fight":
                 return "prefab/view/fight/fight";
+            //战斗-英雄移动版
+            case "fightMoveHero":
+                return "prefab/view/fight/fightMoveHero";
             //战斗英雄状态
             case "battleHeroState":
                 return "prefab/view/battleHeroState/battleHeroState";

@@ -7,13 +7,13 @@ const { ccclass, property } = _decorator;
 @ccclass('GameEventName')
 export class GameEventName {
 
-    /** 敌人扣血事件 */
-    static FIGHT_SUBTRACT_BOOLD_EVENT = "fight_subtract_boold_event";
+    /** 战斗中碰撞事件 */
+    static FIGHT_COLLISION_EVENT = "fight_collision_event";
+    /** 战斗中其他界面传递事件 */
+    static FIGHT_OTHER_VIEW_EVENT = "fight_other_view_event";
 
     /** 刷新酒馆选卡 */
     static AMPLIFICATION_CARD_FRESH_EVENT = "amplification_card_fresh_event";
-    /** 酒馆选卡结果 */
-    static AMPLIFICATION_CARD_RESULT_EVENT = "amplification_card_result_event";
     /** 关闭通关结算界面 */
     static CHAPTER_RESULT_CLOSE_EVENT = "chapter_result_close_event";
     /** 英雄动作 */

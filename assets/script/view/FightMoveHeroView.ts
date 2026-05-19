@@ -11,10 +11,10 @@ import { AudioMG } from '../sound/AudioMG';
 const { ccclass, property } = _decorator;
 
 /**
- * 战斗界面-英雄静止版
+ * 战斗界面-英雄移动版
  */
-@ccclass('FightView')
-export class FightView extends Component {
+@ccclass('FightMoveHeroView')
+export class FightMoveHeroView extends Component {
     /**
      * 组件
     */
@@ -56,6 +56,7 @@ export class FightView extends Component {
     private node_enemy:Node;
     private node_soccer:Node;
     private node_hero:Node;
+    private btn_moveHero:Button;
     //掉落金币
     private lab_gold:Label;
     private lab_level:Label;
@@ -132,9 +133,6 @@ export class FightView extends Component {
     private bulletSpeed:number = 5;
     //敌人产生间隔
     private enemyIntervalTime:number = -1;
-    //漏球次数
-    private leakSoccer:number = 0;
-
     //足球外观大小
     private soccerScale:number = 1;
     //足球外观每次缩小/增大的值
@@ -143,6 +141,10 @@ export class FightView extends Component {
     private nextSoccerX:number = 0;
     //足球会到的下一个y位置
     private nextSoccerY:number = 0;
+
+    //移动块和鼠标的x差值
+    private moveIntervalX:number = 0;
+    private lastMoveX:number = 0;
 
     //暂存波次
     private saveWave:waveStructure = null;
@@ -163,7 +165,8 @@ export class FightView extends Component {
         this.rightWall = find('node_wall/rightWall', this.node);
         this.node_enemy = find('node_enemy', this.node);
         this.node_soccer = find('node_soccer', this.node);
-        this.node_hero = find('node_hero', this.node);
+        this.node_hero = find('btn_moveHero/node_hero', this.node);
+        this.btn_moveHero = find('btn_moveHero', this.node).getComponent(Button);
         this.lab_gold = find('node_top/lab_gold', this.node).getComponent(Label);
         this.lab_level = find('node_top/lab_level', this.node).getComponent(Label);
         this.lab_wave = find('node_top/lab_wave', this.node).getComponent(Label);
@@ -183,12 +186,15 @@ export class FightView extends Component {
 
     private _onEvent() {
         this.btn_close.node.on(Node.EventType.TOUCH_END, this.closeView, this);
-        this.btn_prop1.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_prop2.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_prop3.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_prop4.node.on(Node.EventType.TOUCH_END, this.conjure, this);
-        this.btn_prop5.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        this.btn_moveHero.node.on(Node.EventType.TOUCH_START, this.startMoveHero, this);
+        this.btn_moveHero.node.on(Node.EventType.TOUCH_MOVE, this.moveHero, this);
+        // this.btn_prop1.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        // this.btn_prop2.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        // this.btn_prop3.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        // this.btn_prop4.node.on(Node.EventType.TOUCH_END, this.conjure, this);
+        // this.btn_prop5.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_set.node.on(Node.EventType.TOUCH_END, this.openSet, this);
+        this.btn_adv.node.on(Node.EventType.TOUCH_END, this.openAdv, this)
         GameCustomEvent.Instance.addCustomEvent(GameEventName.FIGHT_COLLISION_EVENT,this.fightControllerFun,this);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.FIGHT_OTHER_VIEW_EVENT,this.otherViewEveFun,this);
     }
@@ -249,9 +255,38 @@ export class FightView extends Component {
         this.schedule(this.soccerGame,this.timeHS);
     }
 
+    startMoveHero(e)
+    {
+        //计算差值
+        if(this.lastMoveX != 0)
+        {
+            if(this.lastMoveX < e.getLocationX())
+            {
+                this.moveIntervalX = e.getLocationX() - this.lastMoveX;
+            }else{
+                this.moveIntervalX = this.lastMoveX - e.getLocationX();
+            }
+        }else{
+            this.moveIntervalX = e.getLocationX() - e.target.parent.getPosition().x;
+        }
+    }
+
+    //移动英雄
+    moveHero(e)
+    {
+        this.btn_moveHero.node.setPosition(e.getLocationX() - this.moveIntervalX,-290);
+        //移动块最后位置(不在end中记录，因为鼠标可能移除屏幕外，导致没有end检测)
+        this.lastMoveX = e.getLocationX() - this.moveIntervalX;
+    }
+
     openSet()
     {
         Layer.Instance.show("set",Layer.Instance.layerView);
+    }
+    
+    //看视频得奖励
+    openAdv()
+    {
           //分享
         // SDK.ShareGame(()=>{
         //     Layer.Instance.show("set",Layer.Instance.layerView);
@@ -598,14 +633,14 @@ export class FightView extends Component {
             {
                 //修改空位为英雄属性
                 //如果有球正在飞往空位ID，需要替换为英雄ID
-                for(var sote:number = 0;sote < this.soccerArr.length;sote++)
-                {
-                    if(this.soccerArr[sote].goalHeroID == this.heroArr[hIndex].heroID)
-                    {
-                        this.soccerArr[sote].goalHeroID = GlobalData.Instance.heroTableArr[ht].heroID;
-                        break;
-                    }
-                }
+                // for(var sote:number = 0;sote < this.soccerArr.length;sote++)
+                // {
+                //     if(this.soccerArr[sote].goalHeroID == this.heroArr[hIndex].heroID)
+                //     {
+                //         this.soccerArr[sote].goalHeroID = GlobalData.Instance.heroTableArr[ht].heroID;
+                //         break;
+                //     }
+                // }
                 this.heroArr[hIndex].heroID = GlobalData.Instance.heroTableArr[ht].heroID;
                 this.heroArr[hIndex].heroImgPath = GlobalData.Instance.heroTableArr[ht].heroImgPath;
                 this.heroArr[hIndex].heroHeadImgPath = GlobalData.Instance.heroTableArr[ht].heroHeadImgPath;
@@ -873,7 +908,7 @@ export class FightView extends Component {
         item.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item["soccerID"] = this.soccerArr.length + 1;
         var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:5,soccerItem:item,soccerState:0,
-            relevanceHeroID:noTempheroArr[newHeroIndex].heroID,goalEnemySerialNum:0,goalHeroID:0,goalWallX:0,speedWallX:0,moveTotal:0};
+            relevanceHeroID:noTempheroArr[newHeroIndex].heroID,goalEnemySerialNum:0,goalWallX:0,goalHeroID:0,speedWallX:0,moveTotal:0};
         this.soccerArr.push(newSoccer);
         this.node_soccer.addChild(item);
     }
@@ -1201,7 +1236,7 @@ export class FightView extends Component {
                 this.soccerArr[0].relevanceHeroID = noTempheroArr[newHeroIndex].heroID;
                 //找到最前面的敌人
                 this.soccerArr[0].goalEnemySerialNum = this.findFrontEnemySerialNum();
-                this.soccerArr[0].goalHeroID = 0;
+                // this.soccerArr[0].goalHeroID = 0;
             }else{
                 //后面的球隐藏，等待发球
             }
@@ -1235,8 +1270,6 @@ export class FightView extends Component {
                     var gSerialNum:number = 0;
                     //球下标
                     var fSoccer:number = 0;
-                    //目标英雄下标
-                    var newHeroIndex:number;
                     //根据足球ID找到足球
                     for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
                     {
@@ -1250,21 +1283,17 @@ export class FightView extends Component {
                             //目标敌人ID归0
                             this.soccerArr[findSoccer].goalEnemySerialNum = 0;
                             //球状态变为回球
-                            this.soccerArr[findSoccer].soccerState = 2;
-                            //球随机一个英雄返回
-                            newHeroIndex = Math.floor(Math.random() * this.heroArr.length);
-                            //若随机的英雄已经在接球中，重选其他英雄
-                            // while(this.heroArr[newHeroIndex].catchSoccerID != 0){
-                            //     newHeroIndex = Math.floor(Math.random() * this.heroArr.length);
-                            // }
-                            //
-                            //目标英雄
-                            this.soccerArr[findSoccer].goalHeroID = this.heroArr[newHeroIndex].heroID;
-                                this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
-                                    OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
-                                        this.heroArr[newHeroIndex].heroItem.getPosition().x, this.heroArr[newHeroIndex].heroItem.getPosition().y);
+                            this.soccerArr[findSoccer].soccerState = 5;
+                            //球随机一个点返回
+                            //目标点x（-270 ~ 306），y统一为-325
+                            var newDotX:number = Math.floor(Math.random() * 576) - 270;
+                            this.soccerArr[findSoccer].goalWallX = newDotX;
+                            //目标位置拖尾角度
+                            this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                                OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
+                                    newDotX, -325);
                             //英雄状态变为接球
-                            this.heroArr[newHeroIndex].catchSoccerID = this.soccerArr[findSoccer].soccerID;
+                            // this.heroArr[newHeroIndex].catchSoccerID = this.soccerArr[findSoccer].soccerID;
                             break;
                         }
                     }
@@ -1321,20 +1350,12 @@ export class FightView extends Component {
                             //若敌人处于近距离，则根据y选择近距离的英雄
                             if(this.enemyArr[findEnemy].enemyItem.getPosition().y < this.enemyStopY)
                             {
-                                var nHeroArr:Array<heroStructure> = this.findNearHero(this.enemyArr[findEnemy].enemyItem.getPosition().x);
-                                //将原来发球相关属性复原
-                                this.heroArr[newHeroIndex].catchSoccerID = 0;
-                                //球重新随机一个英雄返回
-                                newHeroIndex = Math.floor(Math.random() * nHeroArr.length);
-                                //目标英雄
-                                this.soccerArr[fSoccer].goalHeroID = nHeroArr[newHeroIndex].heroID;
-                                //英雄状态变为接球
-                                this.heroArr[newHeroIndex].catchSoccerID = this.soccerArr[fSoccer].soccerID;
+                                //球重新随机一个近距离的x（敌人附近相距绝对值110）点发射
+                                newDotX = this.enemyArr[findEnemy].enemyItem.getPosition().x + (Math.floor(Math.random() * 220) - 110);
                             }
 
                             //球状态变为回球
-                            this.soccerArr[fSoccer].soccerState = 2;
-                            this.leakSoccer = 0;
+                            this.soccerArr[fSoccer].soccerState = 5;
 
                             var newHP:number = this.enemyArr[findEnemy].HP - lastHarm;
                             //敌人受到伤害，并扣除血量，如扣除后的血量低于0，敌人消失
@@ -1423,20 +1444,19 @@ export class FightView extends Component {
                         if(this.soccerArr[soccerBack].soccerState > 0)
                         {
                             //接球发球(碰墙时目标英雄为0,不继承属性)
-                            if(this.soccerArr[soccerBack].goalHeroID != 0)
-                            {
-                                //目标英雄ID变为球新继承的属性英雄ID
-                                this.soccerArr[soccerBack].relevanceHeroID = this.soccerArr[soccerBack].goalHeroID;
-                                //目标英雄ID归0
-                                this.soccerArr[soccerBack].goalHeroID = 0;
-                            }
+                            // if(this.soccerArr[soccerBack].goalHeroID != 0)
+                            // {
+                            //     //目标英雄ID变为球新继承的属性英雄ID
+                            //     this.soccerArr[soccerBack].relevanceHeroID = this.soccerArr[soccerBack].goalHeroID;
+                            //     //目标英雄ID归0
+                            //     this.soccerArr[soccerBack].goalHeroID = 0;
+                            // }
                         }else{
                             //初始发球时，需要让球继承英雄属性
                             this.soccerArr[soccerBack].relevanceHeroID = controllerEvent.getCustomProperty().heroID;
                         }
                         //球不论任何状态，碰到英雄均视为发球，球状态改变
                         this.soccerArr[soccerBack].soccerState = 1;
-                        this.leakSoccer = 0;
                         AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
                         break;
                     }
@@ -1459,49 +1479,51 @@ export class FightView extends Component {
                         if(controllerEvent.getCustomProperty().wallID == 1)
                         {
                             //漏球次数增加
-                            if(this.leakSoccer < 2)
-                            {
-                                //y向下，随机一个英雄返回
+                            // if(this.leakSoccer < 2)
+                            // {
+                                //y向下，随机一个点返回
+                                var newDotX:number = Math.floor(Math.random() * 576) - 270;
+                                this.soccerArr[findSoccer].goalWallX = newDotX;
+                                //目标位置拖尾角度
+                                this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                                    OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
+                                        newDotX, -325);
                                 // var newBSpeed:number = 0 - Math.abs(this.soccerArr[findSoccer].speed);
                                 // this.soccerArr[findSoccer].speed = newBSpeed;
-                                this.leakSoccer ++;
-                                //改变球角度
-                                // var newBAngle:number = 0 - Math.abs(this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle);
-                                // this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = newBAngle + 180;
                                 //改变球状态
+                                // this.changeSoccerState(controllerEvent.getCustomProperty().soccerID,2);
                                 this.changeSoccerState(controllerEvent.getCustomProperty().soccerID,5);
                                 // console.log("足球碰墙，球向下，状态5",this.soccerArr[findSoccer].speed);
-                            }else{
-                                //漏球达到2次，返回英雄
-                                //根据足球ID找到足球
-                                for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
-                                {
-                                    if(this.soccerArr[findSoccer].soccerID == controllerEvent.getCustomProperty().soccerID)
-                                    {
-                                        //目标敌人ID归0
-                                        this.soccerArr[findSoccer].goalEnemySerialNum = 0;
-                                        //球状态变为回球
-                                        this.soccerArr[findSoccer].soccerState = 2;
-                                        //球随机一个英雄返回
-                                        var newWtoHIndex = Math.floor(Math.random() * this.heroArr.length);
-                                        //若随机的英雄已经在接球中，重选其他英雄
-                                        // while(this.heroArr[newWtoHIndex].catchSoccerID != 0){
-                                        //     newWtoHIndex = Math.floor(Math.random() * this.heroArr.length);
-                                        // }
-                                        //
-                                        //目标英雄
-                                        this.soccerArr[findSoccer].goalHeroID = this.heroArr[newWtoHIndex].heroID;
-                                            this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
-                                                OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
-                                                    this.heroArr[newWtoHIndex].heroItem.getPosition().x, this.heroArr[newWtoHIndex].heroItem.getPosition().y);
-                                        // console.log("新英雄ID：",this.soccerArr[findSoccer].goalHeroID);
-                                        //英雄状态变为接球
-                                        this.heroArr[newWtoHIndex].catchSoccerID = this.soccerArr[findSoccer].soccerID;
-                                        break;
-                                    }
-                                }
-                                this.leakSoccer = 0;
-                            }
+                            // }else{
+                            //     //漏球达到2次，返回英雄
+                            //     //根据足球ID找到足球
+                            //     for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
+                            //     {
+                            //         if(this.soccerArr[findSoccer].soccerID == controllerEvent.getCustomProperty().soccerID)
+                            //         {
+                            //             //目标敌人ID归0
+                            //             this.soccerArr[findSoccer].goalEnemySerialNum = 0;
+                            //             //球状态变为回球
+                            //             this.soccerArr[findSoccer].soccerState = 2;
+                            //             //球随机一个英雄返回
+                            //             var newWtoHIndex = Math.floor(Math.random() * this.heroArr.length);
+                            //             //若随机的英雄已经在接球中，重选其他英雄
+                            //             // while(this.heroArr[newWtoHIndex].catchSoccerID != 0){
+                            //             //     newWtoHIndex = Math.floor(Math.random() * this.heroArr.length);
+                            //             // }
+                            //             //
+                            //             //目标英雄
+                            //             // this.soccerArr[findSoccer].goalHeroID = this.heroArr[newWtoHIndex].heroID;
+                            //                 this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                            //                     OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
+                            //                         this.heroArr[newWtoHIndex].heroItem.getPosition().x, this.heroArr[newWtoHIndex].heroItem.getPosition().y);
+                            //             // console.log("新英雄ID：",this.soccerArr[findSoccer].goalHeroID);
+                            //             //英雄状态变为接球
+                            //             this.heroArr[newWtoHIndex].catchSoccerID = this.soccerArr[findSoccer].soccerID;
+                            //             break;
+                            //         }
+                            //     }
+                            // }
                         }else if(controllerEvent.getCustomProperty().wallID == 2)
                         {
                             //y向上，随机一个x点，如果中途穿过英雄，赋予英雄属性，如果中途穿过敌人，造成1/5的伤害
@@ -1755,59 +1777,55 @@ export class FightView extends Component {
                         }
                     }
                     break;
-                }else if(this.soccerArr[so].soccerState == 2){
-                    //回球时球外观变大
-                    if(this.soccerScale < 1)
-                    {
-                        this.soccerScale += this.soccerBigSmall;
-                        this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
-                    }
-                    //是否有目标英雄
-                    if(this.soccerArr[so].goalHeroID == 0)
-                    {
-                        //没有目标英雄时，取墙的x,y
-                        console.log("没有目标英雄时，向墙运动2：");
-                        this.changeSoccerState(this.soccerArr[so].soccerID,3);
-                        let lastWallX:number = 0;
-                        let lastWallY:number = 0;
-                        lastWallX = this.soccerArr[so].soccerItem.getPosition().x - this.soccerArr[so].speedWallX;
-                        lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
-                        this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
-                    }else{
-                        //查找目标英雄在当前的位置
-                        for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
-                        {
-                            if(this.heroArr[findHero].heroID == this.soccerArr[so].goalHeroID)
-                            {
-                                //英雄x和y位置都不变
-                                let lastX:number = 0;
-                                let lastY:number = 0;
-                                //x相差距离 = 英雄x - 足球x
-                                var xEquation:number = this.heroArr[findHero].heroItem.getPosition().x - this.soccerArr[so].soccerItem.getPosition().x;
-                                //y相差距离 = 英雄y - 足球y
-                                var yEquation:number = this.heroArr[findHero].heroItem.getPosition().y - this.soccerArr[so].soccerItem.getPosition().y;
-                                //相差速度 = 足球移动速度 - 英雄移动速度
-                                var speedEquation:number = this.soccerArr[so].speed - 0;
-                                var lastSpeedX:number = xEquation * speedEquation / yEquation;
-                                if(lastSpeedX)
-                                {
-                                    this.soccerArr[so].speedWallX = lastSpeedX;
-                                }
-                                lastX = this.soccerArr[so].soccerItem.getPosition().x - lastSpeedX;
-                                lastY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
+                }
+                // else if(this.soccerArr[so].soccerState == 2){
+                //     //是否有目标英雄
+                //     if(this.soccerArr[so].goalWallX == 0)
+                //     {
+                //         //没有目标英雄时，取墙的x,y
+                //         console.log("没有目标英雄时，向墙运动2：");
+                //         this.changeSoccerState(this.soccerArr[so].soccerID,3);
+                //         let lastWallX:number = 0;
+                //         let lastWallY:number = 0;
+                //         lastWallX = this.soccerArr[so].soccerItem.getPosition().x - this.soccerArr[so].speedWallX;
+                //         lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
+                //         this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
+                //     }else{
+                //         //查找目标英雄在当前的位置
+                //         // for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
+                //         // {
+                //         //     if(this.heroArr[findHero].heroID == this.soccerArr[so].goalHeroID)
+                //         //     {
+                //                 //英雄x和y位置都不变
+                //                 let lastX:number = 0;
+                //                 let lastY:number = 0;
+                //                 //x相差距离 = 墙x - 足球x
+                //                 var xEquation:number = this.soccerArr[so].goalWallX - this.soccerArr[so].soccerItem.getPosition().x;
+                //                 //y相差距离 = 墙y - 足球y
+                //                 var yEquation:number = 0 - this.soccerArr[so].soccerItem.getPosition().y;
+                //                 //相差速度 = 足球移动速度 - 英雄移动速度
+                //                 var speedEquation:number = this.soccerArr[so].speed - 0;
+                //                 var lastSpeedX:number = xEquation * speedEquation / yEquation;
+                //                 if(lastSpeedX)
+                //                 {
+                //                     this.soccerArr[so].speedWallX = lastSpeedX;
+                //                 }
+                //                 lastX = this.soccerArr[so].soccerItem.getPosition().x - lastSpeedX;
+                //                 lastY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
 
-                                if(lastX && lastX != Infinity && !Number.isNaN(lastX) && lastX != null)//计算算式x相差为0时会导致结果为NaN
-                                {
-                                    this.soccerArr[so].soccerItem.setPosition(lastX,lastY);
-                                }else{
-                                    this.soccerArr[so].soccerItem.setPosition(this.soccerArr[so].soccerItem.getPosition().x,lastY);
-                                }
-                                break;
-                            }
-                        }
-                    }
-                    break;
-                }else if(this.soccerArr[so].soccerState >= 3 || this.soccerArr[so].soccerState <= 6){
+                //                 if(lastX && lastX != Infinity && !Number.isNaN(lastX) && lastX != null)//计算算式x相差为0时会导致结果为NaN
+                //                 {
+                //                     this.soccerArr[so].soccerItem.setPosition(lastX,lastY);
+                //                 }else{
+                //                     this.soccerArr[so].soccerItem.setPosition(this.soccerArr[so].soccerItem.getPosition().x,lastY);
+                //                 }
+                //                 break;
+                //         //     }
+                //         // }
+                //     }
+                //     break;
+                // }
+                else if(this.soccerArr[so].soccerState >= 3 || this.soccerArr[so].soccerState <= 6){
                     if(this.soccerArr[so].soccerState == 3 || this.soccerArr[so].soccerState == 4)
                     {
                         //出球时球外观变小
@@ -1816,7 +1834,8 @@ export class FightView extends Component {
                             this.soccerScale -= this.soccerBigSmall;
                             this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
                         }
-                    }else if(this.soccerArr[so].soccerState == 5 || this.soccerArr[so].soccerState == 6)
+                    }
+                    else if(this.soccerArr[so].soccerState == 5 || this.soccerArr[so].soccerState == 6)
                     {
                         //回球时球外观变大
                         if(this.soccerScale < 1)
@@ -1825,7 +1844,6 @@ export class FightView extends Component {
                             this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
                         }
                     }
-                    
                     let lastWallX:number = 0;
                     let lastWallY:number = 0;
                     lastWallX = this.soccerArr[so].soccerItem.getPosition().x - this.soccerArr[so].speedWallX;

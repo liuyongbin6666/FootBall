@@ -270,8 +270,10 @@ export interface soccerStructure {
     relevanceHeroID:number;
     //目标敌人编号，当目标敌人死亡后，暂时失去目标编号为0
     goalEnemySerialNum:number;
-    //回球目标英雄ID，未碰到之前，属性仍然是前一个英雄的属性
+    //回球目标英雄ID，未碰到之前，属性仍然是前一个英雄的属性（该属性仅存在于英雄静止版本，在英雄移动版中去掉该属性）
     goalHeroID:number;
+    //回球点x
+    goalWallX:number;
     //球最后一次的x方向移速（失去目标飞向墙）
     speedWallX:number;
     //移动次数累计

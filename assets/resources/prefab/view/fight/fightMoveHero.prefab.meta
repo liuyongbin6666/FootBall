@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "a3c1f0a8-db55-4052-b20b-078afe09bbaa",
+  "uuid": "d6ba9713-f49f-465c-a728-c423e32acafa",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "battleHeroState"
+    "syncNodeName": "fightMoveHero"
   }
 }

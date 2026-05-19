@@ -2,6 +2,9 @@ import { _decorator, Button, Component, find, Node } from 'cc';
 import { Layer } from '../manager/Layer';
 const { ccclass, property } = _decorator;
 
+/**
+ * 大厅界面
+ */
 @ccclass('HallView')
 export class HallView extends Component {
     private btn_fight:Button;
@@ -25,7 +28,8 @@ export class HallView extends Component {
 
     openFight()
     {
-        Layer.Instance.show("fight",Layer.Instance.layerView);
+        // Layer.Instance.show("fight",Layer.Instance.layerView);
+        Layer.Instance.show("fightMoveHero",Layer.Instance.layerView);
     }
 
     update(deltaTime: number) {

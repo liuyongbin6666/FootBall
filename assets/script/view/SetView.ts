@@ -3,6 +3,9 @@ import { GlobalData } from '../data/GlobalData';
 import { AudioMG } from '../sound/AudioMG';
 const { ccclass, property } = _decorator;
 
+/**
+ * 设置界面
+ */
 @ccclass('SetView')
 export class SetView extends Component {
     /**
