@@ -1260,7 +1260,7 @@ export class FightView extends Component {
                             //
                             //目标英雄
                             this.soccerArr[findSoccer].goalHeroID = this.heroArr[newHeroIndex].heroID;
-                                this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                                this.soccerArr[findSoccer].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
                                     OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
                                         this.heroArr[newHeroIndex].heroItem.getPosition().x, this.heroArr[newHeroIndex].heroItem.getPosition().y);
                             //英雄状态变为接球
@@ -1403,7 +1403,7 @@ export class FightView extends Component {
                             {
                                 if(this.enemyArr[findEnemy].enemyItem["enemySerialNum"] == this.soccerArr[soccerBack].goalEnemySerialNum)
                                 {
-                                    this.soccerArr[soccerBack].soccerItem.getChildByName("sp_tail").angle = 
+                                    this.soccerArr[soccerBack].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
                                     OperationTool.Instance.calculateAngle(this.soccerArr[soccerBack].soccerItem.getPosition().x, this.soccerArr[soccerBack].soccerItem.getPosition().y,
                                         this.enemyArr[findEnemy].enemyItem.getPosition().x, this.enemyArr[findEnemy].enemyItem.getPosition().y);
                                 }
@@ -1491,7 +1491,7 @@ export class FightView extends Component {
                                         //
                                         //目标英雄
                                         this.soccerArr[findSoccer].goalHeroID = this.heroArr[newWtoHIndex].heroID;
-                                            this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                                            this.soccerArr[findSoccer].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
                                                 OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
                                                     this.heroArr[newWtoHIndex].heroItem.getPosition().x, this.heroArr[newWtoHIndex].heroItem.getPosition().y);
                                         // console.log("新英雄ID：",this.soccerArr[findSoccer].goalHeroID);
@@ -1666,15 +1666,15 @@ export class FightView extends Component {
                 {
                     if(bi < 5)
                     {
-                        if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity == 255)
+                        if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity == 255)
                         {
-                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity = 1;
-                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_" + (bi + 2)).getComponent(UIOpacity).opacity = 255;
+                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity = 1;
+                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_" + (bi + 2)).getComponent(UIOpacity).opacity = 255;
                             break;
                         }
                     }else if(bi == 5){
-                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_6").getComponent(UIOpacity).opacity = 1;
-                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_1").getComponent(UIOpacity).opacity = 255;
+                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_6").getComponent(UIOpacity).opacity = 1;
+                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_1").getComponent(UIOpacity).opacity = 255;
                     }
                 }
             }
@@ -1709,7 +1709,7 @@ export class FightView extends Component {
                     if(this.soccerScale > 0.5)
                     {
                         this.soccerScale -= this.soccerBigSmall;
-                        this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
+                        this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                     }
                     //是否有目标敌人，若失去进攻敌人，变为漏球碰墙
                     if(this.soccerArr[so].goalEnemySerialNum <= 0)
@@ -1760,7 +1760,7 @@ export class FightView extends Component {
                     if(this.soccerScale < 1)
                     {
                         this.soccerScale += this.soccerBigSmall;
-                        this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
+                        this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                     }
                     //是否有目标英雄
                     if(this.soccerArr[so].goalHeroID == 0)
@@ -1814,7 +1814,7 @@ export class FightView extends Component {
                         if(this.soccerScale > 0.5)
                         {
                             this.soccerScale -= this.soccerBigSmall;
-                            this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
+                            this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                         }
                     }else if(this.soccerArr[so].soccerState == 5 || this.soccerArr[so].soccerState == 6)
                     {
@@ -1822,7 +1822,7 @@ export class FightView extends Component {
                         if(this.soccerScale < 1)
                         {
                             this.soccerScale += this.soccerBigSmall;
-                            this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
+                            this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                         }
                     }
                     
@@ -1840,7 +1840,7 @@ export class FightView extends Component {
                     this.nextSoccerX = lastWallX - this.soccerArr[so].speedWallX;
                     this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
                     //碰墙改变角度
-                    this.soccerArr[so].soccerItem.getChildByName("sp_tail").angle = 
+                    this.soccerArr[so].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
                         OperationTool.Instance.calculateAngle(lastWallX,lastWallY,this.nextSoccerX,this.nextSoccerY);
                     // console.log("漏球没有目标,本次xy：",lastWallX,lastWallY,"漏球没有目标,下次xy：",this.nextSoccerX,this.nextSoccerY);
                 }

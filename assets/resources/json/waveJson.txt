@@ -1,5 +1,5 @@
 [
-	{"waveID":10101, "total":10, "intervalTime":2, "BossID":0, "BossBornTime":0,
+	{"waveID":10101, "total":1, "intervalTime":2, "BossID":0, "BossBornTime":0,
 		"enemyAriseArr":[{"ID":1001,"percent":100}]},
 	{"waveID":10102, "total":1, "intervalTime":0.5, "BossID":0, "BossBornTime":0,
 		"enemyAriseArr":[{"ID":1001,"percent":100}]},

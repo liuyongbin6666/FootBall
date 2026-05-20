@@ -1,4 +1,4 @@
-import { _decorator, Component, find, Node, Prefab } from 'cc';
+import { _decorator, Component, DynamicAtlasManager, dynamicAtlasManager, find, Node, Prefab } from 'cc';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { preItemStructure, preStructure } from '../data/GlobalStructure';
 import { SDK, SDKInterface } from '../../BHY_Framework/Sdk/SDK';
@@ -85,6 +85,8 @@ export class Layer extends Component {
             // 桌面入口奖励回调 获得奖励方法
 
         });
+
+        // DynamicAtlasManager.instance.enabled=false;
     }
 
     start() {

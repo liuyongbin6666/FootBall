@@ -795,7 +795,8 @@ export class FightMoveHeroView extends Component {
                 //     OperationTool.Instance.retainDecimal(2,this.recycleEnemyArr[this.recycleEnemyArr.length - 1].HP/
                 //         this.recycleEnemyArr[this.recycleEnemyArr.length - 1].maxHP);
                 //     this.node_enemy.addChild(this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyItem);
-                //     //怪物spine
+                    // //怪物排序
+                    // this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyItem.setSiblingIndex(0);
 
                 //     this.enemyArr.push(this.recycleEnemyArr[this.recycleEnemyArr.length - 1]);
                 //     //回收数组移除怪物
@@ -835,12 +836,16 @@ export class FightMoveHeroView extends Component {
                     console.log("创建敌人赋予item编号",item["enemySerialNum"]);
                     item.getChildByName("pro_blood").getComponent(ProgressBar).progress = OperationTool.Instance.retainDecimal(2,es.HP/es.maxHP);
                     es.enemyItem = item;
-                    //怪物spine
 
                     this.node_enemy.addChild(item);
+                    
+                    //怪物排序（添加到父节点后才能进行排序）
+                    // this.node_enemy.insertChild(item,0)
+                    item.setSiblingIndex(0);
 
                     this.enemyArr.push(es);
                 // }
+
                 break;
             }
         }
@@ -907,7 +912,7 @@ export class FightMoveHeroView extends Component {
         let item = instantiate(this.soccerItemPre);
         item.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item["soccerID"] = this.soccerArr.length + 1;
-        var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:5,soccerItem:item,soccerState:0,
+        var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:7,soccerItem:item,soccerState:0,
             relevanceHeroID:noTempheroArr[newHeroIndex].heroID,goalEnemySerialNum:0,goalWallX:0,goalHeroID:0,speedWallX:0,moveTotal:0};
         this.soccerArr.push(newSoccer);
         this.node_soccer.addChild(item);
@@ -1227,8 +1232,8 @@ export class FightMoveHeroView extends Component {
             {
                 //随机一个英雄发球
                 var newHeroIndex:number = Math.floor(Math.random() * noTempheroArr.length);
-                //获取该英雄的x,y，使球起始位置在英雄脚下
-                this.soccerArr[0].soccerItem.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,
+                //获取该英雄的x,y，使球起始位置在英雄脚下，需要加上计算拖动的差距值
+                this.soccerArr[0].soccerItem.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x + this.lastMoveX,
                     noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
                 //球状态改为发球
                 this.soccerArr[0].soccerState = 1;
@@ -1289,7 +1294,8 @@ export class FightMoveHeroView extends Component {
                             var newDotX:number = Math.floor(Math.random() * 576) - 270;
                             this.soccerArr[findSoccer].goalWallX = newDotX;
                             //目标位置拖尾角度
-                            this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                            this.soccerArr[findSoccer].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
+                            // this.soccerArr[findSoccer].soccerItem.getChildByName("node_tail").angle = 
                                 OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
                                     newDotX, -325);
                             //英雄状态变为接球
@@ -1424,7 +1430,8 @@ export class FightMoveHeroView extends Component {
                             {
                                 if(this.enemyArr[findEnemy].enemyItem["enemySerialNum"] == this.soccerArr[soccerBack].goalEnemySerialNum)
                                 {
-                                    this.soccerArr[soccerBack].soccerItem.getChildByName("sp_tail").angle = 
+                                    this.soccerArr[soccerBack].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
+                                    // this.soccerArr[soccerBack].soccerItem.getChildByName("soccerNode").getChildByName("node_tail").angle = 
                                     OperationTool.Instance.calculateAngle(this.soccerArr[soccerBack].soccerItem.getPosition().x, this.soccerArr[soccerBack].soccerItem.getPosition().y,
                                         this.enemyArr[findEnemy].enemyItem.getPosition().x, this.enemyArr[findEnemy].enemyItem.getPosition().y);
                                 }
@@ -1485,7 +1492,8 @@ export class FightMoveHeroView extends Component {
                                 var newDotX:number = Math.floor(Math.random() * 576) - 270;
                                 this.soccerArr[findSoccer].goalWallX = newDotX;
                                 //目标位置拖尾角度
-                                this.soccerArr[findSoccer].soccerItem.getChildByName("sp_tail").angle = 
+                                this.soccerArr[findSoccer].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
+                                // this.soccerArr[findSoccer].soccerItem.getChildByName("soccerNode").getChildByName("node_tail").angle = 
                                     OperationTool.Instance.calculateAngle(this.soccerArr[findSoccer].soccerItem.getPosition().x, this.soccerArr[findSoccer].soccerItem.getPosition().y,
                                         newDotX, -325);
                                 // var newBSpeed:number = 0 - Math.abs(this.soccerArr[findSoccer].speed);
@@ -1537,7 +1545,9 @@ export class FightMoveHeroView extends Component {
                         }else if(controllerEvent.getCustomProperty().wallID == 3 || controllerEvent.getCustomProperty().wallID == 4)
                         {
                             //改变球x轴方向的速度，向右左，y上下
+                            console.log("x原速度：",this.soccerArr[findSoccer].speedWallX);
                             this.soccerArr[findSoccer].speedWallX = 0 - this.soccerArr[findSoccer].speedWallX;
+                            console.log("x反方向速度：",this.soccerArr[findSoccer].speedWallX);
                             //角度左右翻转
                             // this.soccerArr[soccerBack].soccerItem.getChildByName("sp_tail").angle = 
                             //     OperationTool.Instance.calculateAngle(this.soccerArr[soccerBack].soccerItem.getPosition().x, this.soccerArr[soccerBack].soccerItem.getPosition().y,
@@ -1688,15 +1698,15 @@ export class FightMoveHeroView extends Component {
                 {
                     if(bi < 5)
                     {
-                        if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity == 255)
+                        if(this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity == 255)
                         {
-                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity = 1;
-                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_" + (bi + 2)).getComponent(UIOpacity).opacity = 255;
+                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_" + (bi + 1)).getComponent(UIOpacity).opacity = 1;
+                            this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_" + (bi + 2)).getComponent(UIOpacity).opacity = 255;
                             break;
                         }
                     }else if(bi == 5){
-                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_6").getComponent(UIOpacity).opacity = 1;
-                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccer_1").getComponent(UIOpacity).opacity = 255;
+                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_6").getComponent(UIOpacity).opacity = 1;
+                        this.soccerArr[ballRoll].soccerItem.getChildByName("soccerNode").getChildByName("soccer_1").getComponent(UIOpacity).opacity = 255;
                     }
                 }
             }
@@ -1731,7 +1741,7 @@ export class FightMoveHeroView extends Component {
                     if(this.soccerScale > 0.5)
                     {
                         this.soccerScale -= this.soccerBigSmall;
-                        this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
+                        this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                     }
                     //是否有目标敌人，若失去进攻敌人，变为漏球碰墙
                     if(this.soccerArr[so].goalEnemySerialNum <= 0)
@@ -1745,6 +1755,7 @@ export class FightMoveHeroView extends Component {
                         lastWallY = this.soccerArr[so].soccerItem.getPosition().y + this.soccerArr[so].speed;
                         this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
                     }else{
+                        console.log("向敌人运动2：");
                         //查找目标敌人在当前的位置
                         for(var findEnemy:number = 0;findEnemy < this.enemyArr.length;findEnemy++)
                         {
@@ -1826,13 +1837,14 @@ export class FightMoveHeroView extends Component {
                 //     break;
                 // }
                 else if(this.soccerArr[so].soccerState >= 3 || this.soccerArr[so].soccerState <= 6){
+                        console.log("向墙运动：",this.soccerArr[so].soccerState);
                     if(this.soccerArr[so].soccerState == 3 || this.soccerArr[so].soccerState == 4)
                     {
                         //出球时球外观变小
                         if(this.soccerScale > 0.5)
                         {
                             this.soccerScale -= this.soccerBigSmall;
-                            this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
+                            this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                         }
                     }
                     else if(this.soccerArr[so].soccerState == 5 || this.soccerArr[so].soccerState == 6)
@@ -1841,7 +1853,7 @@ export class FightMoveHeroView extends Component {
                         if(this.soccerScale < 1)
                         {
                             this.soccerScale += this.soccerBigSmall;
-                            this.soccerArr[so].soccerItem.scale = v3(this.soccerScale,this.soccerScale,0);
+                            this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                         }
                     }
                     let lastWallX:number = 0;
@@ -1850,6 +1862,8 @@ export class FightMoveHeroView extends Component {
                     if(this.soccerArr[so].soccerState == 3)
                     {
                         lastWallY = this.soccerArr[so].soccerItem.getPosition().y + this.soccerArr[so].speed;
+                        console.log("x方向3：",lastWallX);
+                        console.log("y方向3：",lastWallY);
                         this.nextSoccerY = lastWallY + this.soccerArr[so].speed;
                     }else if(this.soccerArr[so].soccerState == 5){
                         lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
@@ -1858,7 +1872,8 @@ export class FightMoveHeroView extends Component {
                     this.nextSoccerX = lastWallX - this.soccerArr[so].speedWallX;
                     this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
                     //碰墙改变角度
-                    this.soccerArr[so].soccerItem.getChildByName("sp_tail").angle = 
+                    this.soccerArr[so].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
+                    // this.soccerArr[so].soccerItem.getChildByName("soccerNode").getChildByName("node_tail").angle = 
                         OperationTool.Instance.calculateAngle(lastWallX,lastWallY,this.nextSoccerX,this.nextSoccerY);
                     // console.log("漏球没有目标,本次xy：",lastWallX,lastWallY,"漏球没有目标,下次xy：",this.nextSoccerX,this.nextSoccerY);
                 }
