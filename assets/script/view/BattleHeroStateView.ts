@@ -191,12 +191,16 @@ export class BattleHeroStateView extends Component {
             this.node_window.active = true;
             this.lay_tab.node.active = true;
             this.onTabClick(index);
+            //发送事件FIGHT_OTHER_VIEW_EVENT，参数为3
+            GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT, new GameEventName({ viewType: 3 }));
         }
     }
 
     private closeView(): void {
         this.lay_tab.node.active = false;
         this.node_window.active = false;
+        //发送事件FIGHT_OTHER_VIEW_EVENT，参数为4
+        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT, new GameEventName({ viewType: 4 }));
     }
 
     private onTabClick(index: number): void {
