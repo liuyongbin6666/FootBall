@@ -1,6 +1,10 @@
 import { _decorator, Component, Node, Label, Button, find, Color, Sprite, Layout, Prefab, instantiate } from 'cc';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
 import { GameEventName } from '../manager/GameEventName';
+import { GlobalData } from '../data/GlobalData';
+import { heroStructure } from '../data/GlobalStructure';
+import { heroPropertyTableStructure } from '../data/GlobalStructure';
+import { heroSkillStructure } from '../data/GlobalStructure';
 const { ccclass, property } = _decorator;
 
 /**
@@ -8,78 +12,8 @@ const { ccclass, property } = _decorator;
  * 刘永斌
  */
 
-// 英雄基础数据结构
-interface HeroBaseData {
-    heroIndex: number;
-
-    heroID: number;
-    heroHeadImgPath: string;
-    heroImgPath: string;
-    heroName: string;
-    heroIntroduce: string;
-    quality: number;
-    maxHP: number;
-    harm: number;
-
-    // 技能等级数组 [技能0等级, 技能1等级, 技能2等级, 技能3等级, 技能4等级, 技能5等级, 技能6等级]
-    // 索引对应: 0=伤害, 1=暴击, 2=会心, 3=生命, 4=技能1, 5=技能2, 6=技能3
-    skillLevelArray: number[];
-    totalLevel: number;
-}
-
-//英雄技能数据结构
-interface HeroSkillData {
-    skillID: number;
-    skillName: string;
-    skillDesc: string;
-    ImgPath: string;
-}
-
 @ccclass('BattleHeroStateView')
 export class BattleHeroStateView extends Component {
-    // 上阵英雄数据列表（模拟数据，实际有2个英雄）
-    private heroDataList: HeroBaseData[] = [
-        { 
-            heroIndex: 0, heroID: 1, heroHeadImgPath: "img/hero/heroHead/icon_heroHead_1", 
-            heroImgPath: "img/hero/hero1", heroName: "小黄鸡", heroIntroduce: "小黄鸡的故事，是一只勇敢的小鸡！", 
-            quality: 1, maxHP: 100, harm: 10, 
-            skillLevelArray: [1, 0, 1, 2, 3, 0, 0], // [伤害,暴击,会心,生命,技能1,技能2,技能3]
-            totalLevel: 10
-        },
-        { 
-            heroIndex: 1, heroID: 2, heroHeadImgPath: "img/hero/heroHead/icon_heroHead_1", 
-            heroImgPath: "img/hero/hero2", heroName: "小白鸡", heroIntroduce: "小白鸡的故事，是一只聪明的小鸡！", 
-            quality: 1, maxHP: 80, harm: 15, 
-            skillLevelArray: [0, 1, 1, 2, 1, 1, 0], // [伤害,暴击,会心,生命,技能1,技能2,技能3]
-            totalLevel: 12
-        },
-        { 
-            heroIndex: 2, heroID: 3, heroHeadImgPath: "img/hero/heroHead/icon_heroHead_1", 
-            heroImgPath: "img/hero/hero3", heroName: "小绿鸡", heroIntroduce: "小绿鸡的故事，是一只绿的小鸡！", 
-            quality: 1, maxHP: 90, harm: 12, 
-            skillLevelArray: [0, 0, 1, 2, 3, 0, 0], // [伤害,暴击,会心,生命,技能1,技能2,技能3]
-            totalLevel: 10
-        },
-        { 
-            heroIndex: 3, heroID: 4, heroHeadImgPath: "img/hero/heroHead/icon_heroHead_1", 
-            heroImgPath: "img/hero/hero4", heroName: "小蓝鸡", heroIntroduce: "小蓝鸡的故事，是一只蓝的小鸡！", 
-            quality: 1, maxHP: 80, harm: 15, 
-            skillLevelArray: [4, 1, 1, 2, 1, 1, 5], // [伤害,暴击,会心,生命,技能1,技能2,技能3]
-            totalLevel: 12
-        },
-    ];
-
-    // 英雄技能数据列表
-    private heroSkillDataList: HeroSkillData[] = [
-        { skillID: 0, skillName: "伤害", skillDesc: "增加伤害", ImgPath: "img/hero/skill/skill_0" },
-        { skillID: 1, skillName: "暴击", skillDesc: "增加暴击率", ImgPath: "img/hero/skill/skill_1" },
-        { skillID: 2, skillName: "会心", skillDesc: "增加会心率", ImgPath: "img/hero/skill/skill_2" },
-        { skillID: 3, skillName: "生命", skillDesc: "增加生命值", ImgPath: "img/hero/skill/skill_3" },
-        { skillID: 4, skillName: "技能1", skillDesc: "增加技能1", ImgPath: "img/hero/skill/skill_4" },
-        { skillID: 5, skillName: "技能2", skillDesc: "增加技能2", ImgPath: "img/hero/skill/skill_5" },
-        { skillID: 6, skillName: "技能3", skillDesc: "增加技能3", ImgPath: "img/hero/skill/skill_6" },
-    ];
-
     // 英雄列表布局组件
     private lay_heroList: Layout | null = null;
     @property(Prefab)
@@ -129,6 +63,7 @@ export class BattleHeroStateView extends Component {
     }
 
     private _initObject(): void {
+        
         this.lay_heroList = find('lay_heroList', this.node).getComponent(Layout);
         this.updateHeroList();
         this.lay_tab = find('lay_tab', this.node).getComponent(Layout);
@@ -149,23 +84,24 @@ export class BattleHeroStateView extends Component {
         this.btn_remove = find('node_window/window/operate/btn_remove', this.node)?.getComponent(Button) || null;
     }
     
-    //todo 新增英雄的时候，调用此方法
+    //todo 新增英雄和升级英雄的时候，调用此方法
     private updateHeroList(): void {
+        const joinHeroArr = GlobalData.Instance.joinHeroArr;
         //清空列表
         this.lay_heroList.node.removeAllChildren();
 
-        for (let i = 0; i < this.heroDataList.length; i++) {
-            this.createHeroListItem(i);
+        for (let i = 0; i <  joinHeroArr.length; i++) {
+            this.createHeroListItem(i, joinHeroArr[i]);
         }
     }
 
-    private createHeroListItem(index: number): void {
+    private createHeroListItem(index: number, hero: heroStructure): void {
         let item = instantiate(this.heroListItem);
-        const heroData = this.heroDataList[index];
         const lab_totalLevel = find('lab_totalLevel', item)?.getComponent(Label);
         //todo 统计全部的升级次数 
         if (lab_totalLevel) {
-            lab_totalLevel.string = heroData.totalLevel.toString();
+            const totalLevel = hero.harmLevel + hero.criticalLevel + hero.breakOutLevel + hero.HPLevel;
+            lab_totalLevel.string = totalLevel.toString();
         }
 
         item.on(Node.EventType.TOUCH_END, () => {
@@ -174,24 +110,23 @@ export class BattleHeroStateView extends Component {
         this.lay_heroList.node.addChild(item);
     }
 
-    //todo 新增英雄的时候，调用此方法
     private updateHeroTab(): void {
+        const joinHeroArr = GlobalData.Instance.joinHeroArr;
         //清空列表
         this.lay_tab.node.removeAllChildren();
         this.tabButtons = []; // 清空按钮数组
         this.currentSelectHeroIndex = 0;
 
-        for (let i = 0; i < this.heroDataList.length; i++) {
-            this.createTabItem(i);
+        for (let i = 0; i < joinHeroArr.length; i++) {
+            this.createTabItem(i, joinHeroArr[i]);
         }
     }
 
-    private createTabItem(index: number): void {
+    private createTabItem(index: number, hero: heroStructure): void {
         let item = instantiate(this.tabItem);
-        const heroData = this.heroDataList[index];
         const labName = find('lab_heroName', item)?.getComponent(Label);
         if (labName) {
-            labName.string = heroData.heroName;
+            labName.string = hero.heroName;
         }
         item.active = true;
         
@@ -209,18 +144,37 @@ export class BattleHeroStateView extends Component {
         this.btn_exit.node.on(Node.EventType.TOUCH_END, this.closeView, this);
         // 移除按钮点击事件
         this.btn_remove.node.on(Node.EventType.TOUCH_END, this.removeHero, this);
+        
+        // 监听新增英雄事件
+        GameCustomEvent.Instance.node.on(GameEventName.HERO_ADD_EVENT, this.onHeroAdd, this);
+        // 监听升级英雄事件
+        GameCustomEvent.Instance.node.on(GameEventName.HERO_UPGRADE_EVENT, this.onHeroUpgrade, this);
+    }
+    
+    private onHeroAdd(): void {
+        this.updateHeroList();
+        //this.updateHeroTab();
+        //this.updateTabSelectState();
+        //this.refreshHeroInfo(this.currentSelectHeroIndex);
+    }
+    
+    private onHeroUpgrade(): void {
+        this.updateHeroList();
+        //this.updateHeroTab();
+        //this.updateTabSelectState();
+        //this.refreshHeroInfo(this.currentSelectHeroIndex);
     }
 
     // todo 移除英雄
     removeHero(): void {
         //最后一个英雄不能移除,并弹出文本提示
-        if ( this.heroDataList.length <= 1) {
+        if ( GlobalData.Instance.joinHeroArr.length <= 1) {
             //调用弹出文字的方法
             GameCustomEvent.Instance.node.emit(GameEventName.TIPS_STRIP_EVENT, new GameEventName({ tipsDec: "最后一个英雄不能移除" }));
             return;
         }
 
-        this.heroDataList.splice(this.currentSelectHeroIndex, 1);//移除选中的英雄
+        GlobalData.Instance.joinHeroArr.splice(this.currentSelectHeroIndex, 1);//移除选中的英雄
         this.updateHeroList();
         this.updateHeroTab();
         this.updateTabSelectState();
@@ -248,7 +202,7 @@ export class BattleHeroStateView extends Component {
     }
 
     private onTabClick(index: number): void {
-        if (index < 0 || index >= this.heroDataList.length) return;
+        if (index < 0 || index >= GlobalData.Instance.joinHeroArr.length) return;
         
         this.updateHeroTab();
         this.currentSelectHeroIndex = index;
@@ -258,7 +212,7 @@ export class BattleHeroStateView extends Component {
 
     private updateTabSelectState(): void {
         for (let i = 0; i < this.tabButtons.length; i++) {//遍历所有标签项
-            if (i < this.heroDataList.length) {//如果标签项索引在英雄数据列表范围内
+            if (i < GlobalData.Instance.joinHeroArr.length) {//如果标签项索引在英雄数据列表范围内
                 const tabNode = this.tabButtons[i];//获取当前标签项节点
                 const btnComponent = tabNode.getComponent(Button);//获取按钮组件
                 
@@ -272,20 +226,20 @@ export class BattleHeroStateView extends Component {
     }
 
     private refreshHeroInfo(index: number): void {
-        if (index < 0 || index >= this.heroDataList.length) return;
+        if (index < 0 || index >= GlobalData.Instance.joinHeroArr.length) return;
         
-        const heroData = this.heroDataList[index];
+        const hero = GlobalData.Instance.joinHeroArr[index];
         
-        if (this.lab_heroName) this.lab_heroName.string = heroData.heroName;
-        if (this.lab_heroIntroduce) this.lab_heroIntroduce.string = heroData.heroIntroduce;
-        if (this.lab_maxHP) this.lab_maxHP.string = `${heroData.maxHP}`;
-        if (this.lab_harm) this.lab_harm.string = `${heroData.harm}`;
+        if (this.lab_heroName) this.lab_heroName.string = hero.heroName;
+        if (this.lab_heroIntroduce) this.lab_heroIntroduce.string = hero.heroIntroduce;
+        if (this.lab_maxHP) this.lab_maxHP.string = `${hero.maxHP}`;
+        if (this.lab_harm) this.lab_harm.string = `${hero.harm}`;
 
         //todo 更新技能列表
-        this.updateSkillList(heroData);
+        this.updateSkillList(hero);
     }
     
-    private updateSkillList(heroData: HeroBaseData): void {
+    private updateSkillList(hero: heroStructure): void {
         if (!this.lay_skillList) {
             console.log('lay_skillList is null');
             return;
@@ -297,34 +251,47 @@ export class BattleHeroStateView extends Component {
         
         this.lay_skillList.node.removeAllChildren();
         
-        for (let i = 0; i < this.heroSkillDataList.length; i++) {
-            //todo 检查等级是否为0，如果为0则不创建技能项
-            if (heroData.skillLevelArray && heroData.skillLevelArray[i] === 0) {
-                continue;
+        const heroProTableArr = GlobalData.Instance.heroProGrowUpTableArr;
+        if (!heroProTableArr || heroProTableArr.length === 0) {
+            console.log('heroProGrowUpTableArr is empty');
+            return;
+        }
+        
+        const propertyLevels = [
+            { type: 1, level: hero.harmLevel },
+            { type: 2, level: hero.criticalLevel },
+            { type: 3, level: hero.breakOutLevel },
+            { type: 4, level: hero.HPLevel }
+        ];
+        
+        for (const prop of propertyLevels) {
+            if (prop.level === 0) continue;
+            
+            const propData = heroProTableArr.find(p => p.propertyType === prop.type);
+            if (propData) {
+                this.createSkillListItem(propData.propertyName, propData.propertyIconPath, prop.level, propData.describe);
             }
-            this.createSkillListItem(heroData, i);
         }
     }
     
-    private createSkillListItem(heroData: HeroBaseData, index: number): void {
+    private createSkillListItem(skillName: string, skillIconPath: string, skillLevel: number, skillDesc: string): void {
         let item = instantiate(this.skillListItem);
-        const skillData = this.heroSkillDataList[index];
         
         const lab_skillName = find('lab_skillName', item)?.getComponent(Label);
         const img_skillIcon = find('img_skillIcon', item)?.getComponent(Sprite);
         const lab_skillLevel = find('lab_skillLevel', item)?.getComponent(Label);
         const lab_skillDesc = find('lab_skillDesc', item)?.getComponent(Label);
         
-        if (lab_skillName) {
-            lab_skillName.string = skillData.skillName;
+        if (lab_skillName && skillName) {
+            lab_skillName.string = skillName;
         }
         
-        if (lab_skillLevel && heroData.skillLevelArray && heroData.skillLevelArray[index] !== undefined) {
-            lab_skillLevel.string = `Lv.${heroData.skillLevelArray[index]}`;
+        if (lab_skillLevel && skillLevel) {
+            lab_skillLevel.string = `Lv.${skillLevel}`;
         }
         
-        if (lab_skillDesc) {
-            lab_skillDesc.string = skillData.skillDesc;
+        if (lab_skillDesc && skillDesc) {
+            lab_skillDesc.string = skillDesc;
         }
         
         this.lay_skillList.node.addChild(item);
