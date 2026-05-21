@@ -35,6 +35,10 @@ export interface gameRecordStructure{
 export interface chapterStructure {
     //章节ID
     chapterID:number;
+    //章节序列名
+    chapterSequence:string;
+    //章节名路径
+    chapterNamePath:string;
     //章节是否解锁
     unlock:boolean;
     //章节关卡
