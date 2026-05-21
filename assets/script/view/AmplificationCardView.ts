@@ -109,6 +109,8 @@ export class AmplificationCardView extends Component {
     freshThreeCard()
     {
         this.cardjoinHeroArr = [];
+        //清空已生成的临时数据
+        this.cardProHeroArr = [];
         this.drawHeroCard(this.btn_card1.node,0);
         this.drawHeroCard(this.btn_card2.node,1);
         this.drawHeroCard(this.btn_card3.node,2);
@@ -353,6 +355,7 @@ export class AmplificationCardView extends Component {
                                             level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro4);
+                                    this.updateCardProHeroArr(cardNode,saveHeroPro4);
                                     break;
                                 }
                             }
@@ -389,6 +392,7 @@ export class AmplificationCardView extends Component {
                                             level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro4);
+                                    this.updateCardProHeroArr(cardNode,saveHeroPro4);
                                     break;
                                 }
                             }
@@ -425,6 +429,7 @@ export class AmplificationCardView extends Component {
                                             level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro4);
+                                    this.updateCardProHeroArr(cardNode,saveHeroPro4);
                                     break;
                                 }
                             }
@@ -461,6 +466,8 @@ export class AmplificationCardView extends Component {
                                             level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro4);
+                                    //替换掉原来位置的数组
+                                    this.updateCardProHeroArr(cardNode,saveHeroPro4);
                                     break;
                                 }
                             }
@@ -525,6 +532,7 @@ export class AmplificationCardView extends Component {
                                             newJoin:true,quality:0,level:0,multiple:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro5);
+                                    this.updateCardProHeroArr(cardNode,saveHeroPro5);
                                     break;
                                 }
                             }
@@ -568,6 +576,23 @@ export class AmplificationCardView extends Component {
             }
         }
         return heroQuaArr;
+    }
+
+    //更新临时存储数组
+    updateCardProHeroArr(cardNode:Node,cad:cardAddProStructure)
+    {
+        switch(cardNode.name)
+        {
+            case "btn_card1":
+                this.produceCardArr.splice(0,1,cad);
+                break;
+            case "btn_card2":
+                this.produceCardArr.splice(1,1,cad);
+                break;
+            case "btn_card3":
+                this.produceCardArr.splice(2,1,cad);
+                break;
+        }
     }
 
     //更新当前抽卡概率数据

@@ -67,8 +67,8 @@ export class LoadingView extends Component {
             // LoadImgTool.Instance.loadPrefab("login",pathLogin,Layer.Instance.layerView,true);
             let pathLogin = Layer.Instance.getGamePrePath("hall");
             LoadImgTool.Instance.loadPrefab("hall",pathLogin,Layer.Instance.layerView,true);
-            // let pathLogin = Layer.Instance.getGamePrePath("fight");
-            // LoadImgTool.Instance.loadPrefab("fight",pathLogin,Layer.Instance.layerView,true);
+            // let pathfight = Layer.Instance.getGamePrePath("fight");
+            // LoadImgTool.Instance.loadPrefab("fight",pathfight,Layer.Instance.layerView,false);
             //抽卡
             // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
             // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,true);
@@ -92,27 +92,15 @@ export class LoadingView extends Component {
         LoadTableTool.Instance.loadTextFile("json/chapterJson",(value)=>{
             var chapterArr = JSON.parse(value);
             console.log("章节：",chapterArr);
+            //找到图片路径
+            for(var c:number = 0;c < chapterArr.length;c++)
+            {
+                //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
+                var newImgPath:string = CharacterTool.Instance.pathCharacter(chapterArr[c].chapterNamePath);
+                chapterArr[c].chapterNamePath = newImgPath;
+            }
             GlobalData.Instance.chapterTableArr = chapterArr;
             _this.loadCount++;
-            //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
-            //转换读取json路径
-            // var newSpeakPath:string = CharacterTool.Instance.pathCharacter(GlobalData.Instance.chapterTableArr[f].speakPath);
-            // //加载目前章节对话
-            // LoadTableTool.Instance.loadTextFile(newSpeakPath,(value)=>{
-            //     var speakArr = JSON.parse(value);
-            //     console.log("对话：",speakArr);
-            //     for(var si:number = 0;si < speakArr.length;si++)
-            //     {
-            //         if(speakArr[si].speakImg != "" && speakArr[si].speakImg != "uniformity")
-            //         {
-            //             //转换图片路径
-            //             speakArr[si].speakImg = CharacterTool.Instance.pathCharacter(speakArr[si].speakImg);
-            //         }
-            //     }
-            //     // var newSpeakArr:chapterSpeakStructure = {chapterID:GlobalData.Instance.gameRecord.chapterID,speakArr:speakArr};
-            //     // GlobalData.Instance.speakTableArr.push(newSpeakArr);
-            //     _this.loadCount++;
-            // });
         });
 
         //加载关卡表
