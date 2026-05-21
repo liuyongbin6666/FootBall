@@ -33,8 +33,7 @@ export class GameEventName {
     static GUIDANCE_NEW_HAND_CLOSE_EVENT = "guidance_new_hand_close_event";
     
     /** 英雄相关事件 */
-    static HERO_ADD_EVENT = "hero_add_event";
-    static HERO_UPGRADE_EVENT = "hero_upgrade_event";
+    static BATTLE_HERO_STATE_HERO_UPDATE_EVENT = "battle_hero_state_hero_update_event";
     
     private customProperty:any;
     constructor(customProperty:any){

@@ -145,13 +145,11 @@ export class BattleHeroStateView extends Component {
         // 移除按钮点击事件
         this.btn_remove.node.on(Node.EventType.TOUCH_END, this.removeHero, this);
         
-        // 监听新增英雄事件
-        GameCustomEvent.Instance.node.on(GameEventName.HERO_ADD_EVENT, this.onHeroAdd, this);
-        // 监听升级英雄事件
-        GameCustomEvent.Instance.node.on(GameEventName.HERO_UPGRADE_EVENT, this.onHeroUpgrade, this);
+        // 更新英雄事件
+        GameCustomEvent.Instance.node.on(GameEventName.BATTLE_HERO_STATE_HERO_UPDATE_EVENT, this.onHeroUpdate, this);
     }
     
-    private onHeroAdd(): void {
+    private onHeroUpdate(): void {
         this.updateHeroList();
         //this.updateHeroTab();
         //this.updateTabSelectState();
