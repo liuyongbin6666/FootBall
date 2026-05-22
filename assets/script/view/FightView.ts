@@ -98,6 +98,8 @@ export class FightView extends Component {
     private bulletArr:Array<bulletStructure> = [];
     //游戏状态
     private soccerGameState:number = 0;
+    //选择的章节
+    private selectChapter:number = 1;
     //玩家等级
     private playerLevel:number = 1;
     //第几波
@@ -763,7 +765,7 @@ export class FightView extends Component {
 
                     let item = instantiate(this.enemyItemPre);
                     //随机位置
-                    item.setPosition(-200 + Math.floor(Math.random() * 410),280);
+                    item.setPosition(-163 + Math.floor(Math.random() * 324),280);
                     this.enemySerialNum++;
                     item["enemySerialNum"] = this.enemySerialNum;//GlobalData.Instance.enemyTableArr[eta].enemyID
                     console.log("创建敌人赋予item编号",item["enemySerialNum"]);
@@ -1049,10 +1051,26 @@ export class FightView extends Component {
                 this.soccerGameState = gameState.start;
                 break;
             case 2:
-                console.log("已接收战斗开始");
+                //战斗开始
+                this.resetGame();
+                this.selectChapter = ovEvent.getCustomProperty().chapterIDchapterID;
+                //读取选中的章节
+                this.readRecord(this.selectChapter);
+                this.initFight();
+                break;
+            case 3:
+                //暂停
+                this.soccerGameState = gameState.stop;
+                break;
+            case 4:
+                //继续
+                this.soccerGameState = gameState.start;
+                break;
+            case 5:
+                //重新开始
                 this.resetGame();
                 //读取选中的章节
-                this.readRecord(ovEvent.getCustomProperty().chapterIDchapterID);
+                this.readRecord(this.selectChapter);
                 this.initFight();
                 break;
         }
@@ -1526,6 +1544,7 @@ export class FightView extends Component {
             {
                 this.soccerGameState = gameState.over;
                 //弹出失败页面
+                Layer.Instance.show("lose",Layer.Instance.layerView);
             }
             //判断是否升级
             else if(this.EXP >= this.maxEXP)

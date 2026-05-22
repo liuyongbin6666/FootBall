@@ -66,7 +66,7 @@ export class GlobalData{
     public userInfo:userStructure = {userId:10001,nickName:"玩家abc",gold:1000,headIcon:""};
 
     //游戏当前记录
-    public gameRecord:gameRecordStructure = {chapterID:1,levelID:101};//teamRoles:[],
+    public gameRecord:gameRecordStructure = {chapterID:1,levelID:101,levelHeroArr:[]};
 
     /**
      * 临时数据，下线清零

@@ -86,6 +86,8 @@ export class HallView extends Component {
         //预加载
         let pathfight = Layer.Instance.getGamePrePath("fightMoveHero");
         LoadImgTool.Instance.loadPrefab("fightMoveHero",pathfight,Layer.Instance.layerView,false);
+        // let pathfight = Layer.Instance.getGamePrePath("fight");
+        // LoadImgTool.Instance.loadPrefab("fight",pathfight,Layer.Instance.layerView,false);
         
         //默认页面征程
         this.freshChapter();
@@ -167,7 +169,6 @@ export class HallView extends Component {
     //开启战斗
     openFight()
     {
-        console.log("传递数据1：",1);
         this.restart = true;
         this.fightSelectOver();
     }
@@ -175,7 +176,6 @@ export class HallView extends Component {
     //新战斗
     newFightFun()
     {
-        console.log("传递数据2：",2);
         //从本章节第一个关卡开始
         this.restart = true;
         this.fightSelectOver();
@@ -184,7 +184,6 @@ export class HallView extends Component {
     //继续战斗
     goOnFightFun()
     {
-        console.log("传递数据3：",3);
         //读取上一次的关卡进度
         this.restart = false;
         this.fightSelectOver();
@@ -203,7 +202,6 @@ export class HallView extends Component {
         //向战斗界面传递当前选择的章节号，读取数据
         let fightEvent = new GameEventName({ eventCode: 2,chapterID: GlobalData.Instance.gameRecord.chapterID + this.chapterChangeCount });
         GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,fightEvent);
-        console.log("传递数据：",fightEvent);
         this.closeView();
     }
 

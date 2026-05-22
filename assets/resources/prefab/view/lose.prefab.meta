@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "8ae2dd0b-1de9-4755-b470-591c14f6f1a9",
+  "uuid": "1f9722cf-4c90-4368-826c-4ea0490e37bf",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "amplificationCard"
+    "syncNodeName": "lose"
   }
 }

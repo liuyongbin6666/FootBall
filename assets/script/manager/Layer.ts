@@ -259,6 +259,9 @@ export class Layer extends Component {
             //酒馆抽卡
             case "amplificationCard":
                 return "prefab/view/amplificationCard";
+            //战斗失败
+            case "lose":
+                return "prefab/view/lose";
             //游戏记录
             case "gameRecord":
                 return "prefab/view/gameRecord/gameRecord";
@@ -268,9 +271,6 @@ export class Layer extends Component {
             //任务
             case "task":
                 return "prefab/view/task/task";
-            //背包
-            case "bag":
-                return "prefab/view/bag";
             //地图
             case "map":
                 return "prefab/view/map/map";

@@ -29,6 +29,8 @@ export interface gameRecordStructure{
     chapterID:number;
     //关卡ID
     levelID:number;
+    //中途退出关卡时的英雄数据（下次继续时，使用该数据）
+    levelHeroArr:Array<heroStructure>;
 }
 
 //章节
