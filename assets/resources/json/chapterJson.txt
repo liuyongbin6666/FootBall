@@ -1,12 +1,57 @@
 [
-	{"chapterID":1, "chapterSequence": "第一章", "chapterNamePath": "img-hall-img_chapterName1", "describe":"猪首领的地盘", 
-		"chapterType":1, "chapterImgPath":"", "nextChapterID":2, "levelArr":[101,102,103,104,105], "initialHeroArr":[101,102,103]},
-	{"chapterID":2, "chapterSequence": "第二章", "chapterNamePath": "img-hall-img_chapterName1", "describe":"猪首领的地盘", 
-		"chapterType":2, "chapterImgPath":"", "nextChapterID":3, "levelArr":[101,102,103,104,105], "initialHeroArr":[101,104,105,201,202]},
-	{"chapterID":3, "chapterSequence": "第三章", "chapterNamePath": "img-hall-img_chapterName1", "describe":"猪首领的地盘", 
-		"chapterType":3, "chapterImgPath":"", "nextChapterID":4, "levelArr":[101,102,103,104,105], "initialHeroArr":[101]},
-	{"chapterID":4, "chapterSequence": "第四章", "chapterNamePath": "img-hall-img_chapterName1", "describe":"猪首领的地盘", 
-		"chapterType":1, "chapterImgPath":"", "nextChapterID":5, "levelArr":[101,102,103,104,105], "initialHeroArr":[101]},
-	{"chapterID":5, "chapterSequence": "第五章", "chapterNamePath": "img-hall-img_chapterName1", "describe":"猪首领的地盘", 
-		"chapterType":1, "chapterImgPath":"", "nextChapterID":6, "levelArr":[101,102,103,104,105], "initialHeroArr":[101]}
+    {
+        "chapterID": 1,
+        "chapterNamePath": "疯狂农场",
+        "describe": "疯狂农场的故事介绍，疯狂农场的故事介绍，疯狂农场的故事介绍，疯狂农场的故事介绍，",
+        "chapterImgPath": 1001,
+        "chapterType": 1,
+        "levelArr": [101, 102, 103, 104, 105],
+        "initialHeroArr": [401],
+        "nextChapterID": 2,
+        "chapterSequence": "第一章"
+    },
+    {
+        "chapterID": 2,
+        "chapterNamePath": "工厂",
+        "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
+        "chapterImgPath": 1002,
+        "chapterType": 1,
+        "levelArr": [101, 102, 103, 104, 105],
+        "initialHeroArr": [401],
+        "nextChapterID": 3,
+        "chapterSequence": "第二章"
+    },
+    {
+        "chapterID": 3,
+        "chapterNamePath": "工厂",
+        "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
+        "chapterImgPath": 1003,
+        "chapterType": 1,
+        "levelArr": [101, 102, 103, 104, 105],
+        "initialHeroArr": [401],
+        "nextChapterID": 4,
+        "chapterSequence": "第三章"
+    },
+    {
+        "chapterID": 4,
+        "chapterNamePath": "工厂",
+        "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
+        "chapterImgPath": 1004,
+        "chapterType": 1,
+        "levelArr": [101, 102, 103, 104, 105],
+        "initialHeroArr": [401],
+        "nextChapterID": 5,
+        "chapterSequence": "第四章"
+    },
+    {
+        "chapterID": 5,
+        "chapterNamePath": "工厂",
+        "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
+        "chapterImgPath": 1005,
+        "chapterType": 1,
+        "levelArr": [101, 102, 103, 104, 105],
+        "initialHeroArr": [401],
+        "nextChapterID": 0,
+        "chapterSequence": "第五章"
+    }
 ]

@@ -146,17 +146,10 @@ export class BattleHeroStateView extends Component {
         this.btn_remove.node.on(Node.EventType.TOUCH_END, this.removeHero, this);
         
         // 更新英雄事件
-        GameCustomEvent.Instance.node.on(GameEventName.BATTLE_HERO_STATE_HERO_UPDATE_EVENT, this.onHeroUpdate, this);
+        GameCustomEvent.Instance.addCustomEvent(GameEventName.BATTLE_HERO_STATE_HERO_UPDATE_EVENT,this.onHeroUpdate,this);
     }
     
     private onHeroUpdate(): void {
-        this.updateHeroList();
-        //this.updateHeroTab();
-        //this.updateTabSelectState();
-        //this.refreshHeroInfo(this.currentSelectHeroIndex);
-    }
-    
-    private onHeroUpgrade(): void {
         this.updateHeroList();
         //this.updateHeroTab();
         //this.updateTabSelectState();
@@ -192,7 +185,7 @@ export class BattleHeroStateView extends Component {
             this.lay_tab.node.active = true;
             this.onTabClick(index);
             //发送事件FIGHT_OTHER_VIEW_EVENT，参数为3
-            GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT, new GameEventName({ viewType: 3 }));
+            GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT, new GameEventName({ eventCode: 3, viewType: 3 }));
         }
     }
 
@@ -200,7 +193,7 @@ export class BattleHeroStateView extends Component {
         this.lay_tab.node.active = false;
         this.node_window.active = false;
         //发送事件FIGHT_OTHER_VIEW_EVENT，参数为4
-        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT, new GameEventName({ viewType: 4 }));
+        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT, new GameEventName({ eventCode: 4, viewType: 4 }));
     }
 
     private onTabClick(index: number): void {

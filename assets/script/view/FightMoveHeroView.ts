@@ -1935,12 +1935,26 @@ export class FightMoveHeroView extends Component {
     //更新玩家当前等级升下一级需要的经验值
     updatePlayerMaxEXP()
     {
-        if(this.playerLevel < 6)
+        switch (this.playerLevel)
         {
-            this.maxEXP = this.playerLevel * 10;
-            
-        }else{
-            this.maxEXP = 100;
+            case 1:
+                this.maxEXP = 1;
+                break;
+            case 2:
+                this.maxEXP = 3;
+                break;
+            case 3:
+                this.maxEXP = 5;
+                break;
+            case 4:
+                this.maxEXP = 10;
+                break;
+            case 5:
+                this.maxEXP = 20;
+                break;
+            default:
+                this.maxEXP = 30;
+                break;
         }
     }
 

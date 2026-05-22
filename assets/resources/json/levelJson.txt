@@ -1,12 +1,57 @@
 [
-	{"levelID":101, "levelName":"1", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
-		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[102]},
-	{"levelID":102, "levelName":"2", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
-		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[103]},
-	{"levelID":103, "levelName":"3", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
-		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[104]},
-	{"levelID":104, "levelName":"4", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
-		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[105,106]},
-	{"levelID":105, "levelName":"5", "levelType":1, "stillLife": false, "maxTime":60, "levelImgPath":"", "levelMusicPath":"",
-		"waveArr":[10101,10102,10103,10104,10105], "nextLevelArr":[0]}
+    {
+        "levelID": 101,
+        "levelType": 1,
+        "stillLife": true,
+        "nextLevelArr": [102],
+        "maxTime": 60,
+        "waveArr": [10101, 10102, 10103, 10104, 10105],
+        "levelImgPath": "",
+        "levelMusicPath": "",
+        "levelName": "1"
+    },
+    {
+        "levelID": 102,
+        "levelType": 2,
+        "stillLife": true,
+        "nextLevelArr": [103],
+        "maxTime": 60,
+        "waveArr": [10201, 10202, 10203],
+        "levelImgPath": "",
+        "levelMusicPath": "",
+        "levelName": "2"
+    },
+    {
+        "levelID": 103,
+        "levelType": 3,
+        "stillLife": true,
+        "nextLevelArr": [104],
+        "maxTime": 60,
+        "waveArr": [10301],
+        "levelImgPath": "",
+        "levelMusicPath": "",
+        "levelName": "3"
+    },
+    {
+        "levelID": 104,
+        "levelType": 4,
+        "stillLife": true,
+        "nextLevelArr": [105],
+        "maxTime": 60,
+        "waveArr": [10401, 10402, 10403, 10404, 10405],
+        "levelImgPath": "",
+        "levelMusicPath": "",
+        "levelName": "4"
+    },
+    {
+        "levelID": 105,
+        "levelType": 5,
+        "stillLife": true,
+        "nextLevelArr": [],
+        "maxTime": 60,
+        "waveArr": [10501],
+        "levelImgPath": "",
+        "levelMusicPath": "",
+        "levelName": "5"
+    }
 ]
