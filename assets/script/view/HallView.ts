@@ -83,11 +83,12 @@ export class HallView extends Component {
     }
 
     start() {
-        //预加载
         let pathfight = Layer.Instance.getGamePrePath("fightMoveHero");
         LoadImgTool.Instance.loadPrefab("fightMoveHero",pathfight,Layer.Instance.layerView,false);
         // let pathfight = Layer.Instance.getGamePrePath("fight");
         // LoadImgTool.Instance.loadPrefab("fight",pathfight,Layer.Instance.layerView,false);
+        // let pathAward = Layer.Instance.getGamePrePath("award");
+        // LoadImgTool.Instance.loadPrefab("award",pathAward,Layer.Instance.layerView,false);
         
         //默认页面征程
         this.freshChapter();

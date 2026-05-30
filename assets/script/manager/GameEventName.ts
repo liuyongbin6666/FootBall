@@ -14,14 +14,17 @@ export class GameEventName {
 
     /** 刷新酒馆选卡 */
     static AMPLIFICATION_CARD_FRESH_EVENT = "amplification_card_fresh_event";
-    /** 关闭通关结算界面 */
-    static CHAPTER_RESULT_CLOSE_EVENT = "chapter_result_close_event";
+    /** 奖励页面 */
+    static AWARD_EVENT = "award_event";
+    /** 通关关卡界面 */
+    static LEVER_PASS_EVENT = "level_pass_event";
+    /** 通关章节结算排行界面 */
+    static CHAPTER_RANK_EVENT = "chapter_rank_event";
     /** 英雄动作 */
     static HERO_SKE_EVENT = "hero_ske_event";
 
     /** 注册事件 */
     static REGISTER_EVENT = "register_event";
-    static GAME_START_EVENT = "game_start_event";
 
     /** 弹窗事件 */
     static TIPS_EVENT = "tips_event";

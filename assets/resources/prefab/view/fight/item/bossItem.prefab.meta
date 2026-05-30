@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "977a7248-277a-40a6-8726-5aca570b6c64",
+  "uuid": "c24d778b-bbb3-49e2-aa35-c5d9d6a9d9d0",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "enemyItem"
+    "syncNodeName": "bossItem"
   }
 }

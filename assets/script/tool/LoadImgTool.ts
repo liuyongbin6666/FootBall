@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, resources, Sprite, SpriteFrame, instantiate, Prefab } from 'cc';
+import { _decorator, Component, Node, resources, Sprite, SpriteFrame, instantiate, Prefab, sp } from 'cc';
 import { Layer } from '../manager/Layer';
 const { ccclass, property } = _decorator;
 
@@ -59,6 +59,24 @@ export class LoadImgTool extends Component {
                 fatherNode.addChild(gameNode);
                 Layer.Instance.saveGamePre(preName,fatherNode);
             // }
+        });
+    }
+    
+    //加载SkeletonData（更换一个spine动画的皮） path 路径 spineComp spine动画节点 playAniName 播放动画名
+    loadSkeletonData(path: string,spineComp: sp.Skeleton,playAniName: string) {
+        resources.load(path, sp.SkeletonData, (err, data) => {
+            // if (err || !data) return;
+            if(err)
+            {
+                console.log("加载新的SkeletonData错误",err);
+                return;
+            }
+            // ✅ 正确：直接赋值，不要先设为 null
+            spineComp.skeletonData = data;
+            console.log("新的SkeletonData",data)
+            spineComp.clearTracks();
+            // 必须重新设置动画，否则可能不显示
+            spineComp.setAnimation(0, playAniName, true);
         });
     }
 }

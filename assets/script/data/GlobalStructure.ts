@@ -59,7 +59,7 @@ export interface levelStructure {
     levelID:number;
     //关卡名
     levelName:string;
-    //关卡类型 1 割草关卡 2 障碍关卡 3 常规关卡 4 Boss关卡 5 奖杯关卡
+    //关卡类型 1 常规关卡/割草关卡 2 障碍关卡 3 宝箱关卡 4 Boss关卡 5 奖杯关卡
     levelType:number;
     //地图是否静止
     stillLife:boolean;
@@ -93,10 +93,6 @@ export interface waveStructure {
     BossID:number;
     //Boss出现时间
     BossBornTime:number;
-}
-
-//权重
-export interface ariseStructure {
 }
 
 //英雄
@@ -176,6 +172,8 @@ export interface heroStructure {
     quality:number;
     //英雄技能随等级成长
     skillProArr:Array<relevanceProStructure>;
+    //英雄加强次数（一共抽过几次牌）
+    promoteTotal:number;
 }
 
 //英雄满级
@@ -197,15 +195,17 @@ export interface enemyStructure {
     enemyID:number; 
     //敌人头像图片路径
     enemyHeadImgPath:string;
+    //敌人spine动画路径
+    enemySkePath:string;
     //敌人名
     enemyName:string;
     //敌人介绍
     enemyIntroduce:string;
-    //敌人体型
+    //敌人体型(区分外形大小) 1 小怪 2 中怪 3 大怪 4 boss 5 合体怪（奖杯）
     outline:number;
-    //敌人类型
+    //敌人类型（区分行走方向）1 从上到下 2 静止 3 从左到右
     enemyType:number;
-    //敌人职业
+    //敌人职业（区分功能，怪物的不同技能）
     enemyOccupation:number;
     //敌人血量上限
     maxHP:number;

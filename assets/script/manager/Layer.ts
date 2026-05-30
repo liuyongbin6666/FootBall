@@ -244,9 +244,6 @@ export class Layer extends Component {
             //设置
             case "set":
                 return "prefab/view/set";
-            //章节总览
-            case "chapterSylloge":
-                return "prefab/view/chapterSylloge/chapterSylloge";
             //战斗-英雄静止版
             case "fight":
                 return "prefab/view/fight/fight";
@@ -259,12 +256,21 @@ export class Layer extends Component {
             //酒馆抽卡
             case "amplificationCard":
                 return "prefab/view/amplificationCard";
+            //关卡通关
+            case "levelPass":
+                return "prefab/view/levelPass";
             //战斗失败
             case "lose":
                 return "prefab/view/lose";
             //游戏记录
             case "gameRecord":
                 return "prefab/view/gameRecord/gameRecord";
+            //奖励
+            case "award":
+                return "prefab/view/award/award";
+            //章节结算排行
+            case "chapterRank":
+                return "prefab/view/chapterRank/chapterRank";
             //角色属性
             case "roleProperty":
                 return "prefab/view/roleProperty/roleProperty";
@@ -274,9 +280,6 @@ export class Layer extends Component {
             //地图
             case "map":
                 return "prefab/view/map/map";
-            //地图-变换房间
-            case "roomRotationControl":
-                return "prefab/view/map/mapComponent/roomRotationControl";
             //装备
             case "equip":
                 return "prefab/view/equip";
@@ -298,9 +301,6 @@ export class Layer extends Component {
             //好友详情
             case "friendDetails":
                 return "prefab/view/friends/friendDetails";
-            //成就
-            case "achievement":
-                return "prefab/view/achievement/achievement";
             //引导
             case "guidance":
                 return "prefab/view/guidance/guidance";

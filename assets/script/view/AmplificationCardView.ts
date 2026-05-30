@@ -154,8 +154,22 @@ export class AmplificationCardView extends Component {
             heroQuality = 6;
         }
         var heroQualityArr:Array<heroStructure> = [];
-        //如果7个位置已满，只能选择在7个英雄中同品级的提升
-        if(GlobalData.Instance.joinHeroArr.length >= 7)
+        //前几张牌已生成的上阵英雄，且与已上阵的英雄与不同
+        var pCJoinHeroCount:number = 0;
+        for(var pcjhc:number = 0;pcjhc < this.cardjoinHeroArr.length;pcjhc++)
+        {
+            //生成的英雄，是否在上阵列表中
+            for(var joh:number = 0;joh < GlobalData.Instance.joinHeroArr.length;joh++)
+            {
+                if(this.cardjoinHeroArr[pcjhc] == GlobalData.Instance.joinHeroArr[joh].heroID)
+                {
+                    pCJoinHeroCount++;
+                    break;
+                }
+            }
+        } 
+        //如果7个位置已满(上阵英雄+已经生成的新上阵英雄 >= 7)，只能选择在7个英雄中同品级的提升
+        if(GlobalData.Instance.joinHeroArr.length + pCJoinHeroCount >= 7)
         {
             for(var addHeroPro:number = 0;addHeroPro < GlobalData.Instance.joinHeroArr.length;addHeroPro++)
             {
@@ -183,7 +197,7 @@ export class AmplificationCardView extends Component {
             console.log("提升品质",this.produceCardArr[cardIndex].quality);
             //该品级的满级英雄
             var isTopFull:boolean = true;
-            console.log("该品级的所有英雄",heroQualityArr);
+            console.log("该品级的所有英雄",heroQuality,heroQualityArr);
             //把前几张牌已上阵的英雄也过滤掉
             for(var sz:number = 0;sz < this.cardjoinHeroArr.length;sz++)
             {
@@ -226,6 +240,12 @@ export class AmplificationCardView extends Component {
         //     console.log("暂无已上阵英雄可提升");
         //     return;
         // }
+        if(heroQualityArr.length <= 0)
+        {
+            //酒馆显示暂无已上阵英雄可提升
+            console.log("暂无已上阵英雄可提升");
+            return;
+        }
     
         //提升属性的上阵英雄
         var proJoinHero:heroStructure;
@@ -266,7 +286,7 @@ export class AmplificationCardView extends Component {
             for(var pcsy:number = 0;pcsy < this.produceCardArr.length;pcsy++)
             {
                 //如果之前的卡牌生成过该英雄
-                if(this.produceCardArr[pcsy].heroID == heroQualityArr[rqHero].heroID)
+                if(heroQualityArr[rqHero] && this.produceCardArr[pcsy].heroID == heroQualityArr[rqHero].heroID)
                 {
                     cardSamePro++;
                 }
@@ -277,7 +297,7 @@ export class AmplificationCardView extends Component {
                 //有则记录已有的属性ID
                 for(var jlpc:number = 0;jlpc < this.produceCardArr.length;jlpc++)
                 {
-                    if(this.produceCardArr[jlpc].heroID == heroQualityArr[rqHero].heroID)
+                    if(heroQualityArr[rqHero] && this.produceCardArr[jlpc].heroID == heroQualityArr[rqHero].heroID)
                     {
                         forbiddenProArr.push(this.produceCardArr[jlpc].promote);
                     }

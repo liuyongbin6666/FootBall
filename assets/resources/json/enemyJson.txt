@@ -4,6 +4,7 @@
         "enemyName": "小怪",
         "enemyIntroduce": "怪物介绍，怪物介绍，怪物介绍，怪物介绍，怪物介绍，怪物介绍，怪物介绍，",
         "enemyHeadImgPath": "path/101",
+        "enemyHeadImgPath": "spine/monster/small/unit_anim_ monster_02/unit_anim_ monster_02",
         "outline": 1,
         "enemyType": 1,
         "enemyOccupation": 1,

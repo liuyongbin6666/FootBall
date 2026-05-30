@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color, UIOpacity, sp, v3, AudioClip, AudioSource } from 'cc';
-import { bulletStructure, enemyStructure, heroStructure, relevanceProStructure, soccerStructure, waveStructure } from '../data/GlobalStructure';
+import { bulletStructure, enemyStructure, heroStructure, levelStructure, relevanceProStructure, soccerStructure, waveStructure } from '../data/GlobalStructure';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { OperationTool } from '../tool/OperationTool';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
@@ -22,7 +22,19 @@ export class FightMoveHeroView extends Component {
     private heroItemPre: Prefab = null;
 
     @property(Prefab)
-    private enemyItemPre: Prefab = null;
+    private enemySmallItemPre: Prefab = null;
+
+    @property(Prefab)
+    private enemyMiddleItemPre: Prefab = null;
+
+    @property(Prefab)
+    private enemyBigItemPre: Prefab = null;
+
+    @property(Prefab)
+    private bossItemPre: Prefab = null;
+
+    @property(Prefab)
+    private trophyItem: Prefab = null;
 
     @property(Prefab)
     private soccerItemPre: Prefab = null;
@@ -130,8 +142,10 @@ export class FightMoveHeroView extends Component {
     private allAttack:number = 0;
     //本章节内造成的伤害总和
     private harmTotal:number = 0;
-    //连击次数统计 连击加层伤害 = 原伤害 * doubleHit%
+    //连击次数统计
     private doubleHit:number = 0;
+    //最高连击次数
+    private maxDoubleHit:number = 0;
 
     //英雄槽
     private heroGrooveArr:Array<any>;
@@ -144,9 +158,9 @@ export class FightMoveHeroView extends Component {
     //所有英雄固定y站位
     private heroImmobilizationY:number = -262;
     //英雄x轴间距
-    private heroXInterval:number = 68;
+    private heroXInterval:number = 50;
     //英雄起始位置
-    private heroInitialPosition:number = -210;
+    private heroInitialPosition:number = -150;
 
     //移动块和鼠标的x差值
     private moveIntervalX:number = 0;
@@ -159,7 +173,7 @@ export class FightMoveHeroView extends Component {
     //敌人编号（因为能创建同一个类型，需要用编号来区分）
     private enemySerialNum:number = 10000;
     //敌人停止走动发动攻击为止
-    private enemyStopY:number = 6;
+    private enemyStopY:number = -45;//6
     //敌人子弹速度
     private bulletSpeed:number = 5;
     //敌人产生间隔
@@ -177,6 +191,7 @@ export class FightMoveHeroView extends Component {
 
     //暂存波次
     private saveWave:waveStructure = null;
+    private saveLevel:levelStructure = null;
     protected onLoad(): void {
         this._initObect();
         this._onEvent();
@@ -261,6 +276,10 @@ export class FightMoveHeroView extends Component {
         Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
 
         this.schedule(this.soccerGame,this.timeHS);
+
+        //预加载
+        let pathlevelPass = Layer.Instance.getGamePrePath("levelPass");
+        LoadImgTool.Instance.loadPrefab("levelPass",pathlevelPass,Layer.Instance.layerView,false);
     }
     
     //看视频得奖励
@@ -288,12 +307,75 @@ export class FightMoveHeroView extends Component {
         this.node_enemy.removeAllChildren();
         this.node_soccer.removeAllChildren();
 
+        this.heroArr = [];
+        this.oldHeroArr = [];
+        this.enemyArr = [];
+        this.soccerArr = [];
+
         this.soccerGameState = gameState.wait;
         this.HP = 0;
         this.EXP = 0;
         this.allAttack = 0;
-        // this.maxHP = 0;
-        // this.maxEXP = 0;
+        this.maxHP = 0;
+        this.maxEXP = 0;
+
+        //编号重置
+        this.enemySerialNum = 10000;
+        // this.recycleEnemyArr = [];
+    }
+
+    //重新开始
+    restart()
+    {
+        this.img_danger.node.active = false;
+
+        //创建每波第一个敌人（怪物产生间隔从第二个开始）
+        this.ariseEnemy();
+        
+        this.heroShow();
+        this.createSoccer();
+        //球变为发球状态
+        this.soccerArr[0].soccerState = 1;
+        this.updatePlayerMaxEXP();
+        this.freshWave();
+        this.freshHP();
+        this.freshEXP();
+        this.soccerGameState = gameState.start;
+    }
+
+    //复制英雄数据 hrArr 英雄数组 copyHrArr被复制的英雄数组
+    copyHeroArrFun(hrArr:Array<heroStructure>,copyHrArr:Array<heroStructure>)
+    {
+        //不能直接=数组，会变成索引，修改该数组会影响原数组的值
+        var hero:heroStructure = {heroID:0,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",
+            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
+            criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:10,catchSoccerID:0,unlock:true,
+            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
+        //清空数组
+        hrArr = [];
+        for(var h:number = 0;h < copyHrArr.length;h++)
+        {
+            hero.heroID = copyHrArr[h].heroID;
+            hero.heroImgPath = copyHrArr[h].heroImgPath;
+            hero.heroHeadImgPath = copyHrArr[h].heroHeadImgPath;
+            hero.heroName = copyHrArr[h].heroName;
+            hero.heroIntroduce = copyHrArr[h].heroIntroduce;
+            hero.heroType = copyHrArr[h].heroType;
+            hero.quality = copyHrArr[h].quality;
+            hero.restrainType = copyHrArr[h].restrainType;
+            hero.maxHP = copyHrArr[h].maxHP;
+            hero.HP = copyHrArr[h].maxHP;
+            hero.skillArr = copyHrArr[h].skillArr;
+            hero.skillProArr = copyHrArr[h].skillProArr;
+            hero.promoteTotal = copyHrArr[h].promoteTotal;
+            hero.speed = copyHrArr[h].speed;
+            hero.harm = copyHrArr[h].harm;
+            hero.criticalChance = copyHrArr[h].criticalChance;
+            hero.breakOutHarmChance = copyHrArr[h].breakOutHarmChance;
+            hero.join = copyHrArr[h].join;
+            hero.unlock = copyHrArr[h].unlock;
+            hrArr.push(hero);
+        }
     }
 
     readRecord(cid:number)
@@ -316,12 +398,14 @@ export class FightMoveHeroView extends Component {
                 //如果记录为0，为重置该关卡，默认从第一个关卡开始
                 if(GlobalData.Instance.gameRecord.levelID == 0)
                 {
+                    console.log("首次");
                     GlobalData.Instance.gameRecord.levelID = GlobalData.Instance.chapterTableArr[findChapter].levelArr[0];
                     //初始化英雄数组
                     this.readHeroData(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr,true);
                 }else{
-                    //继续游戏时，英雄数据为之前的数据
-                    this.oldHeroArr = GlobalData.Instance.gameRecord.levelHeroArr;
+                    console.log("非首次");
+                    //继续游戏时，英雄数据为之前所达成关卡的数据
+                    this.copyHeroArrFun(this.oldHeroArr,GlobalData.Instance.gameRecord.levelHeroArr);
                     //初始化英雄数组
                     this.readHeroData(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr,false);
                 }
@@ -333,6 +417,18 @@ export class FightMoveHeroView extends Component {
             //当前关卡
             if(GlobalData.Instance.levelTableArr[findLevel].levelID == GlobalData.Instance.gameRecord.levelID)
             {
+                var LevelOne:levelStructure = {levelID:GlobalData.Instance.levelTableArr[findLevel].levelID,
+                    levelName:GlobalData.Instance.levelTableArr[findLevel].levelName,
+                    levelType:GlobalData.Instance.levelTableArr[findLevel].levelType,
+                    stillLife:GlobalData.Instance.levelTableArr[findLevel].stillLife,
+                    maxTime:GlobalData.Instance.levelTableArr[findLevel].maxTime,
+                    nextLevelArr:GlobalData.Instance.levelTableArr[findLevel].nextLevelArr,
+                    waveArr:GlobalData.Instance.levelTableArr[findLevel].waveArr,
+                    levelImgPath:GlobalData.Instance.levelTableArr[findLevel].levelImgPath,
+                    levelMusicPath:GlobalData.Instance.levelTableArr[findLevel].levelMusicPath,
+                    dropGold:GlobalData.Instance.levelTableArr[findLevel].dropGold,
+                    dropGoodsArr:GlobalData.Instance.levelTableArr[findLevel].dropGoodsArr};
+                this.saveLevel = LevelOne;
                 this.freshLevel(GlobalData.Instance.levelTableArr[findLevel].levelName);
                 this.maxWave = GlobalData.Instance.levelTableArr[findLevel].waveArr.length;
                 if(this.waveID <= 0 && GlobalData.Instance.levelTableArr[findLevel].waveArr.length > 0)
@@ -350,7 +446,7 @@ export class FightMoveHeroView extends Component {
                             total:GlobalData.Instance.waveTableArr[findWave].total,
                             intervalTime:GlobalData.Instance.waveTableArr[findWave].intervalTime,
                             BossID:GlobalData.Instance.waveTableArr[findWave].BossID,
-                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime}
+                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime};
                         this.saveWave = waveOne;//GlobalData.Instance.waveTableArr[findWave]
                         //按10毫秒一次算
                         this.saveWave.intervalTime *= 100;
@@ -463,18 +559,10 @@ export class FightMoveHeroView extends Component {
             var readNextLvOver:boolean = this.readNextLevel();
             if(readNextLvOver)
             {
-                //波次重置
-                this.wave = 1;
-                this.fogAni();
-                //存储本关卡英雄数据
-                this.saveOldHero();
-                GlobalData.Instance.gameRecord.levelHeroArr = this.oldHeroArr;
-                setTimeout(() => {
-                    //重新加载一次波数
-                    this.readNewWave();
-                }, 4500);
+                this.levelPassFun();
             }else{
-                //回到主页面
+                //章节结算，最后一个关卡无关卡结算
+                this.chapterResultFun();
             }
         }
     }
@@ -543,7 +631,7 @@ export class FightMoveHeroView extends Component {
         var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
-            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[]};
+            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         for(var ht:number = 0;ht < GlobalData.Instance.heroTableArr.length;ht++)
         {
             if(GlobalData.Instance.heroTableArr[ht].heroID == hid)
@@ -592,7 +680,7 @@ export class FightMoveHeroView extends Component {
         var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
-            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[]};
+            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         for(var jh:number = 0;jh < this.oldHeroArr.length;jh++)
         {
             if(this.oldHeroArr[jh].heroID == hid)
@@ -611,6 +699,7 @@ export class FightMoveHeroView extends Component {
                 this.HP += this.oldHeroArr[jh].maxHP;
                 hero.skillArr = this.oldHeroArr[jh].skillArr;
                 hero.skillProArr = this.oldHeroArr[jh].skillProArr;
+                hero.promoteTotal = this.oldHeroArr[jh].promoteTotal;
                 hero.speed = this.oldHeroArr[jh].speed;
                 hero.harm = this.oldHeroArr[jh].harm;
                 this.allAttack += hero.harm;
@@ -761,7 +850,7 @@ export class FightMoveHeroView extends Component {
         }
     }
 
-    //下阵英雄 hid 下阵英雄ID
+    //下阵英雄（英雄下阵后加强数据全部移除，再次上阵需要重新读表） hid 下阵英雄ID
     eradicateHero(hid:number)
     {
         if(GlobalData.Instance.joinHeroArr.length < 1)
@@ -866,6 +955,21 @@ export class FightMoveHeroView extends Component {
         return tempHeroIndex;
     }
 
+    //查找离敌人最近的所有英雄
+    findNearHero(heroX:number):Array<heroStructure>
+    {
+        var nearHeroArr:Array<heroStructure> = [];
+        for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
+        {
+            //敌人和英雄x轴相差距离小于130
+            if(Math.abs(heroX - this.heroArr[findHero].heroItem.getPosition().x) <= 110)
+            {
+                nearHeroArr.push(this.heroArr[findHero]);
+            }
+        }
+        return nearHeroArr;
+    }
+
     //所有上阵英雄ID
     findJoinHeroInBattle():Array<number>
     {
@@ -918,7 +1022,7 @@ export class FightMoveHeroView extends Component {
         // {
         //     hItem.setPosition(-297,-217);
         // }else{
-        //     hItem.setPosition(-297 + heroIndex * 98,-217);//-170
+        //     hItem.setPosition(-297 + heroIndex * 98,-217);
         // }
         //暂定位置：5 3 1 0 2 4 6
         //         0 1 2 3 4 5 6
@@ -964,6 +1068,7 @@ export class FightMoveHeroView extends Component {
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyHeadImgPath = GlobalData.Instance.enemyTableArr[eta].enemyHeadImgPath;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyName = GlobalData.Instance.enemyTableArr[eta].enemyName;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyIntroduce = GlobalData.Instance.enemyTableArr[eta].enemyIntroduce;
+                //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].outline = GlobalData.Instance.enemyTableArr[eta].outline;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyType = GlobalData.Instance.enemyTableArr[eta].enemyType;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyOccupation = GlobalData.Instance.enemyTableArr[eta].enemyOccupation;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].maxHP = GlobalData.Instance.enemyTableArr[eta].maxHP;
@@ -996,7 +1101,7 @@ export class FightMoveHeroView extends Component {
                 //     this.recycleEnemyArr.splice(this.recycleEnemyArr.length - 1, 0);
                 // }else{
                     //创建新敌人数据
-                    var es:enemyStructure = {enemyID:1,enemyHeadImgPath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",outline:1,enemyType:1,enemyOccupation:1,
+                    var es:enemyStructure = {enemyID:1,enemyHeadImgPath:"",enemySkePath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",outline:1,enemyType:1,enemyOccupation:1,
                         maxHP:50,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",
                         enemyItem:null,HP:10,attackSpeedTime:0};
                     
@@ -1004,6 +1109,7 @@ export class FightMoveHeroView extends Component {
                     es.enemyHeadImgPath = GlobalData.Instance.enemyTableArr[eta].enemyHeadImgPath;
                     es.enemyName = GlobalData.Instance.enemyTableArr[eta].enemyName;
                     es.enemyIntroduce = GlobalData.Instance.enemyTableArr[eta].enemyIntroduce;
+                    es.outline = GlobalData.Instance.enemyTableArr[eta].outline;
                     es.enemyType = GlobalData.Instance.enemyTableArr[eta].enemyType;
                     es.enemyOccupation = GlobalData.Instance.enemyTableArr[eta].enemyOccupation;
                     es.maxHP = GlobalData.Instance.enemyTableArr[eta].maxHP;
@@ -1021,9 +1127,46 @@ export class FightMoveHeroView extends Component {
 
                     es.HP = es.maxHP;
 
-                    let item = instantiate(this.enemyItemPre);
-                    //随机位置
-                    item.setPosition(-163 + Math.floor(Math.random() * 324),280);
+                    let item;
+                    switch(es.outline)
+                    {
+                        case 1:
+                            item = instantiate(this.enemySmallItemPre);
+                            // 更换其他同品级怪物动画
+                            // LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,//"spine/monster/small/unit_anim_ monster_01/unit_anim_ monster_01"
+                            //     item.getChildByName("ske_small_monster").getComponent(sp.Skeleton),"animation_move");
+                            break;
+                        case 2:
+                            item = instantiate(this.enemyMiddleItemPre);
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_middle_monster").getComponent(sp.Skeleton),"animation_move");
+                            break;
+                        case 3:
+                            item = instantiate(this.enemyBigItemPre);
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_big_monster").getComponent(sp.Skeleton),"animation_move");
+                            break;
+                        case 4:
+                            item = instantiate(this.bossItemPre);
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_boss_monster").getComponent(sp.Skeleton),"animation_move");
+                            break;
+                        case 5:
+                            item = instantiate(this.trophyItem);
+                            // LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_trophy_monster").getComponent(sp.Skeleton),"animation_move");
+                            break;
+                    }
+                    switch(es.enemyType)
+                    {
+                        case 1:
+                            //随机起始位置
+                            item.setPosition(-163 + Math.floor(Math.random() * 324),280);
+                            break;
+                        case 2:
+                            //指定起始位置
+                            break;
+                        case 3:
+                            //固定起始位置
+                            item.setPosition(-450,135);
+                            break;
+                    }
                     this.enemySerialNum++;
                     item["enemySerialNum"] = this.enemySerialNum;//GlobalData.Instance.enemyTableArr[eta].enemyID
                     console.log("创建敌人赋予item编号",item["enemySerialNum"]);
@@ -1086,6 +1229,93 @@ export class FightMoveHeroView extends Component {
         }
     }
 
+    //查找位置最前面且血量大于0的敌人编号
+    findFrontEnemySerialNum():number
+    {
+        if(this.enemyArr.length <= 0)
+        {
+            return -1;
+        }
+        var frontEnemySerialNum:number = this.enemyArr[0].enemyItem["enemySerialNum"];
+        var frontHP:number = this.enemyArr[0].HP;
+        for(var findEnemy:number = 1;findEnemy < this.enemyArr.length;findEnemy++)
+        {
+            if((this.enemyArr[findEnemy - 1].HP <= 0 && this.enemyArr[findEnemy].HP > 0) || 
+            (this.enemyArr[findEnemy].enemyItem.getPosition().y < this.enemyArr[findEnemy - 1].enemyItem.getPosition().y && this.enemyArr[findEnemy].HP > 0))
+            {
+                if(this.enemyArr[findEnemy].enemyType == 1 || this.enemyArr[findEnemy].enemyType == 2)
+                {
+                    frontEnemySerialNum = this.enemyArr[findEnemy].enemyItem["enemySerialNum"];
+                    frontHP = this.enemyArr[findEnemy].HP;
+                }
+                //盗贼需要在有效范围内，才能进行选择 x小于-195或大于220时不在选择攻击范围
+                else if(this.enemyArr[findEnemy].enemyType == 3 && this.enemyArr[findEnemy].enemyItem.getPosition().x > -195 
+                && this.enemyArr[findEnemy].enemyItem.getPosition().x < 220)
+                {
+                    frontEnemySerialNum = this.enemyArr[findEnemy].enemyItem["enemySerialNum"];
+                    frontHP = this.enemyArr[findEnemy].HP;
+                }
+            }
+        }
+        if(frontHP <= 0)
+        {
+            return -1;
+        }else{
+            return frontEnemySerialNum;
+        }
+    }
+
+    //查询敌人某个类型的剩余个数
+    findResidueEnemyType(reType:number):number
+    {
+        var reCount:number = 0;
+        for(var re:number = 0;re < this.enemyArr.length;re++)
+        {
+            if(this.enemyArr[re].enemyType == reType)
+            {
+                reCount++;
+            }
+        }
+        return reCount;
+    }
+
+    //查找敌人是否已死亡
+    findEnemyDeadState(deadEnemySerialNum:number):boolean
+    {
+        var dead:boolean = false;
+        for(var findDeadEnemy:number = 0;findDeadEnemy < this.enemyArr.length;findDeadEnemy++)
+        {
+            if(deadEnemySerialNum == this.enemyArr[findDeadEnemy].enemyItem["enemySerialNum"] && this.enemyArr[findDeadEnemy].HP <= 0)
+            {
+                dead = true;
+                break;
+            }
+        }
+        return dead;
+    }
+
+    //敌人死亡
+    enemyDead()
+    {
+        for(var findDeadEnemy:number = 0;findDeadEnemy < this.enemyArr.length;findDeadEnemy++)
+        {
+            if(this.enemyArr[findDeadEnemy].HP <= 0)
+            {
+                //经验条增加经验
+                this.EXP += this.enemyArr[findDeadEnemy].EXP;
+                this.freshEXP();
+                //移除敌人显示
+                this.node_enemy.removeChild(this.enemyArr[findDeadEnemy].enemyItem);
+                //将敌人移除到屏幕外的位置
+                // this.enemyArr[findDeadEnemy].enemyItem.setPosition(0,1334);
+                //添加到敌人回收数据
+                // this.recycleEnemyArr.push(this.enemyArr[findDeadEnemy]);
+                //移除敌人数据
+                this.enemyArr.splice(findDeadEnemy,1);
+            }
+        }
+    }
+
     //创建足球
     createSoccer()
     {
@@ -1103,6 +1333,10 @@ export class FightMoveHeroView extends Component {
         var newHeroIndex:number = Math.floor(Math.random() * noTempheroArr.length);
         //获取该英雄的x,y，使球起始位置在英雄脚下
         let item = instantiate(this.soccerItemPre);
+        console.log("英雄非空数组：",noTempheroArr);
+        console.log("英雄下标：",newHeroIndex);
+        console.log("英雄位置：",noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y);
+        console.log("足球的起始位置：",noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item["soccerID"] = this.soccerArr.length + 1;
         var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:7,soccerItem:item,soccerState:0,
@@ -1123,19 +1357,6 @@ export class FightMoveHeroView extends Component {
         this.node_soccer.addChild(item);
     }
 
-    //创建子弹 enemyNode 发射子弹的敌人
-    createBullet(enemyNode:Node)
-    {
-        let item = instantiate(this.bulletItemPre);
-        //在敌人的手部生成子弹
-        item.setPosition(enemyNode.getPosition().x,enemyNode.getPosition().y + 20);
-        item["bulletID"] = this.bulletArr.length + 1;
-        //随机一个英雄做为攻击目标
-        var attackHeroIndex:number = Math.floor(Math.random() * this.heroArr.length);
-        var newBullet:bulletStructure = {bulletID:this.bulletArr.length + 1,bulletImgPath:"",goalHeroID:this.heroArr[attackHeroIndex].heroID};
-        this.bulletArr.push(newBullet);
-    }
-
     soccerAdd()
     {
         //根据本局的英雄个数，逐渐增加球
@@ -1154,6 +1375,45 @@ export class FightMoveHeroView extends Component {
         }
     }
 
+    //查找球状态
+    findSoccerState(sid:number):number
+    {
+        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
+        {
+            if(this.soccerArr[findSoccer].soccerID == sid)
+            {
+                return this.soccerArr[findSoccer].soccerState;
+            }
+        }
+        return 0;
+    }
+
+    //改变球状态
+    changeSoccerState(sid:number,state:number)
+    {
+        //根据足球ID找到足球
+        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
+        {
+            if(this.soccerArr[findSoccer].soccerID == sid)
+            {
+                this.soccerArr[findSoccer].soccerState = state;
+            }
+        }
+    }
+
+    //创建子弹 enemyNode 发射子弹的敌人
+    createBullet(enemyNode:Node)
+    {
+        let item = instantiate(this.bulletItemPre);
+        //在敌人的手部生成子弹
+        item.setPosition(enemyNode.getPosition().x,enemyNode.getPosition().y + 20);
+        item["bulletID"] = this.bulletArr.length + 1;
+        //随机一个英雄做为攻击目标
+        var attackHeroIndex:number = Math.floor(Math.random() * this.heroArr.length);
+        var newBullet:bulletStructure = {bulletID:this.bulletArr.length + 1,bulletImgPath:"",goalHeroID:this.heroArr[attackHeroIndex].heroID};
+        this.bulletArr.push(newBullet);
+    }
+
     //刷新关卡显示
     freshLevel(lvName:string)
     {
@@ -1169,6 +1429,9 @@ export class FightMoveHeroView extends Component {
     //刷新血量显示
     freshHP()
     {
+        //HP取整不带小数
+        this.HP = Math.floor(this.HP);
+        this.maxHP = Math.floor(this.maxHP);
         this.lab_HPProportion.string = this.HP + "/" + this.maxHP;
         this.pro_HP.progress = this.HP/this.maxHP;
     }
@@ -1183,6 +1446,10 @@ export class FightMoveHeroView extends Component {
     //刷新连击
     freshDoubleHit()
     {
+        if(this.maxDoubleHit < this.doubleHit)
+        {
+            this.maxDoubleHit = this.doubleHit;
+        }
         this.lab_doubleHit.string = "" + this.doubleHit;
         //刷新加层百分比
         this.lab_addingStory.string = "+" + this.doubleHit + "%";
@@ -1214,12 +1481,6 @@ export class FightMoveHeroView extends Component {
             //移动块最后位置(不在end中记录，因为鼠标可能移除屏幕外，导致没有end检测)
             this.lastMoveX = e.getLocationX() - this.moveIntervalX;
         }
-    }
-
-    //打开设置
-    openSet()
-    {
-        Layer.Instance.show("set",Layer.Instance.layerView);
     }
 
     //根据英雄个数，对拖动位置进行不同的限制
@@ -1258,59 +1519,15 @@ export class FightMoveHeroView extends Component {
         }
     }
 
+    //打开设置
+    openSet()
+    {
+        Layer.Instance.show("set",Layer.Instance.layerView);
+    }
+
     //技能释放
     conjure(e)
     {
-    }
-
-    //查找位置最前面且血量大于0的敌人编号
-    findFrontEnemySerialNum():number
-    {
-        if(this.enemyArr.length <= 0)
-        {
-            return -1;
-        }
-        var frontEnemySerialNum:number = this.enemyArr[0].enemyItem["enemySerialNum"];
-        var frontHP:number = this.enemyArr[0].HP;
-        for(var findEnemy:number = 1;findEnemy < this.enemyArr.length;findEnemy++)
-        {
-            if((this.enemyArr[findEnemy - 1].HP <= 0 && this.enemyArr[findEnemy].HP > 0) || 
-            (this.enemyArr[findEnemy].enemyItem.getPosition().y < this.enemyArr[findEnemy - 1].enemyItem.getPosition().y && this.enemyArr[findEnemy].HP > 0))
-            {
-                frontEnemySerialNum = this.enemyArr[findEnemy].enemyItem["enemySerialNum"];
-                frontHP = this.enemyArr[findEnemy].HP;
-            }
-        }
-        if(frontHP <= 0)
-        {
-            return -1;
-        }else{
-            return frontEnemySerialNum;
-        }
-    }
-
-    //敌人死亡
-    enemyDead()
-    {
-        for(var findDeadEnemy:number = 0;findDeadEnemy < this.enemyArr.length;findDeadEnemy++)
-        {
-            if(this.enemyArr[findDeadEnemy].HP <= 0)
-            {
-                //经验条增加经验
-                this.EXP += this.enemyArr[findDeadEnemy].EXP;
-                this.freshEXP();
-                //不能直接移除显示材质，因为为共享资源，移除时会进行资源释放，导致其他同类材质显示不正常
-                //移除敌人显示
-                // this.node_enemy.removeChild(this.node_enemy.children[findDeadEnemy]);
-                //将敌人移除到屏幕外的位置
-                // console.log("移除敌人ID：",this.enemyArr[findDeadEnemy].enemyID);
-                this.enemyArr[findDeadEnemy].enemyItem.setPosition(0,1334);
-                //添加到敌人回收数据
-                this.recycleEnemyArr.push(this.enemyArr[findDeadEnemy]);
-                //移除敌人数据
-                this.enemyArr.splice(findDeadEnemy,1);
-            }
-        }
     }
 
     otherViewEveFun(ovEvent: GameEventName)
@@ -1327,7 +1544,6 @@ export class FightMoveHeroView extends Component {
                     var addPromote:number = 0;
                     for(var proHero:number= 0;proHero < this.heroArr.length;proHero++)
                     {
-                        console.log("英雄id：",this.heroArr[proHero].heroID,"添加的英雄id：",ovEvent.getCustomProperty().pcArr[ae].heroID,ovEvent.getCustomProperty().pcArr[ae].newJoin)
                         if(this.heroArr[proHero].heroID == ovEvent.getCustomProperty().pcArr[ae].heroID && ovEvent.getCustomProperty().pcArr[ae].newJoin == false)
                         {
                             //品质提升
@@ -1372,6 +1588,7 @@ export class FightMoveHeroView extends Component {
                                     }
                                 }
                             }
+                            this.heroArr[proHero].promoteTotal++;
                             addPro = true;
                             break;
                         }
@@ -1417,55 +1634,21 @@ export class FightMoveHeroView extends Component {
             case 5:
                 //重新开始
                 this.resetGame();
-                //读取选中的章节
+                //章节从第一个关卡开始
+                GlobalData.Instance.gameRecord.levelID = 0;
+                this.selectChapter = 0;
                 this.readRecord(this.selectChapter);
-                this.initFight();
+                this.restart();
+                break;
+            case 6:
+                //通关关卡，下一波
+                this.nextWaveFun();
                 break;
             case 10:
                 //下阵英雄
                 this.eradicateHero(ovEvent.getCustomProperty().heroID);
+                break;
         }
-    }
-
-    //查找球状态
-    findSoccerState(sid:number):number
-    {
-        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
-        {
-            if(this.soccerArr[findSoccer].soccerID == sid)
-            {
-                return this.soccerArr[findSoccer].soccerState;
-            }
-        }
-        return 0;
-    }
-
-    //改变球状态
-    changeSoccerState(sid:number,state:number)
-    {
-        //根据足球ID找到足球
-        for(var findSoccer:number = 0;findSoccer < this.soccerArr.length;findSoccer++)
-        {
-            if(this.soccerArr[findSoccer].soccerID == sid)
-            {
-                this.soccerArr[findSoccer].soccerState = state;
-            }
-        }
-    }
-
-    //查找离敌人最近的所有英雄
-    findNearHero(heroX:number):Array<heroStructure>
-    {
-        var nearHeroArr:Array<heroStructure> = [];
-        for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
-        {
-            //敌人和英雄x轴相差距离小于130
-            if(Math.abs(heroX - this.heroArr[findHero].heroItem.getPosition().x) <= 110)
-            {
-                nearHeroArr.push(this.heroArr[findHero]);
-            }
-        }
-        return nearHeroArr;
     }
 
     //震动-普攻
@@ -1491,12 +1674,43 @@ export class FightMoveHeroView extends Component {
             .to(0.05,{position:new Vec3(0,0,0)}).start();
     }
 
-    fogAni()
+    //章节结算
+    chapterResultFun()
     {
-        var _this = this;
-        tween(this.img_fog.node).to(2,{position:new Vec3(0,0,0)}).delay(0.5).to(2,{position:new Vec3(750,0,0)}).start();
+        //弹出章节结算页面
+        // Layer.Instance.show("chapterResult",Layer.Instance.layerView);
+        // GameCustomEvent.Instance.node.emit(GameEventName.CHAPTER_RESULT_EVENT);
     }
 
+    //关卡通关
+    levelPassFun()
+    {
+        this.freshDoubleHit();
+        // this.soccerGameState = gameState.stop;
+        //弹出关卡通关页面
+        Layer.Instance.show("levelPass",Layer.Instance.layerView);
+        //向关卡通关页面发送数据
+        let lpEvent = new GameEventName({ doubleHit:this.maxDoubleHit, allHarm: this.harmTotal, heroArr: this.heroArr });
+        GameCustomEvent.Instance.node.emit(GameEventName.LEVER_PASS_EVENT,lpEvent);
+        // var _this = this;
+        // tween(this.img_fog.node).to(2,{position:new Vec3(0,0,0)}).delay(0.5).to(2,{position:new Vec3(750,0,0)}).start();
+    }
+
+    //下一波
+    nextWaveFun()
+    {
+        //存储本关卡英雄数据
+        this.saveOldHero();
+        this.copyHeroArrFun(GlobalData.Instance.gameRecord.levelHeroArr,this.oldHeroArr);
+        //波次重置
+        this.wave = 1;
+        // setTimeout(() => {
+        //重新加载一次波数
+        this.readNewWave();
+        // }, 4500);
+    }
+
+    //下一波动画提示
     passWaveAni()
     {
         this.img_danger.node.active = true;
@@ -1576,6 +1790,11 @@ export class FightMoveHeroView extends Component {
                     console.log("球与敌人背面碰撞");
                 }else if(soState == 1 || soState == 3){
                     console.log("球与敌人正面碰撞",controllerEvent.getCustomProperty().enemySerialNum);
+                    //判断敌人是否已死亡(有些敌人已死亡，但仍在播放死亡动画未消失，此时球无视碰撞继续向上)
+                    if(this.findEnemyDeadState(controllerEvent.getCustomProperty().enemySerialNum))
+                    {
+                        return;
+                    }
                     AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
                     //球从下往上，正面碰撞，运动轨迹改变，均向英雄折返
                     var rHeroID:number = 0;
@@ -1599,6 +1818,7 @@ export class FightMoveHeroView extends Component {
                             //球随机一个点返回
                             //目标点x（-270 ~ 306），y统一为-325
                             var newDotX:number = Math.floor(Math.random() * 576) - 270;
+                            console.log("随机返回点：",newDotX);
                             this.soccerArr[findSoccer].goalWallX = newDotX;
                             //目标位置拖尾角度
                             this.soccerArr[findSoccer].soccerItem.getChildByName("soccerNode").getChildByName("sp_tail").angle = 
@@ -1652,6 +1872,7 @@ export class FightMoveHeroView extends Component {
                     }
                     if(this.doubleHit > 0)
                     {
+                        //连击加层伤害 = 原伤害 * doubleHit%
                         lastHarm = lastHarm + lastHarm * this.doubleHit / 100;
                     }
                     //取整，避免小数点
@@ -1824,6 +2045,9 @@ export class FightMoveHeroView extends Component {
                     //游戏失败，重新开始
                 }
                 break;
+            case 5:
+                //足球碰到奖杯
+                break;
         }
     }
 
@@ -1851,28 +2075,59 @@ export class FightMoveHeroView extends Component {
                 this.freshEXP();
                 //弹出酒馆选牌界面
                 this.soccerGameState = gameState.stop;
-                // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
-                // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,false);
                 Layer.Instance.show("amplificationCard",Layer.Instance.layerView);
                 //刷新卡牌
                 GameCustomEvent.Instance.node.emit(GameEventName.AMPLIFICATION_CARD_FRESH_EVENT);
                 return;
             }
-            //判断波次是否通关
-            else if(this.saveWave.BossID == 0)
+            //判断波次是否通关，先找到本关卡的类型
+            else if(this.saveLevel.levelType == 1)
             {
                 //没有Boss的普通小怪关卡
-                if(this.enemyArr.length == 0 && this.saveWave.total == 0)
+                if(this.findResidueEnemyType(1) <= 0 && this.saveWave.total == 0)
                 {
                     console.log("所有怪物已死亡，进入结算");
                     this.soccerGameState = gameState.result;
                     //读取下一波数据
                     this.readNextWave();
                 }
-            }else if(this.saveWave.BossID >= 0)
+            }
+            else if(this.saveLevel.levelType == 2)
+            {
+                //所有障碍已消除或倒计时结束通关
+                if(this.findResidueEnemyType(2) <= 0 && this.saveWave.total == 0)
+                {
+                    //下一波障碍
+                }else{
+                    this.saveLevel.maxTime--;
+                    //倒计时结束，游戏失败
+                    if(this.saveLevel.maxTime == 0)
+                    {
+                        this.soccerGameState = gameState.over;
+                        //弹出失败页面
+                        Layer.Instance.show("lose",Layer.Instance.layerView);
+                    }
+                }
+            }
+            else if(this.saveLevel.levelType == 3)
+            {
+                //只计算得分
+                if(this.findResidueEnemyType(3) <= 0 && this.saveWave.total == 0)
+                {
+                    //本波通过，生成下一波宝箱
+                }
+                this.saveLevel.maxTime--;
+                //倒计时结束通关，无论是否打完宝箱，若提前打完宝箱，提前通过关卡
+                if(this.saveLevel.maxTime == 0)
+                {}
+            }
+            else if(this.saveLevel.levelType == 4)
             {
                 //判断Boss是否死亡
-                //Boss死亡直接通关，不管其余小怪是否死亡
+                if(this.findResidueEnemyType(4) <= 0 && this.saveWave.total == 0)
+                {
+                    //Boss死亡直接通关，不管其余小怪是否死亡
+                }
             }
             
             if(this.enemyIntervalTime > 0)
@@ -1923,28 +2178,44 @@ export class FightMoveHeroView extends Component {
             {
                 if(this.enemyArr[moveEnemy].enemyItem != null)
                 {
-                    //如果走到了发动攻击位置，y不再变，攻击水晶
-                    if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < this.enemyStopY)
+                    if(this.enemyArr[moveEnemy].enemyType == 1)
                     {
-                        //敌人进入攻击计时
-                        if(this.enemyArr[moveEnemy].attackSpeedTime > 0)
+                        //如果走到了发动攻击位置，y不再变，攻击水晶
+                        if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < this.enemyStopY)
                         {
-                            this.enemyArr[moveEnemy].attackSpeedTime--;
-                            if(this.enemyArr[moveEnemy].attackSpeedTime <= 0)
+                            //敌人进入攻击计时
+                            if(this.enemyArr[moveEnemy].attackSpeedTime > 0)
                             {
-                                this.enemyArr[moveEnemy].attackSpeedTime = this.enemyArr[moveEnemy].attackSpeed;
-                                //水晶扣血
-                                this.HP -= this.enemyArr[moveEnemy].harm;
-                                this.freshHP();
-                                console.log("扣血：",this.HP);
+                                this.enemyArr[moveEnemy].attackSpeedTime--;
+                                if(this.enemyArr[moveEnemy].attackSpeedTime <= 0)
+                                {
+                                    this.enemyArr[moveEnemy].attackSpeedTime = this.enemyArr[moveEnemy].attackSpeed;
+                                    //水晶扣血
+                                    this.HP -= this.enemyArr[moveEnemy].harm;
+                                    this.freshHP();
+                                    console.log("扣血：",this.HP);
+                                }
+                                //投射子弹
+                                // this.createBullet(this.enemyArr[moveEnemy].enemyItem);
+                                // this.enemyArr[moveEnemy].attakState = 1;
                             }
-                            //投射子弹
-                            // this.createBullet(this.enemyArr[moveEnemy].enemyItem);
-                            // this.enemyArr[moveEnemy].attakState = 1;
+                        }else{
+                            //向下行走
+                            this.enemyArr[moveEnemy].enemyItem.setPosition(this.enemyArr[moveEnemy].enemyItem.getPosition().x,
+                            this.enemyArr[moveEnemy].enemyItem.getPosition().y - this.enemyArr[moveEnemy].moveSpeed);
                         }
-                    }else{
-                        this.enemyArr[moveEnemy].enemyItem.setPosition(this.enemyArr[moveEnemy].enemyItem.getPosition().x,
-                        this.enemyArr[moveEnemy].enemyItem.getPosition().y - this.enemyArr[moveEnemy].moveSpeed);
+                    }else if(this.enemyArr[moveEnemy].enemyType == 3)
+                    {
+                        //向右行走
+                        var newEnemyX:number = this.enemyArr[moveEnemy].enemyItem.getPosition().x + 1;
+                        this.enemyArr[moveEnemy].enemyItem.setPosition(newEnemyX,this.enemyArr[moveEnemy].enemyItem.getPosition().y);
+                        //如果盗贼已经走出屏幕且存活，恢复血量，等待下一次行动
+                        if(this.enemyArr[moveEnemy].enemyItem.getPosition().x > 450)
+                        {
+                            this.enemyArr[moveEnemy].HP = this.enemyArr[moveEnemy].maxHP;
+                            //回到初始位置等待
+                            this.enemyArr[moveEnemy].enemyItem.setPosition(-450,this.enemyArr[moveEnemy].enemyItem.getPosition().y);
+                        }
                     }
                 }
             }
@@ -2013,7 +2284,6 @@ export class FightMoveHeroView extends Component {
                         lastWallY = this.soccerArr[so].soccerItem.getPosition().y + this.soccerArr[so].speed;
                         this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
                     }else{
-                        console.log("向敌人运动2：");
                         //查找目标敌人在当前的位置
                         for(var findEnemy:number = 0;findEnemy < this.enemyArr.length;findEnemy++)
                         {
@@ -2047,83 +2317,77 @@ export class FightMoveHeroView extends Component {
                     }
                     break;
                 }
-                // else if(this.soccerArr[so].soccerState == 2){
-                //     //是否有目标英雄
-                //     if(this.soccerArr[so].goalWallX == 0)
-                //     {
-                //         //没有目标英雄时，取墙的x,y
-                //         console.log("没有目标英雄时，向墙运动2：");
-                //         this.changeSoccerState(this.soccerArr[so].soccerID,3);
-                //         let lastWallX:number = 0;
-                //         let lastWallY:number = 0;
-                //         lastWallX = this.soccerArr[so].soccerItem.getPosition().x - this.soccerArr[so].speedWallX;
-                //         lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
-                //         this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
-                //     }else{
-                //         //查找目标英雄在当前的位置
-                //         // for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
-                //         // {
-                //         //     if(this.heroArr[findHero].heroID == this.soccerArr[so].goalHeroID)
-                //         //     {
-                //                 //英雄x和y位置都不变
-                //                 let lastX:number = 0;
-                //                 let lastY:number = 0;
-                //                 //x相差距离 = 墙x - 足球x
-                //                 var xEquation:number = this.soccerArr[so].goalWallX - this.soccerArr[so].soccerItem.getPosition().x;
-                //                 //y相差距离 = 墙y - 足球y
-                //                 var yEquation:number = 0 - this.soccerArr[so].soccerItem.getPosition().y;
-                //                 //相差速度 = 足球移动速度 - 英雄移动速度
-                //                 var speedEquation:number = this.soccerArr[so].speed - 0;
-                //                 var lastSpeedX:number = xEquation * speedEquation / yEquation;
-                //                 if(lastSpeedX)
-                //                 {
-                //                     this.soccerArr[so].speedWallX = lastSpeedX;
-                //                 }
-                //                 lastX = this.soccerArr[so].soccerItem.getPosition().x - lastSpeedX;
-                //                 lastY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
+                else if(this.soccerArr[so].soccerState == 5 || this.soccerArr[so].soccerState == 6){
+                    //是否有目标英雄
+                    // if(this.soccerArr[so].goalWallX == 0)
+                    // {
+                    //     //没有目标英雄时，取墙的x,y
+                    //     console.log("没有目标英雄时，向墙运动2：");
+                    //     this.changeSoccerState(this.soccerArr[so].soccerID,3);
+                    //     let lastWallX:number = 0;
+                    //     let lastWallY:number = 0;
+                    //     lastWallX = this.soccerArr[so].soccerItem.getPosition().x - this.soccerArr[so].speedWallX;
+                    //     lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
+                    //     this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
+                    // }else{
+                        //查找目标英雄在当前的位置
+                        // for(var findHero:number = 0;findHero < this.heroArr.length;findHero++)
+                        // {
+                        //     if(this.heroArr[findHero].heroID == this.soccerArr[so].goalHeroID)
+                        //     {
+                                //回球时球外观变大
+                                if(this.soccerScale < 1)
+                                {
+                                    this.soccerScale += this.soccerBigSmall;
+                                    this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
+                                }
+                                //英雄x和y位置都不变
+                                let lastX:number = 0;
+                                let lastY:number = 0;
+                                //x相差距离 = 墙x - 足球x
+                                var xEquation:number = this.soccerArr[so].goalWallX - this.soccerArr[so].soccerItem.getPosition().x;
+                                //y相差距离 = 墙y - 足球y
+                                var yEquation:number = -360 - this.soccerArr[so].soccerItem.getPosition().y;
+                                //相差速度 = 足球移动速度 - 墙移动速度
+                                var speedEquation:number = this.soccerArr[so].speed - 0;
+                                var lastSpeedX:number = xEquation * speedEquation / yEquation;
+                                if(lastSpeedX)
+                                {
+                                    this.soccerArr[so].speedWallX = lastSpeedX;
+                                }
+                                lastX = this.soccerArr[so].soccerItem.getPosition().x - lastSpeedX;
+                                lastY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
 
-                //                 if(lastX && lastX != Infinity && !Number.isNaN(lastX) && lastX != null)//计算算式x相差为0时会导致结果为NaN
-                //                 {
-                //                     this.soccerArr[so].soccerItem.setPosition(lastX,lastY);
-                //                 }else{
-                //                     this.soccerArr[so].soccerItem.setPosition(this.soccerArr[so].soccerItem.getPosition().x,lastY);
-                //                 }
-                //                 break;
-                //         //     }
-                //         // }
-                //     }
-                //     break;
-                // }
-                else if(this.soccerArr[so].soccerState >= 3 || this.soccerArr[so].soccerState <= 6){
-                    if(this.soccerArr[so].soccerState == 3 || this.soccerArr[so].soccerState == 4)
+                                if(lastX && lastX != Infinity && !Number.isNaN(lastX) && lastX != null)//计算算式x相差为0时会导致结果为NaN
+                                {
+                                    this.soccerArr[so].soccerItem.setPosition(lastX,lastY);
+                                }else{
+                                    this.soccerArr[so].soccerItem.setPosition(this.soccerArr[so].soccerItem.getPosition().x,lastY);
+                                }
+                                break;
+                        //     }
+                        // }
+                    // }
+                    // break;
+                }
+                else if(this.soccerArr[so].soccerState == 3 || this.soccerArr[so].soccerState == 4){
+                    //出球时球外观变小
+                    if(this.soccerScale > 0.5)
                     {
-                        //出球时球外观变小
-                        if(this.soccerScale > 0.5)
-                        {
-                            this.soccerScale -= this.soccerBigSmall;
-                            this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
-                        }
-                    }
-                    else if(this.soccerArr[so].soccerState == 5 || this.soccerArr[so].soccerState == 6)
-                    {
-                        //回球时球外观变大
-                        if(this.soccerScale < 1)
-                        {
-                            this.soccerScale += this.soccerBigSmall;
-                            this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
-                        }
+                        this.soccerScale -= this.soccerBigSmall;
+                        this.soccerArr[so].soccerItem.getChildByName("soccerNode").scale = v3(this.soccerScale,this.soccerScale,0);
                     }
                     let lastWallX:number = 0;
                     let lastWallY:number = 0;
                     lastWallX = this.soccerArr[so].soccerItem.getPosition().x - this.soccerArr[so].speedWallX;
-                    if(this.soccerArr[so].soccerState == 3)
-                    {
+                    // if(this.soccerArr[so].soccerState == 3)
+                    // {
                         lastWallY = this.soccerArr[so].soccerItem.getPosition().y + this.soccerArr[so].speed;
                         this.nextSoccerY = lastWallY + this.soccerArr[so].speed;
-                    }else if(this.soccerArr[so].soccerState == 5){
-                        lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
-                        this.nextSoccerY = lastWallY - this.soccerArr[so].speed;
-                    }
+                    // }else if(this.soccerArr[so].soccerState == 5){
+                    //     lastWallY = this.soccerArr[so].soccerItem.getPosition().y - this.soccerArr[so].speed;
+                    //     this.nextSoccerY = lastWallY - this.soccerArr[so].speed;
+                    // }
                     this.nextSoccerX = lastWallX - this.soccerArr[so].speedWallX;
                     this.soccerArr[so].soccerItem.setPosition(lastWallX,lastWallY);
                     //碰墙改变角度
@@ -2164,29 +2428,6 @@ export class FightMoveHeroView extends Component {
                 break;
             default:
                 this.maxEXP = 30;
-                break;
-        }
-    }
-
-    //抽卡属性增加成功
-    propertylevelUp(promote)
-    {
-        switch(promote)
-        {
-            case 1:
-                //攻击力
-            case 4:
-                //HP
-                //x + x * multiple /100
-                break;
-            case 2:
-                //暴击
-            case 3:
-                //会心
-                //multiple /100
-                break;
-            case 5:
-                //技能
                 break;
         }
     }
