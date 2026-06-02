@@ -48,15 +48,12 @@ export class FightMoveHeroView extends Component {
     @property(Prefab)
     private strikeItemPre: Prefab = null;
 
-    private btn_close:Button;
     //静态背景
     private img_soccerField:Sprite;
     //动态背景
     private img_fightBg:Sprite;
     //衔接背景
     private img_fightLinkUpBg:Sprite;
-    //雾
-    private img_fog:Sprite;
     //上墙
     private topWall:Node;
     //下墙
@@ -69,6 +66,8 @@ export class FightMoveHeroView extends Component {
     private node_soccer:Node;
     private node_hero:Node;
     private btn_moveHero:Button;
+    //倒计时
+    private img_sandClockBG:Sprite;
     //掉落金币
     private lab_gold:Label;
     private lab_level:Label;
@@ -91,13 +90,19 @@ export class FightMoveHeroView extends Component {
     private btn_prop5:Button;
     //设置
     private btn_set:Button;
+    //暂停
+    private btn_pause:Button;
     //广告
-    private btn_adv:Button;
+    // private btn_adv:Button;
     private lab_allHarm:Label;
     //连击
     private lab_doubleHit:Label;
     //连击伤害加层百分比
     private lab_addingStory:Label;
+    
+    private node_menu:Node;
+    private btn_close:Button;
+    private btn_cancel:Button;
 
     /**
      * 数据
@@ -198,11 +203,9 @@ export class FightMoveHeroView extends Component {
     }
 
     private _initObect() {
-        this.btn_close = find('node_top/btn_close', this.node).getComponent(Button);
         this.img_soccerField = find('img_soccerField', this.node).getComponent(Sprite);
         this.img_fightBg = find('img_fightBg', this.node).getComponent(Sprite);
         this.img_fightLinkUpBg = find('img_fightLinkUpBg', this.node).getComponent(Sprite);
-        this.img_fog = find('img_fog', this.node).getComponent(Sprite);
         this.topWall = find('node_wall/topWall', this.node);
         this.bottomWall = find('node_wall/bottomWall', this.node);
         this.leftWall = find('node_wall/leftWall', this.node);
@@ -211,6 +214,7 @@ export class FightMoveHeroView extends Component {
         this.node_soccer = find('node_soccer', this.node);
         this.node_hero = find('btn_moveHero/node_hero', this.node);
         this.btn_moveHero = find('btn_moveHero', this.node).getComponent(Button);
+        this.img_sandClockBG = find('node_top/img_sandClockBG', this.node).getComponent(Sprite);
         this.lab_gold = find('node_top/lab_gold', this.node).getComponent(Label);
         this.lab_level = find('node_top/lab_level', this.node).getComponent(Label);
         this.lab_wave = find('node_top/lab_wave', this.node).getComponent(Label);
@@ -230,11 +234,15 @@ export class FightMoveHeroView extends Component {
         this.btn_prop4 = find('node_bottom/lay_propGroove/btn_prop4', this.node).getComponent(Button);
         this.btn_prop5 = find('node_bottom/lay_propGroove/btn_prop5', this.node).getComponent(Button);
         this.btn_set = find('node_bottom/btn_set', this.node).getComponent(Button);
-        this.btn_adv = find('node_bottom/btn_adv', this.node).getComponent(Button);
+        this.btn_pause = find('node_bottom/btn_pause', this.node).getComponent(Button);
+        // this.btn_adv = find('node_bottom/btn_adv', this.node).getComponent(Button);
+
+        this.node_menu = find('node_menu', this.node);
+        this.btn_close = find('node_menu/img_pop_bg/btn_close', this.node).getComponent(Button);
+        this.btn_cancel = find('node_menu/img_pop_bg/btn_cancel', this.node).getComponent(Button);
     }
 
     private _onEvent() {
-        this.btn_close.node.on(Node.EventType.TOUCH_END, this.closeView, this);
         this.btn_moveHero.node.on(Node.EventType.TOUCH_START, this.startMoveHero, this);
         this.btn_moveHero.node.on(Node.EventType.TOUCH_MOVE, this.moveHero, this);
         // this.btn_prop1.node.on(Node.EventType.TOUCH_END, this.conjure, this);
@@ -243,12 +251,16 @@ export class FightMoveHeroView extends Component {
         // this.btn_prop4.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         // this.btn_prop5.node.on(Node.EventType.TOUCH_END, this.conjure, this);
         this.btn_set.node.on(Node.EventType.TOUCH_END, this.openSet, this);
-        this.btn_adv.node.on(Node.EventType.TOUCH_END, this.openAdv, this)
+        this.btn_pause.node.on(Node.EventType.TOUCH_END, this.openMenu, this);
+        // this.btn_adv.node.on(Node.EventType.TOUCH_END, this.openAdv, this);
+        this.btn_close.node.on(Node.EventType.TOUCH_END, this.closeView, this);
+        this.btn_cancel.node.on(Node.EventType.TOUCH_END, this.closeMenu, this);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.FIGHT_COLLISION_EVENT,this.fightControllerFun,this);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.FIGHT_OTHER_VIEW_EVENT,this.otherViewEveFun,this);
     }
 
     start() {
+        this.node_menu.active = false;
         this.topWall["wallID"] = 1;
         this.bottomWall["wallID"] = 2;
         this.leftWall["wallID"] = 3;
@@ -427,7 +439,8 @@ export class FightMoveHeroView extends Component {
                     levelImgPath:GlobalData.Instance.levelTableArr[findLevel].levelImgPath,
                     levelMusicPath:GlobalData.Instance.levelTableArr[findLevel].levelMusicPath,
                     dropGold:GlobalData.Instance.levelTableArr[findLevel].dropGold,
-                    dropGoodsArr:GlobalData.Instance.levelTableArr[findLevel].dropGoodsArr};
+                    dropGoodsArr:GlobalData.Instance.levelTableArr[findLevel].dropGoodsArr,
+                    taskArr:GlobalData.Instance.levelTableArr[findLevel].taskArr};
                 this.saveLevel = LevelOne;
                 this.freshLevel(GlobalData.Instance.levelTableArr[findLevel].levelName);
                 this.maxWave = GlobalData.Instance.levelTableArr[findLevel].waveArr.length;
@@ -1160,7 +1173,7 @@ export class FightMoveHeroView extends Component {
                             item.setPosition(-163 + Math.floor(Math.random() * 324),280);
                             break;
                         case 2:
-                            //指定起始位置
+                            //指定起始位置（随机25个位置中抽取，已抽取的不再抽取）
                             break;
                         case 3:
                             //固定起始位置
@@ -1418,6 +1431,9 @@ export class FightMoveHeroView extends Component {
     freshLevel(lvName:string)
     {
         this.lab_level.string = lvName;
+        //刷新任务面板
+        let taskEvent = new GameEventName({ eventCode: 1,taskArr: this.saveLevel.taskArr });
+        GameCustomEvent.Instance.node.emit(GameEventName.TASK_EVENT,taskEvent);
     }
 
     //刷新波次显示
@@ -1523,6 +1539,20 @@ export class FightMoveHeroView extends Component {
     openSet()
     {
         Layer.Instance.show("set",Layer.Instance.layerView);
+    }
+
+    //暂停打开菜单
+    openMenu()
+    {
+        this.soccerGameState = gameState.stop;
+        this.node_menu.active = true;
+    }
+
+    //关闭菜单
+    closeMenu()
+    {
+        this.soccerGameState = gameState.start;
+        this.node_menu.active = false;
     }
 
     //技能释放
@@ -1696,12 +1726,22 @@ export class FightMoveHeroView extends Component {
         // tween(this.img_fog.node).to(2,{position:new Vec3(0,0,0)}).delay(0.5).to(2,{position:new Vec3(750,0,0)}).start();
     }
 
-    //下一波
+    //关卡下一波
     nextWaveFun()
     {
         //存储本关卡英雄数据
         this.saveOldHero();
         this.copyHeroArrFun(GlobalData.Instance.gameRecord.levelHeroArr,this.oldHeroArr);
+        //是否为计时关卡
+        if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3)
+        {
+            this.img_sandClockBG.node.active = true;
+        }else{
+            this.img_sandClockBG.node.active = false;
+        }
+        //连击重置
+        this.doubleHit = 0;
+        this.freshDoubleHit();
         //波次重置
         this.wave = 1;
         // setTimeout(() => {
@@ -1869,6 +1909,7 @@ export class FightMoveHeroView extends Component {
                         this.earthquakeCritical();
                     }else{
                         lastHarm = baseHarm;
+                        this.earthquakeAttack();
                     }
                     if(this.doubleHit > 0)
                     {
@@ -1990,6 +2031,8 @@ export class FightMoveHeroView extends Component {
                         break;
                     }
                 }
+                //踢球时震动
+                this.earthquakeAttack();
                 let heroAttackSkeEvent = new GameEventName({ heroID:controllerEvent.getCustomProperty().heroID, aniName:"animation_tacck", aniLoop: false });
                 GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroAttackSkeEvent);
                 setTimeout(() => {
@@ -2506,8 +2549,14 @@ export class FightMoveHeroView extends Component {
     {
         //取消计时器
         this.unschedule(this.soccerGame);
-        this.soccerGameState = gameState.wait;
+        this.soccerGameState = gameState.stop;
+        this.node_menu.active = false;
         this.node.active = false;
+        //存储当前关卡数据
+        GlobalData.Instance.gameRecord.levelID = this.saveLevel.levelID;
+        Layer.Instance.show("hall",Layer.Instance.layerView);
+        //刷新大厅显示
+        GameCustomEvent.Instance.node.emit(GameEventName.HALL_EVENT);
     }
 
     update(deltaTime: number) {

@@ -49,14 +49,14 @@ export class LoadingView extends Component {
     start() {
         this.loadState = true;
         this.loadFile();
-        this.schedule(this.loadPro, 1);
+        this.schedule(this.loadPro, 2);
     }
 
     loadPro() {
         if(this.pro_loading.progress < 1 && this.loadState == true) {
             //进度只保留2位小数点
             var proNum:number = OperationTool.Instance.retainDecimal(2,this.loadCount/this.loadTotalCount);
-            this.lab_loadingSchedule.string = "正在加载……" + proNum * 100 + "%";
+            // this.lab_loadingSchedule.string = "正在加载……" + proNum * 100 + "%";
             this.pro_loading.progress = proNum;
         } else if(this.pro_loading.progress >= 1 && this.loadState == true) {
             this.loadState = false;
@@ -70,8 +70,8 @@ export class LoadingView extends Component {
             // let pathfight = Layer.Instance.getGamePrePath("fight");
             // LoadImgTool.Instance.loadPrefab("fight",pathfight,Layer.Instance.layerView,false);
             //抽卡
-            // let pathAmplificationCard = Layer.Instance.getGamePrePath("amplificationCard");
-            // LoadImgTool.Instance.loadPrefab("amplificationCard",pathAmplificationCard,Layer.Instance.layerView,true);
+            // let pathAmplificationCard = Layer.Instance.getGamePrePath("cartoon");
+            // LoadImgTool.Instance.loadPrefab("cartoon",pathAmplificationCard,Layer.Instance.layerView,true);
             //预加载渐变过渡
             // let pathDynamicFigure = Layer.Instance.getGamePrePath("dynamicFigure");
             // LoadImgTool.Instance.loadPrefab("dynamicFigure",pathDynamicFigure,Layer.Instance.layerTips,false);
@@ -80,8 +80,8 @@ export class LoadingView extends Component {
         }
 
         //加载中随机显示提示语
-        var hintNum:number = Math.floor(Math.random() * 3) + 1;
-        this.hintText(hintNum);
+        // var hintNum:number = Math.floor(Math.random() * 3) + 1;
+        // this.hintText(hintNum);
     }
     
     //加载json表
@@ -174,21 +174,21 @@ export class LoadingView extends Component {
             _this.loadCount++;
         });
         
-        //加载道具表
-        LoadTableTool.Instance.loadTextFile("json/propJson",(value)=>{
-            var propArr = JSON.parse(value);
-            console.log("道具：",propArr);
-            // for(var propReplace:number = 0;propReplace < propArr.length;propReplace++)
-            // {
-            //     if(propArr[propReplace].propIcon != "")
-            //     {
-            //         //转换图片路径
-            //         propArr[propReplace].propIcon = CharacterTool.Instance.pathCharacter(propArr[propReplace].propIcon);
-            //     }
-            // }
-            GlobalData.Instance.propArr = propArr;
+        //加载任务表
+        LoadTableTool.Instance.loadTextFile("json/taskJson",(value)=>{
+            var taskArr = JSON.parse(value);
+            console.log("任务：",taskArr);
+            GlobalData.Instance.taskArr = taskArr;
             _this.loadCount++;
         });
+
+        //加载道具表
+        // LoadTableTool.Instance.loadTextFile("json/propJson",(value)=>{
+        //     var propArr = JSON.parse(value);
+        //     console.log("道具：",propArr);
+        //     GlobalData.Instance.propArr = propArr;
+        //     _this.loadCount++;
+        // });
 
     }
 

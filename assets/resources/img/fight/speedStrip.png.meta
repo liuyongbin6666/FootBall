@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "40f0fecf-237b-4371-b106-6bbe95ed1b5c",
+  "uuid": "f77a094f-6ac2-437b-8dd7-379299929c02",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "40f0fecf-237b-4371-b106-6bbe95ed1b5c@6c48a",
+      "uuid": "f77a094f-6ac2-437b-8dd7-379299929c02@6c48a",
       "displayName": "speedStrip",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "40f0fecf-237b-4371-b106-6bbe95ed1b5c",
+        "imageUuidOrDatabaseUri": "f77a094f-6ac2-437b-8dd7-379299929c02",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,7 +34,7 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "40f0fecf-237b-4371-b106-6bbe95ed1b5c@f9941",
+      "uuid": "f77a094f-6ac2-437b-8dd7-379299929c02@f9941",
       "displayName": "speedStrip",
       "id": "f9941",
       "name": "spriteFrame",
@@ -114,7 +114,7 @@
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "40f0fecf-237b-4371-b106-6bbe95ed1b5c@6c48a",
+        "imageUuidOrDatabaseUri": "f77a094f-6ac2-437b-8dd7-379299929c02@6c48a",
         "atlasUuid": ""
       },
       "ver": "1.0.12",
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "40f0fecf-237b-4371-b106-6bbe95ed1b5c@6c48a"
+    "redirect": "f77a094f-6ac2-437b-8dd7-379299929c02@6c48a"
   }
 }

@@ -47,8 +47,8 @@ export class LevelPassView extends Component {
     {
         this.hideAllHero();
 
-        this.lab_doubleHit.string = "最高连击 " + lpEvent.getCustomProperty().doubleHit;
-        this.lab_allHarm.string = "连击伤害 " + lpEvent.getCustomProperty().allHarm;
+        this.lab_doubleHit.string = "" + lpEvent.getCustomProperty().doubleHit;
+        // this.lab_allHarm.string = "连击伤害 " + lpEvent.getCustomProperty().allHarm;
         var heroPromoteArr:Array<heroStructure> = [];
         for(var h:number = 0;h < lpEvent.getCustomProperty().heroArr.length;h++)
         {

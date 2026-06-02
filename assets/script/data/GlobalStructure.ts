@@ -77,6 +77,8 @@ export interface levelStructure {
     dropGold:number;
     //掉落物品
     dropGoodsArr:Array<number>;
+    //3个关卡评星任务
+    taskArr:Array<number>;
 }
 
 //波数
@@ -317,6 +319,16 @@ export interface skillEffectStructure {
     //技能冷却CD
     // CD:number;
     
+}
+
+//任务表
+export interface taskTableStructure {
+    //任务ID
+    taskID:number;
+    //任务类型 1 游戏中完成 2 游戏结算时完成
+    taskType:number;
+    //任务描述
+    describe:string;
 }
 
 //道具

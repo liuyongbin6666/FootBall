@@ -4,6 +4,7 @@ import { GlobalData } from '../data/GlobalData';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { GameEventName } from '../manager/GameEventName';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
+import { chapterStructure } from '../data/GlobalStructure';
 const { ccclass, property } = _decorator;
 
 /**
@@ -20,8 +21,8 @@ export class HallView extends Component {
     private node_journey:Node;
     //章节序列名
     private lab_chapter:Label;
-    //章节名图片
-    private img_chapterName:Sprite;
+    //章节名
+    private lab_chapterTitle:Label;
     //上一章
     private btn_previousChapter:Button;
     //下一章
@@ -32,6 +33,8 @@ export class HallView extends Component {
     private btn_newFight:Button;
     //继续征程
     private btn_goOnFight:Button;
+    //继续征程关卡记录显示
+    private lab_lv:Label;
 
     //杂货铺
     private btn_grocery:Button;
@@ -46,6 +49,8 @@ export class HallView extends Component {
     private chapterChangeCount:number = 0;
     //章节是否重新开始
     private restart:boolean = false;
+    //正在进行的章节
+    private saveChapter:chapterStructure;
     protected onLoad(): void {
         this._initObect();
         this._onEvent();
@@ -57,12 +62,13 @@ export class HallView extends Component {
         
         this.node_journey = find('node_journey', this.node);
         this.lab_chapter = find('node_journey/lab_chapter', this.node).getComponent(Label);
-        this.img_chapterName = find('node_journey/img_chapterName', this.node).getComponent(Sprite);
+        this.lab_chapterTitle = find('node_journey/lab_chapterTitle', this.node).getComponent(Label);
         this.btn_previousChapter = find('node_journey/btn_previousChapter', this.node).getComponent(Button);
         this.btn_nextChapter = find('node_journey/btn_nextChapter', this.node).getComponent(Button);
         this.btn_fight = find('node_journey/btn_fight', this.node).getComponent(Button);
         this.btn_newFight = find('node_journey/btn_newFight', this.node).getComponent(Button);
         this.btn_goOnFight = find('node_journey/btn_goOnFight', this.node).getComponent(Button);
+        this.lab_lv = find('node_journey/btn_goOnFight/lab_lv', this.node).getComponent(Label);
 
 
         this.btn_grocery = find('node_bottom/lay_toggleButton/btn_grocery', this.node).getComponent(Button);
@@ -80,6 +86,7 @@ export class HallView extends Component {
         this.btn_grocery.node.on(Node.EventType.TOUCH_START, this.changePage, this);
         this.btn_farm.node.on(Node.EventType.TOUCH_START, this.changePage, this);
         this.btn_journey.node.on(Node.EventType.TOUCH_START, this.changePage, this);
+        GameCustomEvent.Instance.addCustomEvent(GameEventName.HALL_EVENT,this.freshHallFun,this);
     }
 
     start() {
@@ -180,6 +187,10 @@ export class HallView extends Component {
         //从本章节第一个关卡开始
         this.restart = true;
         this.fightSelectOver();
+        // Layer.Instance.show("fightMoveHero",Layer.Instance.layerView);
+        // //发送重新开始消息
+        // let ampCardEvent = new GameEventName({ eventCode: 5 });
+        // GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,ampCardEvent);
     }
 
     //继续战斗
@@ -218,8 +229,12 @@ export class HallView extends Component {
                 // this.readHeroData(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr);
                 //章节序列号
                 this.lab_chapter.string = GlobalData.Instance.chapterTableArr[findChapter].chapterSequence;
+                //记录正在进行的章节总关卡
+                this.saveChapter = GlobalData.Instance.chapterTableArr[findChapter];
+                this.freshGoOnFightLv();
                 //章节名图片
-                LoadImgTool.Instance.loadSpriteFrame(GlobalData.Instance.chapterTableArr[findChapter].chapterNamePath,this.img_chapterName.node);
+                // this.lab_chapterTitle.string = GlobalData.Instance.chapterTableArr[findChapter].chapterName;
+                // LoadImgTool.Instance.loadSpriteFrame(GlobalData.Instance.chapterTableArr[findChapter].chapterNamePath,this.img_chapterName.node);
                 break;
             }
         }
@@ -244,6 +259,26 @@ export class HallView extends Component {
             }
         }
         return false;
+    }
+
+    //刷新大厅显示
+    freshHallFun()
+    {
+        this.freshGoOnFightLv();
+    }
+
+    //刷新继续征程关卡进度
+    freshGoOnFightLv()
+    {
+        var findIndex:number = 0;
+        for(var fi:number = 0;fi < this.saveChapter.levelArr.length;fi++)
+        {
+            if(GlobalData.Instance.gameRecord.levelID == this.saveChapter.levelArr[fi])
+            {
+                findIndex = fi + 1;
+            }
+        }
+        this.lab_lv.string = "第 " + findIndex + "/" + this.saveChapter.levelArr.length + " 关";
     }
 
     closeView()

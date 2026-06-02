@@ -6,11 +6,15 @@ const { ccclass, property } = _decorator;
 */
 @ccclass('GameEventName')
 export class GameEventName {
+    /** 大厅事件 */
+    static HALL_EVENT = "hall_event";
 
     /** 战斗中碰撞事件 */
     static FIGHT_COLLISION_EVENT = "fight_collision_event";
     /** 战斗中其他界面传递事件 */
     static FIGHT_OTHER_VIEW_EVENT = "fight_other_view_event";
+    /** 任务面板事件 */
+    static TASK_EVENT = "task_event";
 
     /** 刷新酒馆选卡 */
     static AMPLIFICATION_CARD_FRESH_EVENT = "amplification_card_fresh_event";

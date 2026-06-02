@@ -1,7 +1,7 @@
 import { _decorator } from 'cc';
 import { gameRecordStructure, chapterStructure, heroStructure, ampCardProTableStructure, enemyStructure, userStructure, heroPropertyTableStructure, 
-    heroSkillStructure, levelStructure, waveStructure, propStructure,
-    heroProTopStructure} from './GlobalStructure';//mapTableStructure,
+    heroSkillStructure, levelStructure, waveStructure, taskTableStructure, propStructure,
+    heroProTopStructure} from './GlobalStructure';
 const { ccclass, property } = _decorator;
 
 /**
@@ -40,11 +40,11 @@ export class GlobalData{
     public heroProGrowUpTableArr:Array<heroPropertyTableStructure> = [];
     //抽卡概率表
     public ampCardProTableArr:Array<ampCardProTableStructure> = [];
+    //任务表
+    public taskArr:Array<taskTableStructure> = [];
     //道具表
-    public propArr:Array<propStructure> = [];
+    // public propArr:Array<propStructure> = [];
 
-    //地图表
-    // public mapTableArr:Array<mapTableStructure> = [];
 
     //解锁英雄表
     public unlockHeroArr:Array<heroStructure> = [];

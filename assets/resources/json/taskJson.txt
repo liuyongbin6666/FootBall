@@ -1,0 +1,5 @@
+[
+	{"taskID":101, "taskType":2, "describe":"满血通关"},
+	{"taskID":102, "taskType":1, "describe":"击杀盗贼"},
+	{"taskID":103, "taskType":2, "describe":"无漏球"}
+]

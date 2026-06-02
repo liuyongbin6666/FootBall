@@ -235,6 +235,9 @@ export class Layer extends Component {
             /**
              * 页面
             */
+            //漫画
+            case "cartoon":
+                return "prefab/view/cartoon";
             //大厅
             case "hall":
                 return "prefab/view/hall";
@@ -283,9 +286,6 @@ export class Layer extends Component {
             //装备
             case "equip":
                 return "prefab/view/equip";
-            //充值
-            case "recharge":
-                return "prefab/view/recharge/recharge";
             //规则
             case "rule":
                 return "prefab/view/rule";

@@ -8,7 +8,8 @@
         "waveArr": [10101, 10102, 10103, 10104, 10105],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "1"
+        "levelName": "1",
+        "taskArr": [101, 102, 103]
     },
     {
         "levelID": 102,
@@ -19,7 +20,8 @@
         "waveArr": [10201, 10202, 10203],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "2"
+        "levelName": "2",
+        "taskArr": [101, 102, 103]
     },
     {
         "levelID": 103,
@@ -30,7 +32,8 @@
         "waveArr": [10301],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "3"
+        "levelName": "3",
+        "taskArr": [101, 102, 103]
     },
     {
         "levelID": 104,
@@ -41,7 +44,8 @@
         "waveArr": [10401, 10402, 10403, 10404, 10405],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "4"
+        "levelName": "4",
+        "taskArr": [101, 102, 103]
     },
     {
         "levelID": 105,
@@ -52,6 +56,7 @@
         "waveArr": [10501],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "5"
+        "levelName": "5",
+        "taskArr": [101, 102, 103]
     }
 ]
