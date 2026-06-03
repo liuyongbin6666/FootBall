@@ -1,7 +1,8 @@
 import { _decorator } from 'cc';
 import { gameRecordStructure, chapterStructure, heroStructure, ampCardProTableStructure, enemyStructure, userStructure, heroPropertyTableStructure, 
     heroSkillStructure, levelStructure, waveStructure, taskTableStructure, propStructure,
-    heroProTopStructure} from './GlobalStructure';
+    heroProTopStructure,
+    locationTableStructure} from './GlobalStructure';
 const { ccclass, property } = _decorator;
 
 /**
@@ -42,6 +43,8 @@ export class GlobalData{
     public ampCardProTableArr:Array<ampCardProTableStructure> = [];
     //任务表
     public taskArr:Array<taskTableStructure> = [];
+    //位置表
+    public locationArr:Array<locationTableStructure> = [];
     //道具表
     // public propArr:Array<propStructure> = [];
 

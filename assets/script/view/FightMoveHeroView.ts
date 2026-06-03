@@ -1,5 +1,5 @@
 import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color, UIOpacity, sp, v3, AudioClip, AudioSource } from 'cc';
-import { bulletStructure, enemyStructure, heroStructure, levelStructure, relevanceProStructure, soccerStructure, waveStructure } from '../data/GlobalStructure';
+import { bulletStructure, enemyStructure, heroStructure, levelStructure, locationTableStructure, relevanceProStructure, soccerStructure, waveStructure } from '../data/GlobalStructure';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { OperationTool } from '../tool/OperationTool';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
@@ -66,12 +66,14 @@ export class FightMoveHeroView extends Component {
     private node_soccer:Node;
     private node_hero:Node;
     private btn_moveHero:Button;
-    //倒计时
-    private img_sandClockBG:Sprite;
     //掉落金币
     private lab_gold:Label;
     private lab_level:Label;
     private lab_wave:Label;
+    //倒计时
+    private img_sandClockBG:Sprite;
+    //boss
+    private node_boss:Node;
     
     //通关波数时提示
     private img_danger:Sprite;
@@ -197,6 +199,7 @@ export class FightMoveHeroView extends Component {
     //暂存波次
     private saveWave:waveStructure = null;
     private saveLevel:levelStructure = null;
+    private saveLocationArr:Array<locationTableStructure> = [];
     protected onLoad(): void {
         this._initObect();
         this._onEvent();
@@ -214,10 +217,11 @@ export class FightMoveHeroView extends Component {
         this.node_soccer = find('node_soccer', this.node);
         this.node_hero = find('btn_moveHero/node_hero', this.node);
         this.btn_moveHero = find('btn_moveHero', this.node).getComponent(Button);
-        this.img_sandClockBG = find('node_top/img_sandClockBG', this.node).getComponent(Sprite);
         this.lab_gold = find('node_top/lab_gold', this.node).getComponent(Label);
         this.lab_level = find('node_top/lab_level', this.node).getComponent(Label);
         this.lab_wave = find('node_top/lab_wave', this.node).getComponent(Label);
+        this.img_sandClockBG = find('node_top/img_sandClockBG', this.node).getComponent(Sprite);
+        this.node_boss = find('node_top/node_boss', this.node);
 
         this.img_danger = find('node_middle/img_danger', this.node).getComponent(Sprite);
         this.lab_allHarm = find('node_middle/img_harmRecordBg/lab_allHarm', this.node).getComponent(Label);
@@ -261,10 +265,19 @@ export class FightMoveHeroView extends Component {
 
     start() {
         this.node_menu.active = false;
+        this.node_boss.active = false;
         this.topWall["wallID"] = 1;
         this.bottomWall["wallID"] = 2;
         this.leftWall["wallID"] = 3;
         this.rightWall["wallID"] = 4;
+
+        for(var la:number = 0;la < GlobalData.Instance.locationArr.length;la++)
+        {
+            var newLocation:locationTableStructure = {locationID:GlobalData.Instance.locationArr[la].locationID,
+                locationX:GlobalData.Instance.locationArr[la].locationX,locationY:GlobalData.Instance.locationArr[la].locationY
+            }
+            this.saveLocationArr.push(newLocation);
+        }
     }
 
     //初始化战斗
@@ -1160,6 +1173,7 @@ export class FightMoveHeroView extends Component {
                         case 4:
                             item = instantiate(this.bossItemPre);
                             LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_boss_monster").getComponent(sp.Skeleton),"animation_move");
+                            this.node_boss.active = true;
                             break;
                         case 5:
                             item = instantiate(this.trophyItem);
@@ -1173,7 +1187,15 @@ export class FightMoveHeroView extends Component {
                             item.setPosition(-163 + Math.floor(Math.random() * 324),280);
                             break;
                         case 2:
-                            //指定起始位置（随机25个位置中抽取，已抽取的不再抽取）
+                            //指定起始位置
+                            //随机的位置数组中抽取
+                            var locIndex:number = Math.floor(Math.random() * this.saveLocationArr.length);
+                            var newLoc:locationTableStructure = this.saveLocationArr[locIndex];
+                            item.setPosition(newLoc.locationX,newLoc.locationY);
+                            console.log("障碍位置",newLoc.locationX,newLoc.locationY);
+                            item["locationID"] = newLoc.locationID;
+                            //从数组中移除，已抽取的位置不再抽取
+                            this.saveLocationArr.splice(locIndex,1);
                             break;
                         case 3:
                             //固定起始位置
@@ -1314,6 +1336,20 @@ export class FightMoveHeroView extends Component {
         {
             if(this.enemyArr[findDeadEnemy].HP <= 0)
             {
+                if(this.enemyArr[findDeadEnemy].enemyType == 2 || this.enemyArr[findDeadEnemy].enemyType == 3)
+                {
+                    //根据ID找到对应的位置
+                    for(var findLoc:number = 0;findLoc < GlobalData.Instance.locationArr.length;findLoc++)
+                    {
+                        if(this.enemyArr[findDeadEnemy].enemyItem["locationID"] == GlobalData.Instance.locationArr[findLoc].locationID)
+                        {
+                            //将之前占用的随机出现位置返还
+                            this.saveLocationArr.push(GlobalData.Instance.locationArr[findLoc]);
+                            this.enemyArr[findDeadEnemy].enemyItem["locationID"] = -1;
+                            //检测是否有剩余障碍/宝箱需要创建
+                        }
+                    }
+                }
                 //经验条增加经验
                 this.EXP += this.enemyArr[findDeadEnemy].EXP;
                 this.freshEXP();
@@ -1346,10 +1382,6 @@ export class FightMoveHeroView extends Component {
         var newHeroIndex:number = Math.floor(Math.random() * noTempheroArr.length);
         //获取该英雄的x,y，使球起始位置在英雄脚下
         let item = instantiate(this.soccerItemPre);
-        console.log("英雄非空数组：",noTempheroArr);
-        console.log("英雄下标：",newHeroIndex);
-        console.log("英雄位置：",noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y);
-        console.log("足球的起始位置：",noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
         item["soccerID"] = this.soccerArr.length + 1;
         var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:7,soccerItem:item,soccerState:0,

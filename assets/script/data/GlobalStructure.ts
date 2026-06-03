@@ -352,6 +352,16 @@ export interface propStructure {
     count:number;
 }
 
+//障碍/宝箱随机出现地点
+export interface locationTableStructure {
+    //地点编号
+    locationID:number;
+    //x位置
+    locationX:number;
+    //y位置
+    locationY:number;
+}
+
 //宠物
 export interface petStructure {
     //宠物ID

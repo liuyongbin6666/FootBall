@@ -27,7 +27,7 @@ export class LoadingView extends Component {
     */
     private loadState:boolean = false;
     //资源初次加载总文件数量
-    private loadTotalCount:number = 8;
+    private loadTotalCount:number = 10;
     //资源已加载总文件数量
     private loadCount:number = 0;
     protected onLoad(): void {
@@ -49,7 +49,7 @@ export class LoadingView extends Component {
     start() {
         this.loadState = true;
         this.loadFile();
-        this.schedule(this.loadPro, 2);
+        this.schedule(this.loadPro, 1);
     }
 
     loadPro() {
@@ -179,6 +179,14 @@ export class LoadingView extends Component {
             var taskArr = JSON.parse(value);
             console.log("任务：",taskArr);
             GlobalData.Instance.taskArr = taskArr;
+            _this.loadCount++;
+        });
+
+        //加载位置表
+        LoadTableTool.Instance.loadTextFile("json/locationJson",(value)=>{
+            var locationArr = JSON.parse(value);
+            console.log("位置：",locationArr);
+            GlobalData.Instance.locationArr = locationArr;
             _this.loadCount++;
         });
 

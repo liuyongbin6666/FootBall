@@ -1,0 +1,17 @@
+[
+	{"locationID":1, "locationX":-200, "locationY": -50},
+	{"locationID":2, "locationX":-100, "locationY": -50},
+	{"locationID":3, "locationX":0, "locationY": -50},
+	{"locationID":4, "locationX":100, "locationY": -50},
+	{"locationID":5, "locationX":200, "locationY": -50},
+	{"locationID":6, "locationX":-200, "locationY": 50},
+	{"locationID":7, "locationX":-100, "locationY": 50},
+	{"locationID":8, "locationX":0, "locationY": 50},
+	{"locationID":9, "locationX":100, "locationY": 50},
+	{"locationID":10, "locationX":200, "locationY": 50},
+	{"locationID":11, "locationX":-200, "locationY": 150},
+	{"locationID":12, "locationX":-100, "locationY": 150},
+	{"locationID":13, "locationX":0, "locationY": 150},
+	{"locationID":14, "locationX":100, "locationY": 150},
+	{"locationID":15, "locationX":200, "locationY": 150}
+]
