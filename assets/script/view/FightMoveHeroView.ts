@@ -296,7 +296,7 @@ export class FightMoveHeroView extends Component {
         this.freshEXP();
         this.soccerGameState = gameState.start;
 
-        AudioMG.Instance.playMusicAudio("audio/hall_bgyy");
+        AudioMG.Instance.changeMusicAudio("audio/battle_bgyy");
         
         Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
 
