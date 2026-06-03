@@ -64,6 +64,24 @@ export class AudioMG extends Component {
             // console.log("音乐加载完毕！",_this.main_audio);
         });
     }
+
+    //更换背景音乐
+    public changeMusicAudio(audioPath:string)
+    {
+        if(this.main_audio == null)
+        {
+            this.main_audio = new AudioSource();
+        }
+        this.main_audio.stop();
+        var _this = this;
+        resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
+        {
+            _this.main_audio.clip = clip;
+            _this.main_audio.loop = true;
+            _this.main_audio.play();
+            // console.log("音乐加载完毕！",_this.main_audio);
+        });
+    }
     
     // 单个音效播放 audioPath 音效路径（不用加后缀.wav等，能自动识别）
     public playSoundAudio(audioPath:string,name:string)

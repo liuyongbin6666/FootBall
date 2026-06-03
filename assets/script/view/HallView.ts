@@ -5,6 +5,7 @@ import { LoadImgTool } from '../tool/LoadImgTool';
 import { GameEventName } from '../manager/GameEventName';
 import { GameCustomEvent } from '../manager/GameCustomEvent';
 import { chapterStructure } from '../data/GlobalStructure';
+import { AudioMG } from '../sound/AudioMG';
 const { ccclass, property } = _decorator;
 
 /**
@@ -99,6 +100,8 @@ export class HallView extends Component {
         
         //默认页面征程
         this.freshChapter();
+        
+        AudioMG.Instance.playMusicAudio("audio/hall_bgyy");
     }
 
     //更换页面
