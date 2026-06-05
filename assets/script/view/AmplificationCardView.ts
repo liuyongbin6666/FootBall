@@ -312,7 +312,7 @@ export class AmplificationCardView extends Component {
         //英雄名
         cardNode.getChildByName("lab_heroName").getComponent(Label).string = heroQualityArr[rqHero].heroName;
         //英雄头像
-        LoadImgTool.Instance.loadSpriteFrame(heroQualityArr[rqHero].heroHeadImgPath,cardNode.getChildByName("icon_heroHead").getComponent(Sprite).node);
+        LoadImgTool.Instance.loadSpriteFrame(heroQualityArr[rqHero].heroHeadImgPath,cardNode.getChildByName("mask_headPortrait").getChildByName("icon_heroHead").getComponent(Sprite).node);
         //判断该英雄是否已上阵
         for(var findJoinHero:number = 0;findJoinHero < GlobalData.Instance.joinHeroArr.length;findJoinHero++)
         {
@@ -577,7 +577,7 @@ export class AmplificationCardView extends Component {
     cardComposing(cardNode:Node,iconPath:string,psName:string)
     {
         //英雄属性/技能图标
-        // LoadImgTool.Instance.loadSpriteFrame(iconPath,cardNode.getChildByName("icon_skill").getComponent(Sprite).node);
+        LoadImgTool.Instance.loadSpriteFrame(iconPath,cardNode.getChildByName("icon_skill").getComponent(Sprite).node);
         cardNode.getChildByName("icon_skill").getComponent(Sprite).node.active = true;
         //英雄属性名
         cardNode.getChildByName("lab_skillName").getComponent(Label).string = psName;

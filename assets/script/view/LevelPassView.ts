@@ -76,8 +76,8 @@ export class LevelPassView extends Component {
                     this.lay_hero.node.getChildByName("hero"+heroChangeCount).getChildByName("lab_promote").getComponent(Label).string = 
                         "0→" + heroPromoteArr[hpa].promoteTotal;
                     //英雄头像
-                    // LoadImgTool.Instance.loadSpriteFrame(heroPromoteArr[hpa].heroHeadImgPath,
-                    //     this.lay_hero.node.getChildByName("hero"+heroChangeCount).getChildByName("icon_heroHead").getComponent(Sprite).node);
+                    LoadImgTool.Instance.loadSpriteFrame(heroPromoteArr[hpa].heroHeadImgPath,
+                        this.lay_hero.node.getChildByName("hero"+heroChangeCount).getChildByName("icon_heroHead").getComponent(Sprite).node);
                 }
             }
         }else{
@@ -101,8 +101,8 @@ export class LevelPassView extends Component {
                         console.log("原翻牌次数：",GlobalData.Instance.gameRecord.levelHeroArr[lha].promoteTotal,
                             "新增翻牌次数：",heroPromoteArr[hpa].promoteTotal);
                         //英雄头像
-                        // LoadImgTool.Instance.loadSpriteFrame(heroPromoteArr[hpa].heroHeadImgPath,
-                        //     this.lay_hero.node.getChildByName("hero"+heroChangeCount).getChildByName("icon_heroHead").getComponent(Sprite).node);
+                        LoadImgTool.Instance.loadSpriteFrame(heroPromoteArr[hpa].heroHeadImgPath,
+                            this.lay_hero.node.getChildByName("hero"+heroChangeCount).getChildByName("icon_heroHead").getComponent(Sprite).node);
                         break;
                     }
                 }

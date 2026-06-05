@@ -1,11 +1,12 @@
 [
     {
         "waveID": 10101,
-        "enemyAriseArr": [{"ID": 101, "percent": 1}],
-        "total": 1,
+        "enemyAriseArr": [{"ID": 107, "percent": 1}],
+        "total": 10,
         "intervalTime": 4,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 5
     },
     {
         "waveID": 10102,
@@ -13,7 +14,8 @@
         "total": 1,
         "intervalTime": 3,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10103,
@@ -25,7 +27,8 @@
         "total": 1,
         "intervalTime": 2,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10104,
@@ -37,7 +40,8 @@
         "total": 1,
         "intervalTime": 2,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10105,
@@ -50,7 +54,8 @@
         "total": 1,
         "intervalTime": 2,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10201,
@@ -61,7 +66,8 @@
         "total": 10,
         "intervalTime": 0,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 5
     },
     {
         "waveID": 10202,
@@ -72,7 +78,8 @@
         "total": 10,
         "intervalTime": 0,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10203,
@@ -83,7 +90,8 @@
         "total": 10,
         "intervalTime": 0,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10301,
@@ -95,7 +103,8 @@
         "total": 10,
         "intervalTime": 0,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10401,
@@ -103,7 +112,8 @@
         "total": 20,
         "intervalTime": 3,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10402,
@@ -111,7 +121,8 @@
         "total": 30,
         "intervalTime": 2,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10403,
@@ -123,7 +134,8 @@
         "total": 30,
         "intervalTime": 2,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10404,
@@ -135,7 +147,8 @@
         "total": 30,
         "intervalTime": 2,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10405,
@@ -148,7 +161,8 @@
         "total": 50,
         "intervalTime": 2,
         "BossID": 9001,
-        "BossBornTime": 10
+        "BossBornTime": 10,
+        "minEnemy": 0
     },
     {
         "waveID": 10501,
@@ -156,6 +170,7 @@
         "total": 1,
         "intervalTime": 0,
         "BossID": 0,
-        "BossBornTime": 0
+        "BossBornTime": 0,
+        "minEnemy": 0
     }
 ]

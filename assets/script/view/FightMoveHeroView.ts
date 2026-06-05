@@ -1,4 +1,4 @@
-import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color, UIOpacity, sp, v3, AudioClip, AudioSource } from 'cc';
+import { _decorator, Component, Node, Sprite, Label, Button, find, Prefab, instantiate, ProgressBar, tween, Vec3, Color, UIOpacity, sp, v3, AudioClip, AudioSource, UITransform } from 'cc';
 import { bulletStructure, enemyStructure, heroStructure, levelStructure, locationTableStructure, relevanceProStructure, soccerStructure, waveStructure } from '../data/GlobalStructure';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { OperationTool } from '../tool/OperationTool';
@@ -8,6 +8,7 @@ import { Layer } from '../manager/Layer';
 import { GlobalData } from '../data/GlobalData';
 import { SDK } from '../../BHY_Framework/Sdk/SDK';
 import { AudioMG } from '../sound/AudioMG';
+import { TimeTool } from '../tool/TimeTool';
 const { ccclass, property } = _decorator;
 
 /**
@@ -65,6 +66,7 @@ export class FightMoveHeroView extends Component {
     private node_enemy:Node;
     private node_soccer:Node;
     private node_hero:Node;
+    private node_moveHero:Node;
     private btn_moveHero:Button;
     //掉落金币
     private lab_gold:Label;
@@ -72,6 +74,7 @@ export class FightMoveHeroView extends Component {
     private lab_wave:Label;
     //倒计时
     private img_sandClockBG:Sprite;
+    private lab_countDown:Label;
     //boss
     private node_boss:Node;
     
@@ -176,11 +179,14 @@ export class FightMoveHeroView extends Component {
     private moveLeftX:number = 0;
     //拖动右侧最大的x
     private moveRightX:number = 0;
+    private lastMoveHeroX:number = 0;
+    //是否在移动英雄
+    private moveHeroState:boolean = false;
+    //移动间隔时间
+    private moveHeroIntervalTime:number = 0;
 
     //敌人编号（因为能创建同一个类型，需要用编号来区分）
     private enemySerialNum:number = 10000;
-    //敌人停止走动发动攻击为止
-    private enemyStopY:number = -45;//6
     //敌人子弹速度
     private bulletSpeed:number = 5;
     //敌人产生间隔
@@ -199,6 +205,7 @@ export class FightMoveHeroView extends Component {
     //暂存波次
     private saveWave:waveStructure = null;
     private saveLevel:levelStructure = null;
+    //障碍/宝箱的随机出现位置
     private saveLocationArr:Array<locationTableStructure> = [];
     protected onLoad(): void {
         this._initObect();
@@ -215,12 +222,14 @@ export class FightMoveHeroView extends Component {
         this.rightWall = find('node_wall/rightWall', this.node);
         this.node_enemy = find('node_enemy', this.node);
         this.node_soccer = find('node_soccer', this.node);
-        this.node_hero = find('btn_moveHero/node_hero', this.node);
-        this.btn_moveHero = find('btn_moveHero', this.node).getComponent(Button);
+        this.node_hero = find('node_moveHero/node_hero', this.node);
+        this.node_moveHero = find('node_moveHero', this.node);
+        this.btn_moveHero = find('node_moveHero/btn_moveHero', this.node).getComponent(Button);
         this.lab_gold = find('node_top/lab_gold', this.node).getComponent(Label);
         this.lab_level = find('node_top/lab_level', this.node).getComponent(Label);
         this.lab_wave = find('node_top/lab_wave', this.node).getComponent(Label);
         this.img_sandClockBG = find('node_top/img_sandClockBG', this.node).getComponent(Sprite);
+        this.lab_countDown = find('node_top/img_sandClockBG/lab_countDown', this.node).getComponent(Label);
         this.node_boss = find('node_top/node_boss', this.node);
 
         this.img_danger = find('node_middle/img_danger', this.node).getComponent(Sprite);
@@ -270,23 +279,18 @@ export class FightMoveHeroView extends Component {
         this.bottomWall["wallID"] = 2;
         this.leftWall["wallID"] = 3;
         this.rightWall["wallID"] = 4;
-
-        for(var la:number = 0;la < GlobalData.Instance.locationArr.length;la++)
-        {
-            var newLocation:locationTableStructure = {locationID:GlobalData.Instance.locationArr[la].locationID,
-                locationX:GlobalData.Instance.locationArr[la].locationX,locationY:GlobalData.Instance.locationArr[la].locationY
-            }
-            this.saveLocationArr.push(newLocation);
-        }
     }
 
     //初始化战斗
     initFight()
     {
+        this.copyLocation();
+        this.lastMoveHeroX = this.node_moveHero.getPosition().x;
+
         this.img_danger.node.active = false;
 
-        //创建每波第一个敌人（怪物产生间隔从第二个开始）
-        this.ariseEnemy();
+        //首波敌人
+        this.enemyFirstOutput();
 
         this.heroShow();
         this.createSoccer();
@@ -354,8 +358,8 @@ export class FightMoveHeroView extends Component {
     {
         this.img_danger.node.active = false;
 
-        //创建每波第一个敌人（怪物产生间隔从第二个开始）
-        this.ariseEnemy();
+        //首波敌人
+        this.enemyFirstOutput();
         
         this.heroShow();
         this.createSoccer();
@@ -368,11 +372,27 @@ export class FightMoveHeroView extends Component {
         this.soccerGameState = gameState.start;
     }
 
+    //障碍/宝箱位置
+    copyLocation()
+    {
+        if(this.saveLocationArr.length != GlobalData.Instance.locationArr.length)
+        {
+            this.saveLocationArr = [];
+            for(var la:number = 0;la < GlobalData.Instance.locationArr.length;la++)
+            {
+                var newLocation:locationTableStructure = {locationID:GlobalData.Instance.locationArr[la].locationID,
+                    locationX:GlobalData.Instance.locationArr[la].locationX,locationY:GlobalData.Instance.locationArr[la].locationY
+                }
+                this.saveLocationArr.push(newLocation);
+            }
+        }
+    }
+
     //复制英雄数据 hrArr 英雄数组 copyHrArr被复制的英雄数组
     copyHeroArrFun(hrArr:Array<heroStructure>,copyHrArr:Array<heroStructure>)
     {
         //不能直接=数组，会变成索引，修改该数组会影响原数组的值
-        var hero:heroStructure = {heroID:0,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",
+        var hero:heroStructure = {heroID:0,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
@@ -383,6 +403,7 @@ export class FightMoveHeroView extends Component {
             hero.heroID = copyHrArr[h].heroID;
             hero.heroImgPath = copyHrArr[h].heroImgPath;
             hero.heroHeadImgPath = copyHrArr[h].heroHeadImgPath;
+            hero.heroSkePath = copyHrArr[h].heroSkePath;
             hero.heroName = copyHrArr[h].heroName;
             hero.heroIntroduce = copyHrArr[h].heroIntroduce;
             hero.heroType = copyHrArr[h].heroType;
@@ -423,12 +444,11 @@ export class FightMoveHeroView extends Component {
                 //如果记录为0，为重置该关卡，默认从第一个关卡开始
                 if(GlobalData.Instance.gameRecord.levelID == 0)
                 {
-                    console.log("首次");
+                    //首次进入游戏
                     GlobalData.Instance.gameRecord.levelID = GlobalData.Instance.chapterTableArr[findChapter].levelArr[0];
                     //初始化英雄数组
                     this.readHeroData(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr,true);
                 }else{
-                    console.log("非首次");
                     //继续游戏时，英雄数据为之前所达成关卡的数据
                     this.copyHeroArrFun(this.oldHeroArr,GlobalData.Instance.gameRecord.levelHeroArr);
                     //初始化英雄数组
@@ -472,7 +492,8 @@ export class FightMoveHeroView extends Component {
                             total:GlobalData.Instance.waveTableArr[findWave].total,
                             intervalTime:GlobalData.Instance.waveTableArr[findWave].intervalTime,
                             BossID:GlobalData.Instance.waveTableArr[findWave].BossID,
-                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime};
+                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime,
+                            minEnemy:GlobalData.Instance.waveTableArr[findWave].minEnemy};
                         this.saveWave = waveOne;//GlobalData.Instance.waveTableArr[findWave]
                         //按10毫秒一次算
                         this.saveWave.intervalTime *= 100;
@@ -560,7 +581,8 @@ export class FightMoveHeroView extends Component {
                                         total:GlobalData.Instance.waveTableArr[findWave].total,
                                         intervalTime:GlobalData.Instance.waveTableArr[findWave].intervalTime,
                                         BossID:GlobalData.Instance.waveTableArr[findWave].BossID,
-                                        BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime}
+                                        BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime,
+                                        minEnemy:GlobalData.Instance.waveTableArr[findWave].minEnemy}
                                     this.saveWave = waveOne;
                                     //按10毫秒一次算
                                     this.saveWave.intervalTime *= 100;
@@ -616,7 +638,8 @@ export class FightMoveHeroView extends Component {
                             total:GlobalData.Instance.waveTableArr[findWave].total,
                             intervalTime:GlobalData.Instance.waveTableArr[findWave].intervalTime,
                             BossID:GlobalData.Instance.waveTableArr[findWave].BossID,
-                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime}
+                            BossBornTime:GlobalData.Instance.waveTableArr[findWave].BossBornTime,
+                            minEnemy:GlobalData.Instance.waveTableArr[findWave].minEnemy}
                         this.saveWave = waveOne;
                         //按10毫秒一次算
                         this.saveWave.intervalTime *= 100;
@@ -654,7 +677,7 @@ export class FightMoveHeroView extends Component {
     //首次游戏或第一关时，创建英雄或英雄空位（只需要读表数据）
     createNewHeroOrTemp(hid:number,hIndex:number)
     {
-        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",
+        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
@@ -666,6 +689,7 @@ export class FightMoveHeroView extends Component {
                 hero.heroID = GlobalData.Instance.heroTableArr[ht].heroID;
                 hero.heroImgPath = GlobalData.Instance.heroTableArr[ht].heroImgPath;
                 hero.heroHeadImgPath = GlobalData.Instance.heroTableArr[ht].heroHeadImgPath;
+                hero.heroSkePath = GlobalData.Instance.heroTableArr[ht].heroSkePath;
                 hero.heroName = GlobalData.Instance.heroTableArr[ht].heroName;
                 hero.heroIntroduce = GlobalData.Instance.heroTableArr[ht].heroIntroduce;
                 hero.heroType = GlobalData.Instance.heroTableArr[ht].heroType;
@@ -703,7 +727,7 @@ export class FightMoveHeroView extends Component {
     //非首次或继续游戏时，创建英雄或英雄空位（需要保留已经升级的数据）
     createOldHeroOrTemp(hid:number,hIndex:number)
     {
-        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",
+        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
@@ -714,6 +738,7 @@ export class FightMoveHeroView extends Component {
                 hero.heroID = this.oldHeroArr[jh].heroID;
                 hero.heroImgPath = this.oldHeroArr[jh].heroImgPath;
                 hero.heroHeadImgPath = this.oldHeroArr[jh].heroHeadImgPath;
+                hero.heroSkePath = this.oldHeroArr[jh].heroSkePath;
                 hero.heroName = this.oldHeroArr[jh].heroName;
                 hero.heroIntroduce = this.oldHeroArr[jh].heroIntroduce;
                 hero.heroType = this.oldHeroArr[jh].heroType;
@@ -743,6 +768,7 @@ export class FightMoveHeroView extends Component {
         //         hero.heroID = GlobalData.Instance.heroTableArr[ht].heroID;
         //         hero.heroImgPath = GlobalData.Instance.heroTableArr[ht].heroImgPath;
         //         hero.heroHeadImgPath = GlobalData.Instance.heroTableArr[ht].heroHeadImgPath;
+        //         hero.heroSkePath = GlobalData.Instance.heroTableArr[ht].heroSkePath;
         //         hero.heroName = GlobalData.Instance.heroTableArr[ht].heroName;
         //         hero.heroIntroduce = GlobalData.Instance.heroTableArr[ht].heroIntroduce;
         //         hero.heroType = GlobalData.Instance.heroTableArr[ht].heroType;
@@ -790,11 +816,16 @@ export class FightMoveHeroView extends Component {
             {
                 item["temp"] = true;
                 item.getChildByName("ske_hero").active = false;
+                item.getChildByName("img_shadow").getComponent(Sprite).node.active = false;
             }else{
                 item["temp"] = false;
                 // item.getChildByName("lab_nickname").getComponent(Label).string = "" + this.heroArr[he].heroName;
                 // LoadImgTool.Instance.loadSpriteFrame(this.heroArr[he].heroImgPath, item.getChildByName("mask_head").getChildByName("icon_head").getComponent(Sprite).node);
-                item.getChildByName("btn_hero").getComponent(Button).node.active = true;
+                console.log("加载SkeletonData路径",this.heroArr[he].heroSkePath);
+                item.getChildByName("ske_hero").active = true;
+                LoadImgTool.Instance.loadSkeletonData(this.heroArr[he].heroSkePath,item.getChildByName("ske_hero").getComponent(sp.Skeleton),"idle");//"spine/hero/hero501/hero501"
+                // item.getChildByName("btn_hero").getComponent(Button).node.active = true;
+                item.getChildByName("img_shadow").getComponent(Sprite).node.active = true;
                 if(this.heroArr[he].skillArr.length > 0)
                 {
                     //根据ID查找在技能表中查找技能
@@ -826,6 +857,7 @@ export class FightMoveHeroView extends Component {
                 this.heroArr[hIndex].heroID = GlobalData.Instance.heroTableArr[ht].heroID;
                 this.heroArr[hIndex].heroImgPath = GlobalData.Instance.heroTableArr[ht].heroImgPath;
                 this.heroArr[hIndex].heroHeadImgPath = GlobalData.Instance.heroTableArr[ht].heroHeadImgPath;
+                this.heroArr[hIndex].heroSkePath = GlobalData.Instance.heroTableArr[ht].heroSkePath;
                 this.heroArr[hIndex].heroName = GlobalData.Instance.heroTableArr[ht].heroName;
                 this.heroArr[hIndex].heroIntroduce = GlobalData.Instance.heroTableArr[ht].heroIntroduce;
                 this.heroArr[hIndex].heroType = GlobalData.Instance.heroTableArr[ht].heroType;
@@ -850,8 +882,10 @@ export class FightMoveHeroView extends Component {
                 this.heroArr[hIndex].join = true;
                 this.heroArr[hIndex].heroItem["temp"] = false;
                 this.heroArr[hIndex].heroItem.getChildByName("ske_hero").active = true;
+                this.heroArr[hIndex].heroItem.getChildByName("img_shadow").getComponent(Sprite).node.active = true;
                 //将英雄添加到上阵数组中
                 this.joinHero(this.heroArr[hIndex]);
+                LoadImgTool.Instance.loadSkeletonData(this.heroArr[hIndex].heroSkePath,this.heroArr[hIndex].heroItem.getChildByName("ske_hero").getComponent(sp.Skeleton),"idle");
                 break;
             }
         }
@@ -911,6 +945,7 @@ export class FightMoveHeroView extends Component {
                 this.heroArr[xz].join = false;
                 this.heroArr[xz].heroItem["temp"] = false;
                 this.heroArr[xz].heroItem.getChildByName("ske_hero").active = false;
+                this.heroArr[xz].heroItem.getChildByName("img_shadow").getComponent(Sprite).node.active = true;
                 break;
             }
         }
@@ -942,6 +977,7 @@ export class FightMoveHeroView extends Component {
                         // this.oldHeroArr[oh].heroID = this.heroArr[jh].heroID;
                         // this.oldHeroArr[oh].heroImgPath = this.heroArr[jh].heroImgPath;
                         // this.oldHeroArr[oh].heroHeadImgPath = this.heroArr[jh].heroHeadImgPath;
+                        // this.oldHeroArr[oh].heroSkePath = this.heroArr[jh].heroSkePath;
                         // this.oldHeroArr[oh].heroName = this.heroArr[jh].heroName;
                         // this.oldHeroArr[oh].heroIntroduce = this.heroArr[jh].heroIntroduce;
                         // this.oldHeroArr[oh].heroType = this.heroArr[jh].heroType;
@@ -1164,15 +1200,15 @@ export class FightMoveHeroView extends Component {
                             break;
                         case 2:
                             item = instantiate(this.enemyMiddleItemPre);
-                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_middle_monster").getComponent(sp.Skeleton),"animation_move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_middle_monster").getComponent(sp.Skeleton),"move");
                             break;
                         case 3:
                             item = instantiate(this.enemyBigItemPre);
-                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_big_monster").getComponent(sp.Skeleton),"animation_move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_big_monster").getComponent(sp.Skeleton),"move");
                             break;
                         case 4:
                             item = instantiate(this.bossItemPre);
-                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_boss_monster").getComponent(sp.Skeleton),"animation_move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_boss_monster").getComponent(sp.Skeleton),"move");
                             this.node_boss.active = true;
                             break;
                         case 5:
@@ -1192,7 +1228,6 @@ export class FightMoveHeroView extends Component {
                             var locIndex:number = Math.floor(Math.random() * this.saveLocationArr.length);
                             var newLoc:locationTableStructure = this.saveLocationArr[locIndex];
                             item.setPosition(newLoc.locationX,newLoc.locationY);
-                            console.log("障碍位置",newLoc.locationX,newLoc.locationY);
                             item["locationID"] = newLoc.locationID;
                             //从数组中移除，已抽取的位置不再抽取
                             this.saveLocationArr.splice(locIndex,1);
@@ -1262,6 +1297,43 @@ export class FightMoveHeroView extends Component {
         }else{
             this.enemyIntervalTime = -1;
         }
+    }
+
+    //怪物/障碍/宝箱/奖杯首次产出
+    enemyFirstOutput()
+    {
+        if(this.saveLevel.levelType == 1 || this.saveLevel.levelType == 4)
+        {
+            //每波第一个怪物（怪物产生间隔从第二个开始）
+            this.ariseEnemy();
+        }else if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3)
+        {
+            //根据首次要生成的最少个数障碍/宝箱
+            for(var ce:number = 0;ce < this.saveWave.minEnemy;ce++)
+            {
+                this.ariseEnemy();
+            }
+        }else if(this.saveLevel.levelType == 5)
+        {
+            //奖杯
+        }
+    }
+
+    //敌人停止纵向走动，发动攻击位置
+    enemyStopYFun(outline:number):number
+    {
+        switch(outline)
+        {
+            case 1:
+                return -119;
+            case 2:
+                return -105;
+            case 3:
+                return -80;
+            case 4:
+                return -45;
+        }
+        return -45;
     }
 
     //查找位置最前面且血量大于0的敌人编号
@@ -1336,6 +1408,8 @@ export class FightMoveHeroView extends Component {
         {
             if(this.enemyArr[findDeadEnemy].HP <= 0)
             {
+                var isNewEne:boolean = false;
+                var loc:locationTableStructure = {locationID:0,locationX:0,locationY:0};
                 if(this.enemyArr[findDeadEnemy].enemyType == 2 || this.enemyArr[findDeadEnemy].enemyType == 3)
                 {
                     //根据ID找到对应的位置
@@ -1343,10 +1417,11 @@ export class FightMoveHeroView extends Component {
                     {
                         if(this.enemyArr[findDeadEnemy].enemyItem["locationID"] == GlobalData.Instance.locationArr[findLoc].locationID)
                         {
-                            //将之前占用的随机出现位置返还
-                            this.saveLocationArr.push(GlobalData.Instance.locationArr[findLoc]);
+                            //暂存随机出现位置
+                            loc.locationID = GlobalData.Instance.locationArr[findLoc].locationID;
+                            loc.locationX = GlobalData.Instance.locationArr[findLoc].locationX;
+                            loc.locationY = GlobalData.Instance.locationArr[findLoc].locationY;
                             this.enemyArr[findDeadEnemy].enemyItem["locationID"] = -1;
-                            //检测是否有剩余障碍/宝箱需要创建
                         }
                     }
                 }
@@ -1361,6 +1436,11 @@ export class FightMoveHeroView extends Component {
                 // this.recycleEnemyArr.push(this.enemyArr[findDeadEnemy]);
                 //移除敌人数据
                 this.enemyArr.splice(findDeadEnemy,1);
+                //障碍/宝箱在消除掉一个后，在有余量的情况下需要立即创建，以保证最少存在个数
+                this.ariseEnemy();
+                //新的障碍/宝箱生成后，再将之前占用的随机位置返还，避免新生成的位置刚好是之前消失的位置
+                this.saveLocationArr.push(loc);
+
             }
         }
     }
@@ -1506,6 +1586,10 @@ export class FightMoveHeroView extends Component {
 
     startMoveHero(e)
     {
+        if(this.soccerGameState != gameState.start)
+        {
+            return;
+        }
         //计算差值
         if(this.lastMoveX != 0)
         {
@@ -1523,9 +1607,14 @@ export class FightMoveHeroView extends Component {
     //移动英雄
     moveHero(e)
     {
+        if(this.soccerGameState != gameState.start)
+        {
+            return;
+        }
         if(e.getLocationX() - this.moveIntervalX >= this.moveLeftX && e.getLocationX() - this.moveIntervalX <= this.moveRightX)
         {
-            this.btn_moveHero.node.setPosition(e.getLocationX() - this.moveIntervalX,-360);
+            this.node_moveHero.setPosition(e.getLocationX() - this.moveIntervalX,-360);
+            // this.btn_moveHero.node.setPosition(e.getLocationX() - this.moveIntervalX,-360);
             //移动块最后位置(不在end中记录，因为鼠标可能移除屏幕外，导致没有end检测)
             this.lastMoveX = e.getLocationX() - this.moveIntervalX;
         }
@@ -1534,35 +1623,46 @@ export class FightMoveHeroView extends Component {
     //根据英雄个数，对拖动位置进行不同的限制
     moveHeroStance(heroCount:number)
     {
+        //添加英雄时，英雄位置重置，防止新添加的英雄加到限制区域外
+        this.node_moveHero.setPosition(0,-360);
+        this.lastMoveX = 0;
+        this.lastMoveHeroX = this.node_moveHero.getPosition().x;
         switch(heroCount)
         {
             case 1:
-                this.moveLeftX = -264;
+                this.moveLeftX = -294;
                 this.moveRightX = 284;
+                this.btn_moveHero.node.getComponent(UITransform).width = 95;
                 break;
             case 2:
-                this.moveLeftX = -178;
+                this.moveLeftX = -244;
                 this.moveRightX = 280;
+                this.btn_moveHero.node.getComponent(UITransform).width = 140;
                 break;
             case 3:
-                this.moveLeftX = -194;
-                this.moveRightX = 214;
+                this.moveLeftX = -244;
+                this.moveRightX = 250;
+                this.btn_moveHero.node.getComponent(UITransform).width = 185;
                 break;
             case 4:
-                this.moveLeftX = -128;
-                this.moveRightX = 218;
+                this.moveLeftX = -194;
+                this.moveRightX = 250;
+                this.btn_moveHero.node.getComponent(UITransform).width = 250;
                 break;
             case 5:
-                this.moveLeftX = -128;
-                this.moveRightX = 140;
+                this.moveLeftX = -194;
+                this.moveRightX = 200;
+                this.btn_moveHero.node.getComponent(UITransform).width = 300;
                 break;
             case 6:
-                this.moveLeftX = -62;
-                this.moveRightX = 148;
+                this.moveLeftX = -144;
+                this.moveRightX = 200;
+                this.btn_moveHero.node.getComponent(UITransform).width = 350;
                 break;
             case 7:
-                this.moveLeftX = -62;
-                this.moveRightX = 78;
+                this.moveLeftX = -144;
+                this.moveRightX = 150;
+                this.btn_moveHero.node.getComponent(UITransform).width = 400;
                 break;
         }
     }
@@ -1747,15 +1847,23 @@ export class FightMoveHeroView extends Component {
     //关卡通关
     levelPassFun()
     {
-        this.freshDoubleHit();
-        // this.soccerGameState = gameState.stop;
-        //弹出关卡通关页面
-        Layer.Instance.show("levelPass",Layer.Instance.layerView);
-        //向关卡通关页面发送数据
-        let lpEvent = new GameEventName({ doubleHit:this.maxDoubleHit, allHarm: this.harmTotal, heroArr: this.heroArr });
-        GameCustomEvent.Instance.node.emit(GameEventName.LEVER_PASS_EVENT,lpEvent);
-        // var _this = this;
-        // tween(this.img_fog.node).to(2,{position:new Vec3(0,0,0)}).delay(0.5).to(2,{position:new Vec3(750,0,0)}).start();
+        //英雄庆贺跳舞
+        let heroAttackSkeEvent = new GameEventName({ eventCode: 1, aniName:"dance", aniLoop: true });
+        GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroAttackSkeEvent);
+        setTimeout(() => {
+            let heroIdleSkeEvent = new GameEventName({ eventCode: 1, aniName:"idle", aniLoop: true });
+            GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroIdleSkeEvent);
+            
+            this.freshDoubleHit();
+            // this.soccerGameState = gameState.stop;
+            //弹出关卡通关页面
+            Layer.Instance.show("levelPass",Layer.Instance.layerView);
+            //向关卡通关页面发送数据
+            let lpEvent = new GameEventName({ doubleHit:this.maxDoubleHit, allHarm: this.harmTotal, heroArr: this.heroArr });
+            GameCustomEvent.Instance.node.emit(GameEventName.LEVER_PASS_EVENT,lpEvent);
+            // var _this = this;
+            // tween(this.img_fog.node).to(2,{position:new Vec3(0,0,0)}).delay(0.5).to(2,{position:new Vec3(750,0,0)}).start();
+        }, 3000);
     }
 
     //关卡下一波
@@ -1764,6 +1872,13 @@ export class FightMoveHeroView extends Component {
         //存储本关卡英雄数据
         this.saveOldHero();
         this.copyHeroArrFun(GlobalData.Instance.gameRecord.levelHeroArr,this.oldHeroArr);
+        //如果英雄在移动中，停止移动
+        if(this.moveHeroState)
+        {
+            let heroAttackSkeEvent = new GameEventName({ eventCode: 1, aniName:"idle", aniLoop: true });
+            GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroAttackSkeEvent);
+            this.moveHeroState = false;
+        }
         //是否为计时关卡
         if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3)
         {
@@ -1804,8 +1919,8 @@ export class FightMoveHeroView extends Component {
         // this.enemyArr = [];
         // this.recycleEnemyArr = [];
         //如果是章节结算，清零所有英雄
-        //每波第一个敌人（怪物产生间隔从第二个开始）
-        this.ariseEnemy();
+
+        this.enemyFirstOutput();
         //球重新发球
         //非空英雄位
         var noTempheroArr:Array<heroStructure> = [];
@@ -1951,13 +2066,14 @@ export class FightMoveHeroView extends Component {
                     //取整，避免小数点
                     lastHarm = Math.floor(lastHarm);
                     this.harmTotal += lastHarm;
+
                     //根据敌人ID查找敌人
                     for(var findEnemy:number = 0;findEnemy < this.enemyArr.length;findEnemy++)
                     {
                         if(this.enemyArr[findEnemy].enemyItem["enemySerialNum"] == controllerEvent.getCustomProperty().enemySerialNum)
                         {
                             //若敌人处于近距离，则根据y选择近距离的英雄
-                            if(this.enemyArr[findEnemy].enemyItem.getPosition().y < this.enemyStopY)
+                            if(this.enemyArr[findEnemy].enemyItem.getPosition().y <= this.enemyStopYFun(this.enemyArr[findEnemy].outline))
                             {
                                 //球重新随机一个近距离的x（敌人附近相距绝对值110）点发射
                                 newDotX = this.enemyArr[findEnemy].enemyItem.getPosition().x + (Math.floor(Math.random() * 220) - 110);
@@ -1969,6 +2085,24 @@ export class FightMoveHeroView extends Component {
                             var newHP:number = this.enemyArr[findEnemy].HP - lastHarm;
                             //敌人受到伤害，并扣除血量，如扣除后的血量低于0，敌人消失
                             this.enemyArr[findEnemy].HP = newHP;
+
+                            if(this.enemyArr[findEnemy].HP > 0)
+                            {
+                                let enemyHurtSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:"hurt", aniLoop: false });
+                                GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
+                                setTimeout(() => {
+                                    var aName:string = "idle";
+                                    if(this.moveHeroState)
+                                    {
+                                        aName = "move";
+                                    }
+                                    let heroIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:aName, aniLoop: true });
+                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, heroIdleSkeEvent);
+                                }, 700);
+                            }else{
+                                let enemyDeathSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:"death", aniLoop: false });
+                                GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyDeathSkeEvent);
+                            }
                             
                             //不能在材质里创建带有系统字的label材质，会导致外层的系统字label显示冲突而消失，可改用图片形式的艺术字
                             //创建一个扣血文本
@@ -1980,7 +2114,7 @@ export class FightMoveHeroView extends Component {
                             this.enemyArr[findEnemy].enemyItem.getChildByName("node_harmText").addChild(textItem);
                             var _this = this;
                             var _harmNode = this.enemyArr[findEnemy].enemyItem.getChildByName("node_harmText");
-                            tween(textItem).to(0.3,{position:new Vec3(0,50,0)}).delay(0.7).call(()=>{
+                            tween(textItem).to(0.3,{position:new Vec3(0,50,0)}).delay(0.2).call(()=>{
                                 //文本消失
                                 _harmNode.removeChild(textItem);
                                 _this.enemyDead();
@@ -2065,10 +2199,15 @@ export class FightMoveHeroView extends Component {
                 }
                 //踢球时震动
                 this.earthquakeAttack();
-                let heroAttackSkeEvent = new GameEventName({ heroID:controllerEvent.getCustomProperty().heroID, aniName:"animation_tacck", aniLoop: false });
+                let heroAttackSkeEvent = new GameEventName({ eventCode: 2, heroID:controllerEvent.getCustomProperty().heroID, aniName:"hit", aniLoop: false });
                 GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroAttackSkeEvent);
                 setTimeout(() => {
-                    let heroIdleSkeEvent = new GameEventName({ heroID:controllerEvent.getCustomProperty().heroID, aniName:"animation_move", aniLoop: true });
+                    var aName:string = "idle";
+                    if(this.moveHeroState)
+                    {
+                        aName = "move";
+                    }
+                    let heroIdleSkeEvent = new GameEventName({ eventCode: 2, heroID:controllerEvent.getCustomProperty().heroID, aniName:aName, aniLoop: true });
                     GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroIdleSkeEvent);
                 }, 700);
                 break;
@@ -2134,6 +2273,7 @@ export class FightMoveHeroView extends Component {
             //判断游戏是否失败
             if(this.HP <= 0 && this.changeHeroState == false)
             {
+                console.log("血量：",this.HP,"：",this.changeHeroState)
                 this.soccerGameState = gameState.over;
                 //弹出失败页面
                 Layer.Instance.show("lose",Layer.Instance.layerView);
@@ -2172,9 +2312,12 @@ export class FightMoveHeroView extends Component {
                 //所有障碍已消除或倒计时结束通关
                 if(this.findResidueEnemyType(2) <= 0 && this.saveWave.total == 0)
                 {
+                    this.soccerGameState = gameState.result;
                     //下一波障碍
+                    this.readNextWave();
                 }else{
                     this.saveLevel.maxTime--;
+                    this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
                     //倒计时结束，游戏失败
                     if(this.saveLevel.maxTime == 0)
                     {
@@ -2189,12 +2332,18 @@ export class FightMoveHeroView extends Component {
                 //只计算得分
                 if(this.findResidueEnemyType(3) <= 0 && this.saveWave.total == 0)
                 {
+                    this.soccerGameState = gameState.result;
                     //本波通过，生成下一波宝箱
+                    this.readNextWave();
                 }
                 this.saveLevel.maxTime--;
+                this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
                 //倒计时结束通关，无论是否打完宝箱，若提前打完宝箱，提前通过关卡
                 if(this.saveLevel.maxTime == 0)
-                {}
+                {
+                    this.soccerGameState = gameState.result;
+                    this.readNextWave();
+                }
             }
             else if(this.saveLevel.levelType == 4)
             {
@@ -2202,32 +2351,40 @@ export class FightMoveHeroView extends Component {
                 if(this.findResidueEnemyType(4) <= 0 && this.saveWave.total == 0)
                 {
                     //Boss死亡直接通关，不管其余小怪是否死亡
+                    this.soccerGameState = gameState.result;
+                    this.readNextWave();
                 }
             }
             
-            if(this.enemyIntervalTime > 0)
+            //怪物产出
+            if(this.saveLevel.levelType == 1 || this.saveLevel.levelType == 4)
             {
-                this.enemyIntervalTime--;
-                if(this.enemyIntervalTime <= 0)
+                //怪物的产生方式
+                if(this.enemyIntervalTime > 0)
                 {
-                    this.enemyIntervalTime = this.saveWave.intervalTime;
-                    //通过怪物权重创建怪物
-                    this.ariseEnemy();
+                    this.enemyIntervalTime--;
+                    if(this.enemyIntervalTime <= 0)
+                    {
+                        this.enemyIntervalTime = this.saveWave.intervalTime;
+                        //通过怪物权重创建怪物
+                        this.ariseEnemy();
+                    }
                 }
-            }
-            //Boss在规定时间出现
-            if(this.saveWave.BossID != 0 && this.saveWave.BossBornTime > 0)
-            {
-                this.saveWave.BossBornTime--;
-                if(this.saveWave.BossBornTime <= 0)
+
+                //Boss在规定时间出现
+                if(this.saveWave.BossID != 0 && this.saveWave.BossBornTime > 0)
                 {
-                    this.createEnemy(this.saveWave.BossID);
-                }else if(this.enemyArr.length == 0 && this.saveWave.total == 0)
-                {
-                    //若所有小怪死亡，Boss提前出现
-                    this.createEnemy(this.saveWave.BossID);
-                    //不再进入Boss出现计时
-                    this.saveWave.BossBornTime = -1;
+                    this.saveWave.BossBornTime--;
+                    if(this.saveWave.BossBornTime <= 0)
+                    {
+                        this.createEnemy(this.saveWave.BossID);
+                    }else if(this.enemyArr.length == 0 && this.saveWave.total == 0)
+                    {
+                        //若所有小怪死亡，Boss提前出现
+                        this.createEnemy(this.saveWave.BossID);
+                        //不再进入Boss出现计时
+                        this.saveWave.BossBornTime = -1;
+                    }
                 }
             }
             //检测敌人是否死亡
@@ -2248,6 +2405,29 @@ export class FightMoveHeroView extends Component {
             //     this.img_fightLinkUpBg.node.setPosition(this.img_fightLinkUpBg.node.getPosition().x,this.img_fightLinkUpBg.node.getPosition().y - this.mapMoveSpeed);
             // }
 
+            //英雄是否有x轴的移动
+            if(this.lastMoveHeroX != this.node_moveHero.getPosition().x)
+            {
+                if(this.moveHeroState == false && this.moveHeroIntervalTime <= 0)
+                {
+                    let heroAttackSkeEvent = new GameEventName({ eventCode: 1, aniName:"move", aniLoop: true });
+                    GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroAttackSkeEvent);
+                    this.moveHeroState = true;
+                }
+                //若一直在拖动，则一直刷新间隔检测时间
+                this.moveHeroIntervalTime = 50;
+            }else if(this.moveHeroIntervalTime > 0)
+            {
+                this.moveHeroIntervalTime--;
+                if(this.lastMoveHeroX == this.node_moveHero.getPosition().x && this.moveHeroState == true && this.moveHeroIntervalTime <= 0)
+                {
+                    let heroAttackSkeEvent = new GameEventName({ eventCode: 1, aniName:"idle", aniLoop: true });
+                    GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroAttackSkeEvent);
+                    this.moveHeroState = false;
+                }
+            }
+            this.lastMoveHeroX = this.node_moveHero.getPosition().x;
+
             //敌人移动
             for(var moveEnemy:number = 0;moveEnemy < this.enemyArr.length;moveEnemy++)
             {
@@ -2256,7 +2436,7 @@ export class FightMoveHeroView extends Component {
                     if(this.enemyArr[moveEnemy].enemyType == 1)
                     {
                         //如果走到了发动攻击位置，y不再变，攻击水晶
-                        if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < this.enemyStopY)
+                        if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < this.enemyStopYFun(this.enemyArr[moveEnemy].outline))
                         {
                             //敌人进入攻击计时
                             if(this.enemyArr[moveEnemy].attackSpeedTime > 0)

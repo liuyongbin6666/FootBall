@@ -61,13 +61,13 @@ export class GameCustomEvent extends Component {
         }
     }
 
-    //移除多个同一自定义事件监听 eventName 事件名 eventIndexID 事件监听Node唯一标识
-    removeMoreCustomEvent(eventName:string,eventIndexID: string)
+    //移除多个同一自定义事件监听 eventName 事件名 eventIndexID 事件监听Node唯一标识（记号的对应值） removeStr 节点上的记号
+    removeMoreCustomEvent(eventName:string,eventIndexID: string,removeStr:string = "indexID")
     {
         //根据自定义事件名移除监听器
         for(var r:number = 0;r < this.eventMoreArr.length;r++)
         {
-            if(this.eventMoreArr[r].gameEventName == eventName && this.eventMoreArr[r].gameTarget.node["indexID"] == eventIndexID)
+            if(this.eventMoreArr[r].gameEventName == eventName && this.eventMoreArr[r].gameTarget.node[removeStr] == eventIndexID)
             {
                 GameCustomEvent.Instance.node.off(eventName,this.eventMoreArr[r].gameCallback,this.eventMoreArr[r].gameTarget);
                 this.eventMoreArr.splice(r,1);
