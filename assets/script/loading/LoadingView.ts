@@ -129,6 +129,8 @@ export class LoadingView extends Component {
                 //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
                 var newImgPath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroHeadImgPath);
                 heroArr[r].heroHeadImgPath = newImgPath;
+                var newSkePath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroSkePath);
+                heroArr[r].heroSkePath = newSkePath;
             }
             GlobalData.Instance.heroTableArr = heroArr;
             //当前版本默认全解锁
@@ -162,6 +164,11 @@ export class LoadingView extends Component {
         LoadTableTool.Instance.loadTextFile("json/heroPropertyJson",(value)=>{
             var heroProGrowUpArr = JSON.parse(value);
             console.log("英雄属性增幅表：",heroProGrowUpArr);
+            for(var hs:number = 0;hs < heroProGrowUpArr.length;hs++)
+            {
+                var newImgPath:string = CharacterTool.Instance.pathCharacter(heroProGrowUpArr[hs].propertyIconPath);
+                heroProGrowUpArr[hs].propertyIconPath = newImgPath;
+            }
             GlobalData.Instance.heroProGrowUpTableArr = heroProGrowUpArr;
             _this.loadCount++;
         });

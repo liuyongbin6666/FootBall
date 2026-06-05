@@ -13,11 +13,22 @@ export class HeroSke extends Component {
 
     playAni(hsEvent: GameEventName)
     {
-        if(hsEvent.getCustomProperty().heroID == this.node.parent["heroID"])
+        switch(hsEvent.getCustomProperty().eventCode)
         {
-            this.ske_hero.clearTracks();
-            // this.ske_hero.setAnimation(1, "animation_attack01", false);
-            this.ske_hero.setAnimation(1, hsEvent.getCustomProperty().aniName, hsEvent.getCustomProperty().aniLoop);
+            case 1:
+                //统一事件，一起播放
+                this.ske_hero.clearTracks();
+                this.ske_hero.setAnimation(1, hsEvent.getCustomProperty().aniName, hsEvent.getCustomProperty().aniLoop);
+                break;
+            case 2:
+                //单个事件，单个播放
+                if(hsEvent.getCustomProperty().heroID == this.node.parent["heroID"])
+                {
+                    this.ske_hero.clearTracks();
+                    // this.ske_hero.setAnimation(1, "animation_attack", false);
+                    this.ske_hero.setAnimation(1, hsEvent.getCustomProperty().aniName, hsEvent.getCustomProperty().aniLoop);
+                }
+                break;
         }
     }
 

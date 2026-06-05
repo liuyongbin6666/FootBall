@@ -1,10 +1,10 @@
 [
     {
         "levelID": 101,
-        "levelType": 1,
+        "levelType": 2,
         "stillLife": true,
         "nextLevelArr": [102],
-        "maxTime": 60,
+        "maxTime": 6000,
         "waveArr": [10101, 10102, 10103, 10104, 10105],
         "levelImgPath": "",
         "levelMusicPath": "",

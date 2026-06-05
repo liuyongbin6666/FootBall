@@ -26,6 +26,8 @@ export class GameEventName {
     static CHAPTER_RANK_EVENT = "chapter_rank_event";
     /** 英雄动作 */
     static HERO_SKE_EVENT = "hero_ske_event";
+    /** 敌人动作 */
+    static ENEMY_SKE_EVENT = "enemy_ske_event";
 
     /** 注册事件 */
     static REGISTER_EVENT = "register_event";

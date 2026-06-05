@@ -95,6 +95,8 @@ export interface waveStructure {
     BossID:number;
     //Boss出现时间
     BossBornTime:number;
+    //同时生成的最少障碍/宝箱个数保持（直到总数不够时不再生成） 0 无限制
+    minEnemy:number;
 }
 
 //英雄
@@ -105,6 +107,8 @@ export interface heroStructure {
     heroHeadImgPath:string;
     //英雄图片路径
     heroImgPath:string;
+    //英雄spine动画路径
+    heroSkePath:string;
     //英雄名
     heroName:string;
     //英雄介绍
