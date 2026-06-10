@@ -13,7 +13,7 @@
       "fontSize": 26,
       "atlasName": "whiteFont.png",
       "fontDefDictionary": {
-        "45": {
+        "43": {
           "rect": {
             "x": 44,
             "y": 27,
@@ -24,9 +24,20 @@
           "yOffset": 0,
           "xAdvance": 20
         },
+        "45": {
+          "rect": {
+            "x": 68,
+            "y": 0,
+            "width": 20,
+            "height": 25
+          },
+          "xOffset": 0,
+          "yOffset": 0,
+          "xAdvance": 20
+        },
         "47": {
           "rect": {
-            "x": 89,
+            "x": 90,
             "y": 0,
             "width": 18,
             "height": 26
@@ -48,8 +59,8 @@
         },
         "49": {
           "rect": {
-            "x": 42,
-            "y": 54,
+            "x": 90,
+            "y": 55,
             "width": 15,
             "height": 25
           },
@@ -70,7 +81,7 @@
         },
         "51": {
           "rect": {
-            "x": 89,
+            "x": 90,
             "y": 28,
             "width": 18,
             "height": 25
@@ -81,8 +92,8 @@
         },
         "52": {
           "rect": {
-            "x": 0,
-            "y": 54,
+            "x": 68,
+            "y": 27,
             "width": 19,
             "height": 25
           },
@@ -114,8 +125,8 @@
         },
         "55": {
           "rect": {
-            "x": 68,
-            "y": 0,
+            "x": 0,
+            "y": 54,
             "width": 19,
             "height": 26
           },

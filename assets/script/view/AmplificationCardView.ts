@@ -405,11 +405,11 @@ export class AmplificationCardView extends Component {
                                     var saveHeroPro4:cardAddProStructure;
                                     if(proJoinHero.criticalLevel + 1 >= GlobalData.Instance.heroProGrowUpTableArr[hpgu].growUpArr.length)
                                     {
-                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,
-                                            level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:true};
+                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,level:this.produceCardArr[cardIndex].level,
+                                            multiple:this.lastBreakQutHarmChance(this.produceCardArr[cardIndex].promote,this.produceCardArr[cardIndex].multiple),skillID:0,isTop:true};
                                     }else{
-                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,
-                                            level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:false};
+                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,level:this.produceCardArr[cardIndex].level,
+                                            multiple:this.lastBreakQutHarmChance(this.produceCardArr[cardIndex].promote,this.produceCardArr[cardIndex].multiple),skillID:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro4);
                                     this.updateCardProHeroArr(cardNode,saveHeroPro4);
@@ -442,11 +442,11 @@ export class AmplificationCardView extends Component {
                                     var saveHeroPro4:cardAddProStructure;
                                     if(proJoinHero.breakOutLevel + 1 >= GlobalData.Instance.heroProGrowUpTableArr[hpgu].growUpArr.length)
                                     {
-                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,
-                                            level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:true};
+                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,level:this.produceCardArr[cardIndex].level,
+                                            multiple:this.lastCriticalChance(this.produceCardArr[cardIndex].promote,this.produceCardArr[cardIndex].multiple),skillID:0,isTop:true};
                                     }else{
-                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,
-                                            level:this.produceCardArr[cardIndex].level,multiple:this.produceCardArr[cardIndex].multiple,skillID:0,isTop:false};
+                                        saveHeroPro4 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,newJoin:false,quality:0,level:this.produceCardArr[cardIndex].level,
+                                            multiple:this.lastCriticalChance(this.produceCardArr[cardIndex].promote,this.produceCardArr[cardIndex].multiple),skillID:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro4);
                                     this.updateCardProHeroArr(cardNode,saveHeroPro4);
@@ -546,10 +546,10 @@ export class AmplificationCardView extends Component {
                                     if((proJoinHero.skillProArr[skillIndex].level + 1) >= GlobalData.Instance.heroSkillTableArr[hs].skillArr.length)
                                     {
                                         saveHeroPro5 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,skillID:this.produceCardArr[cardIndex].skillID,
-                                            newJoin:true,quality:0,level:0,multiple:0,isTop:true};
+                                            newJoin:false,quality:0,level:0,multiple:0,isTop:true};
                                     }else{
                                         saveHeroPro5 = {heroID:heroQualityArr[rqHero].heroID,promote:promoteNum,skillID:this.produceCardArr[cardIndex].skillID,
-                                            newJoin:true,quality:0,level:0,multiple:0,isTop:false};
+                                            newJoin:false,quality:0,level:0,multiple:0,isTop:false};
                                     }
                                     this.cardProHeroArr.push(saveHeroPro5);
                                     this.updateCardProHeroArr(cardNode,saveHeroPro5);
@@ -705,6 +705,40 @@ export class AmplificationCardView extends Component {
                 newHeroProTop = {heroID:hid,propertyTopArr:[proNum],skillTopArr:[skillID]};
                 GlobalData.Instance.heroProTopArr.push(newHeroProTop);
             }
+        }
+    }
+    
+    //英雄品级对应的初始暴击率
+    lastBreakQutHarmChance(quality:number,multiple:number):number
+    {
+        switch(quality)
+        {
+            case 1:
+            case 2:
+                return 0.02 * multiple;
+            case 3:
+            case 4:
+                return 0.04 * multiple;
+            case 5:
+            case 6:
+                return 0.06 * multiple;
+        }
+    }
+
+    //英雄品级对应的初始会心率
+    lastCriticalChance(quality:number,multiple:number):number
+    {
+        switch(quality)
+        {
+            case 1:
+            case 2:
+                return 0.01 * multiple;
+            case 3:
+            case 4:
+                return 0.02 * multiple;
+            case 5:
+            case 6:
+                return 0.03 * multiple;
         }
     }
 

@@ -270,3 +270,10 @@ frame_37
   orig: 128, 128
   offset: 0, 0
   index: -1
+frame_38
+  rotate: false
+  xy: 1042, 392
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1

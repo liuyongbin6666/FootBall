@@ -73,7 +73,6 @@ export class LoadImgTool extends Component {
             }
             // ✅ 正确：直接赋值，不要先设为 null
             spineComp.skeletonData = data;
-            console.log("新的SkeletonData",data)
             spineComp.clearTracks();
             // 必须重新设置动画，否则可能不显示
             spineComp.setAnimation(0, playAniName, true);

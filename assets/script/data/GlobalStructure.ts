@@ -29,6 +29,8 @@ export interface gameRecordStructure{
     chapterID:number;
     //关卡ID
     levelID:number;
+    //已解锁的章节
+    unlockChapterArr:Array<number>;
     //中途退出关卡时的英雄数据（下次继续时，使用该数据）
     levelHeroArr:Array<heroStructure>;
 }
@@ -39,8 +41,10 @@ export interface chapterStructure {
     chapterID:number;
     //章节序列名
     chapterSequence:string;
-    //章节名路径
-    chapterNamePath:string;
+    //章节名
+    chapterName:string;
+    //章节漫画路径
+    chapterCartoonPath:string;
     //章节是否解锁
     unlock:boolean;
     //章节关卡
@@ -168,7 +172,7 @@ export interface heroStructure {
     breakOutLevel:number;
     //HP等级
     HPLevel:number;
-    //暴击率(初始为0，按升级叠加)
+    //暴击率(初始为0级，按升级叠加)
     criticalChance:number;
     //会心率(初始为0，按升级叠加)
     breakOutHarmChance:number;
@@ -207,10 +211,12 @@ export interface enemyStructure {
     enemyName:string;
     //敌人介绍
     enemyIntroduce:string;
-    //敌人体型(区分外形大小) 1 小怪 2 中怪 3 大怪 4 boss 5 合体怪（奖杯）
+    //敌人体型(区分外形大小) 1 小型 2 中型 3 大型 4 巨型 5 合体
     outline:number;
-    //敌人类型（区分行走方向）1 从上到下 2 静止 3 从左到右
+    //敌人类型 1 怪物 2 障碍 3 宝箱 4 boss 5 合体怪（奖杯） 6 盗贼
     enemyType:number;
+    //敌人路线（区分行走方向）1 从上到下 2 静止 3 从左到右
+    enemyWay:number;
     //敌人职业（区分功能，怪物的不同技能）
     enemyOccupation:number;
     //敌人血量上限

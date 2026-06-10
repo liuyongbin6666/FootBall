@@ -11,7 +11,7 @@
         "maxHP": 20,
         "harm": 0,
         "speed": 1,
-        "skillArr": [101, 102]
+        "skillArr": []
     },
     {
         "heroID": 102,
@@ -53,7 +53,7 @@
         "maxHP": 50,
         "harm": 3,
         "speed": 1,
-        "skillArr": []
+        "skillArr": [107]
     },
     {
         "heroID": 301,
@@ -67,7 +67,7 @@
         "maxHP": 70,
         "harm": 7,
         "speed": 1,
-        "skillArr": []
+        "skillArr": [102]
     },
     {
         "heroID": 401,
@@ -81,7 +81,7 @@
         "maxHP": 100,
         "harm": 10,
         "speed": 1,
-        "skillArr": []
+        "skillArr": [108]
     },
     {
         "heroID": 501,
@@ -95,7 +95,7 @@
         "maxHP": 150,
         "harm": 15,
         "speed": 1,
-        "skillArr": []
+        "skillArr": [112]
     },
     {
         "heroID": 601,
@@ -109,6 +109,6 @@
         "maxHP": 200,
         "harm": 20,
         "speed": 1,
-        "skillArr": []
+        "skillArr": [101, 108, 112]
     }
 ]

@@ -1,4 +1,4 @@
-import { _decorator, Button, Component, find, Label, Node, Sprite } from 'cc';
+import { _decorator, Button, Component, find, Label, Layout, Node, sp, Sprite } from 'cc';
 import { Layer } from '../manager/Layer';
 import { GlobalData } from '../data/GlobalData';
 import { LoadImgTool } from '../tool/LoadImgTool';
@@ -20,6 +20,7 @@ export class HallView extends Component {
     private node_farm:Node;
 
     private node_journey:Node;
+    private lay_initialHero:Layout;
     //章节序列名
     private lab_chapter:Label;
     //章节名
@@ -62,6 +63,7 @@ export class HallView extends Component {
         this.node_farm = find('node_farm', this.node);
         
         this.node_journey = find('node_journey', this.node);
+        this.lay_initialHero = find('node_journey/lay_initialHero', this.node).getComponent(Layout);
         this.lab_chapter = find('node_journey/lab_chapter', this.node).getComponent(Label);
         this.lab_chapterTitle = find('node_journey/lab_chapterTitle', this.node).getComponent(Label);
         this.btn_previousChapter = find('node_journey/btn_previousChapter', this.node).getComponent(Button);
@@ -147,7 +149,6 @@ export class HallView extends Component {
         {
             this.chapterChangeCount--;
             this.freshChapter();
-            this.freshFightBtnFun();
         }
     }
 
@@ -158,22 +159,25 @@ export class HallView extends Component {
             //判断是否已解锁
             this.chapterChangeCount++;
             this.freshChapter();
-            this.freshFightBtnFun();
         }
     }
 
     //刷新征途战斗按钮
-    freshFightBtnFun()
+    freshFightBtnFun(cstate:number)
     {
-        if(this.chapterChangeCount == 0)
+        if(cstate == 2)
         {
             this.btn_newFight.node.active = true;
             this.btn_goOnFight.node.active = true;
             this.btn_fight.node.active = false;
-        }else{
+        }else if(cstate == 1){
             this.btn_newFight.node.active = false;
             this.btn_goOnFight.node.active = false;
             this.btn_fight.node.active = true;
+        }else{
+            this.btn_newFight.node.active = false;
+            this.btn_goOnFight.node.active = false;
+            this.btn_fight.node.active = false;
         }
     }
 
@@ -228,16 +232,34 @@ export class HallView extends Component {
             //显示当前章节（若第一次显示第一章）
             if(GlobalData.Instance.chapterTableArr[findChapter].chapterID == GlobalData.Instance.gameRecord.chapterID + this.chapterChangeCount)
             {
-                //初始英雄数组
-                // this.readHeroData(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr);
+                //初始英雄
+                this.freshInitialHero(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr);
                 //章节序列号
                 this.lab_chapter.string = GlobalData.Instance.chapterTableArr[findChapter].chapterSequence;
+                this.lab_chapterTitle.string = GlobalData.Instance.chapterTableArr[findChapter].chapterName;
                 //记录正在进行的章节总关卡
                 this.saveChapter = GlobalData.Instance.chapterTableArr[findChapter];
                 this.freshGoOnFightLv();
-                //章节名图片
-                // this.lab_chapterTitle.string = GlobalData.Instance.chapterTableArr[findChapter].chapterName;
+                //章节漫画图片
                 // LoadImgTool.Instance.loadSpriteFrame(GlobalData.Instance.chapterTableArr[findChapter].chapterNamePath,this.img_chapterName.node);
+                //章节按钮状态 0 未解锁 1 新征程 2 继续征程
+                var chapterBtnstate:number = 0;
+                //判断是否解锁
+                for(var uca:number = 0;uca < GlobalData.Instance.gameRecord.unlockChapterArr.length;uca++)
+                {
+                    console.log(GlobalData.Instance.gameRecord.unlockChapterArr[uca],GlobalData.Instance.chapterTableArr[findChapter].chapterID);
+                    if(GlobalData.Instance.gameRecord.unlockChapterArr[uca] == GlobalData.Instance.chapterTableArr[findChapter].chapterID)
+                    {
+                        chapterBtnstate = 1;
+                        if(this.findLevelIndex(GlobalData.Instance.gameRecord.levelID,GlobalData.Instance.chapterTableArr[findChapter].levelArr) > 0)
+                        {
+                            chapterBtnstate = 2;
+                            break;
+                        }
+                    }
+                }
+                console.log(chapterBtnstate);
+                this.freshFightBtnFun(chapterBtnstate);
                 break;
             }
         }
@@ -264,6 +286,19 @@ export class HallView extends Component {
         return false;
     }
 
+    //查找关卡是章节的第几个关卡
+    findLevelIndex(lid:number,lvArr:Array<number>):number
+    {
+        for(var findLv:number = 0;findLv < lvArr.length;findLv++)
+        {
+            if(lid == lvArr[findLv])
+            {
+                return findLv;
+            }
+        }
+        return -1;
+    }
+
     //刷新大厅显示
     freshHallFun()
     {
@@ -282,6 +317,25 @@ export class HallView extends Component {
             }
         }
         this.lab_lv.string = "第 " + findIndex + "/" + this.saveChapter.levelArr.length + " 关";
+    }
+
+    //刷新关卡初始英雄模型
+    freshInitialHero(initialHeroArr:Array<number>)
+    {
+        //根据ID找到英雄对应的动画模型并更新
+        for(var ih:number = 0;ih < initialHeroArr.length;ih++)
+        {
+            for(var h:number = 0;h < GlobalData.Instance.heroTableArr.length;h++)
+            {
+                if(initialHeroArr[ih] == GlobalData.Instance.heroTableArr[h].heroID)
+                {
+                    this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).active = true;
+                    LoadImgTool.Instance.loadSkeletonData(GlobalData.Instance.heroTableArr[h].heroSkePath,
+                        this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).getChildByName("ske_hero").getComponent(sp.Skeleton),"dance");
+                    break;
+                }
+            }
+        }
     }
 
     closeView()
