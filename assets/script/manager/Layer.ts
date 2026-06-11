@@ -77,7 +77,7 @@ export class Layer extends Component {
         await SDK.checkSession();
         console.log(`【加载计时】SDK.Login 完成耗时: ${Date.now() - now}`)
         SDK.Game_register();
- await GameStorage.Ins.Load();
+        await GameStorage.Ins.Load();
         SDKInfo.Init(() => {
             // 侧边栏奖励回调 获得奖励方法
 
@@ -87,6 +87,11 @@ export class Layer extends Component {
         });
 
         // DynamicAtlasManager.instance.enabled=false;
+
+        await ResMgr.Ins.loadBundle("audio");
+        await ResMgr.Ins.loadBundle("front");
+        await ResMgr.Ins.loadBundle("img");
+        await ResMgr.Ins.loadBundle("spine");
     }
 
     start() {

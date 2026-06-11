@@ -6,6 +6,7 @@ import { CharacterTool } from '../tool/CharacterTool';
 import { chapterStructure } from '../data/GlobalStructure';
 import { Layer } from '../manager/Layer';
 import { LoadImgTool } from '../tool/LoadImgTool';
+import { ResMgr } from '../../BHY_Framework/Manager/ResMgr';
 const { ccclass, property } = _decorator;
 /**
  * 进度条加载界面（较多文件）
@@ -87,7 +88,6 @@ export class LoadingView extends Component {
     //加载json表
     loadFile() {
         var _this = this;
-
         //加载章节表
         LoadTableTool.Instance.loadTextFile("json/chapterJson",(value)=>{
             var chapterArr = JSON.parse(value);

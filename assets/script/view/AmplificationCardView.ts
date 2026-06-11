@@ -635,22 +635,22 @@ export class AmplificationCardView extends Component {
     {
         switch (heroQuality) {
             case 1:
-                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_whiteCard",cardQualityNode);
+                LoadImgTool.Instance.loadSpriteFrame("amplificationCard/img_whiteCard",cardQualityNode);
                 break;
             case 2:
-                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_greenCard",cardQualityNode);
+                LoadImgTool.Instance.loadSpriteFrame("amplificationCard/img_greenCard",cardQualityNode);
                 break;
             case 3:
-                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_blueCard",cardQualityNode);
+                LoadImgTool.Instance.loadSpriteFrame("amplificationCard/img_blueCard",cardQualityNode);
                 break;
             case 4:
-                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_purpleCard",cardQualityNode);
+                LoadImgTool.Instance.loadSpriteFrame("amplificationCard/img_purpleCard",cardQualityNode);
                 break;
             case 5:
-                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_redCard",cardQualityNode);
+                LoadImgTool.Instance.loadSpriteFrame("amplificationCard/img_redCard",cardQualityNode);
                 break;
             case 6:
-                LoadImgTool.Instance.loadSpriteFrame("img/amplificationCard/img_yellowCard",cardQualityNode);
+                LoadImgTool.Instance.loadSpriteFrame("amplificationCard/img_yellowCard",cardQualityNode);
                 break;
         }
     }

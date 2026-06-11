@@ -423,7 +423,7 @@ export class FightMoveHeroView extends Component {
     copyHeroArrFun(hrArr:Array<heroStructure>,copyHrArr:Array<heroStructure>)
     {
         //不能直接=数组，会变成索引，修改该数组会影响原数组的值
-        var hero:heroStructure = {heroID:0,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
+        var hero:heroStructure = {heroID:0,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
@@ -708,7 +708,7 @@ export class FightMoveHeroView extends Component {
     //首次游戏或第一关时，创建英雄或英雄空位（只需要读表数据）
     createNewHeroOrTemp(hid:number,hIndex:number)
     {
-        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
+        var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
@@ -758,7 +758,7 @@ export class FightMoveHeroView extends Component {
     //非首次或继续游戏时，创建英雄或英雄空位（需要保留已经升级的数据）
     createOldHeroOrTemp(hid:number,hIndex:number)
     {
-        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
+        var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
@@ -1895,11 +1895,11 @@ export class FightMoveHeroView extends Component {
         }
     }
 
-    //创建爆炸
-    createBoom(soccerX:number,soccerY:number)
+    //创建爆炸 enemyX 敌人x enemyY 敌人y
+    createBoom(enemyX:number,enemyY:number)
     {
         let item = instantiate(this.boomItemPre);
-        item.setPosition(soccerX,soccerY);
+        item.setPosition(enemyX,enemyY);
         this.node_skill.addChild(item);
         this.boomArea(item.getPosition().x,item.getPosition().y,item.getComponent(UITransform).width,item.getComponent(UITransform).height);
         setTimeout(() => {
@@ -2360,6 +2360,7 @@ export class FightMoveHeroView extends Component {
                                 //漏球时，不计算回击以外的技能
                                 this.skillConjure(controllerEvent.getCustomProperty().enemySerialNum,true);
                             }
+                            // this.createBoom(this.soccerArr[fSoccer].soccerItem.getPosition().x,this.soccerArr[fSoccer].soccerItem.getPosition().y)
 
                             if(this.enemyArr[findEnemy].HP > 0)
                             {
