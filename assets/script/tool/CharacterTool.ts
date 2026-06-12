@@ -109,10 +109,43 @@ export class CharacterTool extends Component {
     }
 
     //更换指定字符或字符串 originalStr 原字符串 dropStr 去掉的字符 repStr 替代的字符
-    replaceCharacter(originalStr:string,dropStr:string,repStr:string)
+    replaceCharacter(originalStr:string,dropStr:string,repStr:string):string
     {
         var newStr:string = originalStr.replace(dropStr, repStr);
         return newStr;
+    }
+    
+    //字体颜色16进制编码
+    color16Code(quality:number):string
+    {
+        switch(quality)
+        {
+            case 1:
+                //白色
+                return "#ffffff";
+            case 2:
+                //红色 暴击
+                return "#ff0000";
+            case 3:
+                //黄色 会心
+                return "#febf00";
+            case 4:
+                //绿色 加血
+                return "#36ff00";
+            case 5:
+                //深蓝色 冰冻
+                return "#2A6EE7";
+            case 6:
+                //橙色
+                return "#fd8d49";
+            case 7:
+                //黑色
+                return "#000000";
+            case 8:
+                //浅蓝色
+                return "#49c8fd";
+        }
+        return "#ffffff";
     }
 }
 

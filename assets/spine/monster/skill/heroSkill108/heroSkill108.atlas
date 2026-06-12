@@ -1,0 +1,55 @@
+
+heroSkill108.png
+size: 2222,213
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+frame_0
+  rotate: false
+  xy: 2, 2
+  size: 220, 209
+  orig: 220, 209
+  offset: 0, 0
+  index: -1
+frame_1
+  rotate: false
+  xy: 224, 2
+  size: 220, 209
+  orig: 220, 209
+  offset: 0, 0
+  index: -1
+frame_2
+  rotate: false
+  xy: 446, 2
+  size: 220, 209
+  orig: 220, 209
+  offset: 0, 0
+  index: -1
+frame_3
+  rotate: false
+  xy: 668, 2
+  size: 220, 209
+  orig: 220, 209
+  offset: 0, 0
+  index: -1
+frame_4
+  rotate: false
+  xy: 890, 2
+  size: 220, 209
+  orig: 220, 209
+  offset: 0, 0
+  index: -1
+frame_5
+  rotate: false
+  xy: 1112, 2
+  size: 220, 209
+  orig: 220, 209
+  offset: 0, 0
+  index: -1
+frame_6
+  rotate: false
+  xy: 1334, 2
+  size: 220, 209
+  orig: 220, 209
+  offset: 0, 0
+  index: -1

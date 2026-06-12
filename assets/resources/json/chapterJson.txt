@@ -1,7 +1,8 @@
 [
     {
         "chapterID": 1,
-        "chapterNamePath": "疯狂农场",
+        "chapterName": "疯狂农场",
+        "chapterCartoonPath": "",
         "describe": "疯狂农场的故事介绍，疯狂农场的故事介绍，疯狂农场的故事介绍，疯狂农场的故事介绍，",
         "chapterImgPath": 1001,
         "chapterType": 1,
@@ -12,45 +13,49 @@
     },
     {
         "chapterID": 2,
-        "chapterNamePath": "工厂",
+        "chapterName": "保卫农场",
+        "chapterCartoonPath": "",
         "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
         "chapterImgPath": 1002,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [401],
+        "initialHeroArr": [301],
         "nextChapterID": 3,
         "chapterSequence": "第二章"
     },
     {
         "chapterID": 3,
-        "chapterNamePath": "工厂",
+        "chapterName": "工厂",
+        "chapterCartoonPath": "",
         "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
         "chapterImgPath": 1003,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [401],
+        "initialHeroArr": [501],
         "nextChapterID": 4,
         "chapterSequence": "第三章"
     },
     {
         "chapterID": 4,
-        "chapterNamePath": "工厂",
+        "chapterName": "工厂",
+        "chapterCartoonPath": "",
         "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
         "chapterImgPath": 1004,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [401],
+        "initialHeroArr": [201],
         "nextChapterID": 5,
         "chapterSequence": "第四章"
     },
     {
         "chapterID": 5,
-        "chapterNamePath": "工厂",
+        "chapterName": "工厂",
+        "chapterCartoonPath": "",
         "describe": "故事介绍，故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍故事介绍",
         "chapterImgPath": 1005,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [401],
+        "initialHeroArr": [601],
         "nextChapterID": 0,
         "chapterSequence": "第五章"
     }

@@ -1,7 +1,7 @@
 [
     {
         "levelID": 101,
-        "levelType": 2,
+        "levelType": 4,
         "stillLife": true,
         "nextLevelArr": [102],
         "maxTime": 6000,

@@ -78,7 +78,7 @@ export class ChapterRankView extends Component {
                     item.getChildByName("icon_rank_no3").getComponent(Sprite).node.active = true;
                 }
                 item.getChildByName("lab_ranking").getComponent(Label).node.active = false;
-                LoadImgTool.Instance.loadSpriteFrame("img/rank/img_rank_bg_three",item.getChildByName("img_rank_bg"));
+                LoadImgTool.Instance.loadSpriteFrame("rank/img_rank_bg_three",item.getChildByName("img_rank_bg"));
             }else{
                 item.getChildByName("icon_rank_no1").getComponent(Sprite).node.active = false;
                 item.getChildByName("icon_rank_no2").getComponent(Sprite).node.active = false ;

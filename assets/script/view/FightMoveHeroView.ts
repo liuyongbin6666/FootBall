@@ -9,6 +9,7 @@ import { GlobalData } from '../data/GlobalData';
 import { SDK } from '../../BHY_Framework/Sdk/SDK';
 import { AudioMG } from '../sound/AudioMG';
 import { TimeTool } from '../tool/TimeTool';
+import { CharacterTool } from '../tool/CharacterTool';
 const { ccclass, property } = _decorator;
 
 /**
@@ -40,14 +41,17 @@ export class FightMoveHeroView extends Component {
     @property(Prefab)
     private soccerItemPre: Prefab = null;
     
-    @property(Prefab)
-    private bulletItemPre: Prefab = null;
+    // @property(Prefab)
+    // private bulletItemPre: Prefab = null;
 
     @property(Prefab)
     private harmItemPre: Prefab = null;
 
     @property(Prefab)
     private strikeItemPre: Prefab = null;
+
+    @property(Prefab)
+    private boomItemPre: Prefab = null;
 
     //静态背景
     private img_soccerField:Sprite;
@@ -68,6 +72,7 @@ export class FightMoveHeroView extends Component {
     private node_hero:Node;
     private node_moveHero:Node;
     private btn_moveHero:Button;
+    private node_skill:Node;
     //掉落金币
     private lab_gold:Label;
     private lab_level:Label;
@@ -77,13 +82,19 @@ export class FightMoveHeroView extends Component {
     private lab_countDown:Label;
     //boss
     private node_boss:Node;
-    
+    private icon_bossHead:Sprite;
+    private pro_bossBigHP:ProgressBar;
+    private lab_bossName:Label;
     //通关波数时提示
     private img_danger:Sprite;
+    
     //HP血条
     private pro_HP:ProgressBar = null;
     //HP比例
     private lab_HPProportion:Label;
+    //HP变化文字提示
+    private node_HPChangeText:Node;
+
     //EXP经验条
     private pro_EXP:ProgressBar = null;
     //EXP比例
@@ -150,6 +161,10 @@ export class FightMoveHeroView extends Component {
     private overflowEXP:number = 0;
     //当前总攻击力
     private allAttack:number = 0;
+    //当前总暴击率
+    private allBreakOutHarmChance:number = 0;
+    //当前总会心率
+    private allCriticalChance:number = 0;
     //本章节内造成的伤害总和
     private harmTotal:number = 0;
     //连击次数统计
@@ -191,6 +206,9 @@ export class FightMoveHeroView extends Component {
     private bulletSpeed:number = 5;
     //敌人产生间隔
     private enemyIntervalTime:number = -1;
+    //boss血量上限
+    private bossMaxHP:number = 0;
+
     //足球外观大小
     private soccerScale:number = 1;
     //足球外观每次缩小/增大的值
@@ -202,6 +220,8 @@ export class FightMoveHeroView extends Component {
 
     private changeHeroState:boolean = false;
 
+    //奖杯偏移值
+    private trophySkewing:number = 0;
     //暂存波次
     private saveWave:waveStructure = null;
     private saveLevel:levelStructure = null;
@@ -225,20 +245,26 @@ export class FightMoveHeroView extends Component {
         this.node_hero = find('node_moveHero/node_hero', this.node);
         this.node_moveHero = find('node_moveHero', this.node);
         this.btn_moveHero = find('node_moveHero/btn_moveHero', this.node).getComponent(Button);
+        this.node_skill = find('node_skill', this.node);
         this.lab_gold = find('node_top/lab_gold', this.node).getComponent(Label);
         this.lab_level = find('node_top/lab_level', this.node).getComponent(Label);
         this.lab_wave = find('node_top/lab_wave', this.node).getComponent(Label);
         this.img_sandClockBG = find('node_top/img_sandClockBG', this.node).getComponent(Sprite);
         this.lab_countDown = find('node_top/img_sandClockBG/lab_countDown', this.node).getComponent(Label);
         this.node_boss = find('node_top/node_boss', this.node);
+        this.icon_bossHead = find('node_top/node_boss/icon_bossHead', this.node).getComponent(Sprite);
+        this.pro_bossBigHP = find('node_top/node_boss/pro_bossBigHP', this.node).getComponent(ProgressBar);
+        this.lab_bossName = find('node_top/node_boss/lab_bossName', this.node).getComponent(Label);
 
         this.img_danger = find('node_middle/img_danger', this.node).getComponent(Sprite);
         this.lab_allHarm = find('node_middle/img_harmRecordBg/lab_allHarm', this.node).getComponent(Label);
         this.lab_doubleHit = find('node_middle/img_harmRecordBg/lab_doubleHit', this.node).getComponent(Label);
         this.lab_addingStory = find('node_middle/img_harmRecordBg/lab_addingStory', this.node).getComponent(Label);
 
-        this.pro_HP = find('node_bottom/pro_HP', this.node).getComponent(ProgressBar);
-        this.lab_HPProportion = find('node_bottom/lab_HPProportion', this.node).getComponent(Label);
+        this.pro_HP = find('node_crystal/pro_HP', this.node).getComponent(ProgressBar);
+        this.lab_HPProportion = find('node_crystal/lab_HPProportion', this.node).getComponent(Label);
+        this.node_HPChangeText = find('node_crystal/node_HPChangeText', this.node);
+        
         this.pro_EXP = find('node_bottom/pro_EXP', this.node).getComponent(ProgressBar);
         this.lab_EXPProportion = find('node_bottom/lab_EXPProportion', this.node).getComponent(Label);
         this.btn_prop1 = find('node_bottom/lay_propGroove/btn_prop1', this.node).getComponent(Button);
@@ -335,6 +361,7 @@ export class FightMoveHeroView extends Component {
         this.node_hero.removeAllChildren();
         this.node_enemy.removeAllChildren();
         this.node_soccer.removeAllChildren();
+        this.node_skill.removeAllChildren();
 
         this.heroArr = [];
         this.oldHeroArr = [];
@@ -345,6 +372,8 @@ export class FightMoveHeroView extends Component {
         this.HP = 0;
         this.EXP = 0;
         this.allAttack = 0;
+        this.allBreakOutHarmChance = 0;
+        this.allCriticalChance = 0;
         this.maxHP = 0;
         this.maxEXP = 0;
 
@@ -362,6 +391,8 @@ export class FightMoveHeroView extends Component {
         this.enemyFirstOutput();
         
         this.heroShow();
+        //英雄条
+        this.moveHeroStance(1);
         this.createSoccer();
         //球变为发球状态
         this.soccerArr[0].soccerState = 1;
@@ -392,9 +423,9 @@ export class FightMoveHeroView extends Component {
     copyHeroArrFun(hrArr:Array<heroStructure>,copyHrArr:Array<heroStructure>)
     {
         //不能直接=数组，会变成索引，修改该数组会影响原数组的值
-        var hero:heroStructure = {heroID:0,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
+        var hero:heroStructure = {heroID:0,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
-            criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:10,catchSoccerID:0,unlock:true,
+            criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         //清空数组
         hrArr = [];
@@ -677,9 +708,9 @@ export class FightMoveHeroView extends Component {
     //首次游戏或第一关时，创建英雄或英雄空位（只需要读表数据）
     createNewHeroOrTemp(hid:number,hIndex:number)
     {
-        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
+        var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
-            criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
+            criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         for(var ht:number = 0;ht < GlobalData.Instance.heroTableArr.length;ht++)
         {
@@ -708,7 +739,7 @@ export class FightMoveHeroView extends Component {
                 hero.speed = GlobalData.Instance.heroTableArr[ht].speed;
                 hero.harm = GlobalData.Instance.heroTableArr[ht].harm;
                 this.allAttack += hero.harm;
-                hero.criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
+                hero.criticalChance = 0;
                 hero.breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
                 hero.join = true;
                 hero.unlock = true;
@@ -727,9 +758,9 @@ export class FightMoveHeroView extends Component {
     //非首次或继续游戏时，创建英雄或英雄空位（需要保留已经升级的数据）
     createOldHeroOrTemp(hid:number,hIndex:number)
     {
-        var hero:heroStructure = {heroID:hid,heroImgPath:"img/hero/hero1",heroHeadImgPath:"img/hero/heroHead/icon_heroHead_1",heroSkePath:"spine/hero/hero101/hero101",
+        var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
-            criticalChance:20,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
+            criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         for(var jh:number = 0;jh < this.oldHeroArr.length;jh++)
         {
@@ -755,7 +786,9 @@ export class FightMoveHeroView extends Component {
                 hero.harm = this.oldHeroArr[jh].harm;
                 this.allAttack += hero.harm;
                 hero.criticalChance = this.oldHeroArr[jh].criticalChance;
+                this.allCriticalChance += hero.criticalChance;
                 hero.breakOutHarmChance = this.oldHeroArr[jh].breakOutHarmChance;
+                this.allBreakOutHarmChance += hero.criticalChance;
                 hero.join = true;
                 hero.unlock = true;
             }
@@ -788,7 +821,9 @@ export class FightMoveHeroView extends Component {
         //         hero.harm = GlobalData.Instance.heroTableArr[ht].harm;
         //         this.allAttack += hero.harm;
         //         hero.criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
+        //         this.allCriticalChance += hero.criticalChance;
         //         hero.breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
+        //         this.allBreakOutHarmChance += hero.criticalChance;
         //         hero.join = true;
         //         hero.unlock = true;
         //         if(hero.heroType > 0)
@@ -878,7 +913,9 @@ export class FightMoveHeroView extends Component {
                 this.heroArr[hIndex].harm = GlobalData.Instance.heroTableArr[ht].harm;
                 this.allAttack += this.heroArr[hIndex].harm;
                 this.heroArr[hIndex].criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
+                this.allCriticalChance += this.heroArr[hIndex].criticalChance;
                 this.heroArr[hIndex].breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
+                this.allBreakOutHarmChance += this.heroArr[hIndex].breakOutHarmChance;
                 this.heroArr[hIndex].join = true;
                 this.heroArr[hIndex].heroItem["temp"] = false;
                 this.heroArr[hIndex].heroItem.getChildByName("ske_hero").active = true;
@@ -954,6 +991,8 @@ export class FightMoveHeroView extends Component {
         this.HP = 0;
         this.maxHP = 0;
         this.allAttack = 0;
+        this.allBreakOutHarmChance = 0;
+        this.allCriticalChance = 0;
         //重新排序
         this.readHeroData(residueHeroIDArr,false);
         this.heroShow();
@@ -1044,7 +1083,7 @@ export class FightMoveHeroView extends Component {
         return residueHeroIDArr;
     }
 
-    //更新上阵数组数据 hid 英雄ID promote 提升项 addPromote 提升值 技能ID
+    //更新上阵数组数据 hid 英雄ID promote 提升项 addPromote 提升值 sid 技能ID
     updataJoinHero(hid:number,promote:number,addPromote:number,sid:number = 0)
     {
         for(var proHero:number= 0;proHero < GlobalData.Instance.joinHeroArr.length;proHero++)
@@ -1128,10 +1167,12 @@ export class FightMoveHeroView extends Component {
                 //     //从回收敌人数组中，拿出已创建过敌人重新赋值复用
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyID = GlobalData.Instance.enemyTableArr[eta].enemyID;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyHeadImgPath = GlobalData.Instance.enemyTableArr[eta].enemyHeadImgPath;
+                //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemySkePath = GlobalData.Instance.enemyTableArr[eta].enemySkePath;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyName = GlobalData.Instance.enemyTableArr[eta].enemyName;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyIntroduce = GlobalData.Instance.enemyTableArr[eta].enemyIntroduce;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].outline = GlobalData.Instance.enemyTableArr[eta].outline;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyType = GlobalData.Instance.enemyTableArr[eta].enemyType;
+                //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyWay = GlobalData.Instance.enemyTableArr[eta].enemyWay;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].enemyOccupation = GlobalData.Instance.enemyTableArr[eta].enemyOccupation;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].maxHP = GlobalData.Instance.enemyTableArr[eta].maxHP;
                 //     this.recycleEnemyArr[this.recycleEnemyArr.length - 1].moveSpeed = GlobalData.Instance.enemyTableArr[eta].moveSpeed;
@@ -1163,16 +1204,18 @@ export class FightMoveHeroView extends Component {
                 //     this.recycleEnemyArr.splice(this.recycleEnemyArr.length - 1, 0);
                 // }else{
                     //创建新敌人数据
-                    var es:enemyStructure = {enemyID:1,enemyHeadImgPath:"",enemySkePath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",outline:1,enemyType:1,enemyOccupation:1,
-                        maxHP:50,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",
+                    var es:enemyStructure = {enemyID:1,enemyHeadImgPath:"",enemySkePath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",outline:1,enemyType:1,enemyWay:1,
+                        enemyOccupation:1,maxHP:50,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",
                         enemyItem:null,HP:10,attackSpeedTime:0};
                     
                     es.enemyID = GlobalData.Instance.enemyTableArr[eta].enemyID;
                     es.enemyHeadImgPath = GlobalData.Instance.enemyTableArr[eta].enemyHeadImgPath;
+                    es.enemySkePath = GlobalData.Instance.enemyTableArr[eta].enemySkePath;
                     es.enemyName = GlobalData.Instance.enemyTableArr[eta].enemyName;
                     es.enemyIntroduce = GlobalData.Instance.enemyTableArr[eta].enemyIntroduce;
                     es.outline = GlobalData.Instance.enemyTableArr[eta].outline;
                     es.enemyType = GlobalData.Instance.enemyTableArr[eta].enemyType;
+                    es.enemyWay = GlobalData.Instance.enemyTableArr[eta].enemyWay;
                     es.enemyOccupation = GlobalData.Instance.enemyTableArr[eta].enemyOccupation;
                     es.maxHP = GlobalData.Instance.enemyTableArr[eta].maxHP;
                     es.moveSpeed = GlobalData.Instance.enemyTableArr[eta].moveSpeed;
@@ -1194,9 +1237,10 @@ export class FightMoveHeroView extends Component {
                     {
                         case 1:
                             item = instantiate(this.enemySmallItemPre);
+                            console.log("创建小怪",es.enemySkePath);
                             // 更换其他同品级怪物动画
-                            // LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,//"spine/monster/small/unit_anim_ monster_01/unit_anim_ monster_01"
-                            //     item.getChildByName("ske_small_monster").getComponent(sp.Skeleton),"animation_move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_small_monster").getComponent(sp.Skeleton),"move");
+                            //"spine/monster/small/unit_anim_ monster_01/unit_anim_ monster_01""spine/monster/small/monster101/monster101"
                             break;
                         case 2:
                             item = instantiate(this.enemyMiddleItemPre);
@@ -1210,19 +1254,25 @@ export class FightMoveHeroView extends Component {
                             item = instantiate(this.bossItemPre);
                             LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_boss_monster").getComponent(sp.Skeleton),"move");
                             this.node_boss.active = true;
+                            LoadImgTool.Instance.loadSpriteFrame(es.enemyHeadImgPath,this.icon_bossHead.getComponent(Sprite).node);
+                            this.lab_bossName.string = es.enemyName;
+                            this.bossMaxHP = es.maxHP;
+                            this.freshBossBigHP(es.HP);
                             break;
                         case 5:
                             item = instantiate(this.trophyItem);
-                            // LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_trophy_monster").getComponent(sp.Skeleton),"animation_move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_trophy_monster").getComponent(sp.Skeleton),"idle");
                             break;
                     }
                     switch(es.enemyType)
                     {
                         case 1:
+                        case 4:
                             //随机起始位置
                             item.setPosition(-163 + Math.floor(Math.random() * 324),280);
                             break;
                         case 2:
+                        case 3:
                             //指定起始位置
                             //随机的位置数组中抽取
                             var locIndex:number = Math.floor(Math.random() * this.saveLocationArr.length);
@@ -1232,7 +1282,11 @@ export class FightMoveHeroView extends Component {
                             //从数组中移除，已抽取的位置不再抽取
                             this.saveLocationArr.splice(locIndex,1);
                             break;
-                        case 3:
+                        case 5:
+                            //固定位置不变
+                            item.setPosition(0,160);
+                            break;
+                        case 6:
                             //固定起始位置
                             item.setPosition(-450,135);
                             break;
@@ -1315,7 +1369,8 @@ export class FightMoveHeroView extends Component {
             }
         }else if(this.saveLevel.levelType == 5)
         {
-            //奖杯
+            //奖杯，只生成一次怪
+            this.ariseEnemy();
         }
     }
 
@@ -1336,6 +1391,19 @@ export class FightMoveHeroView extends Component {
         return -45;
     }
 
+    //根据编号查找敌人
+    findEnemy(esn:number):enemyStructure
+    {
+        for(var findEnemy:number = 0;findEnemy < this.enemyArr.length;findEnemy++)
+        {
+            if(this.enemyArr[findEnemy].enemyItem["enemySerialNum"] == esn)
+            {
+                return this.enemyArr[findEnemy];
+            }
+        }
+        return null;
+    }
+
     //查找位置最前面且血量大于0的敌人编号
     findFrontEnemySerialNum():number
     {
@@ -1344,19 +1412,23 @@ export class FightMoveHeroView extends Component {
             return -1;
         }
         var frontEnemySerialNum:number = this.enemyArr[0].enemyItem["enemySerialNum"];
+        if(this.saveLevel.levelType == 5)
+        {
+            return frontEnemySerialNum;
+        }
         var frontHP:number = this.enemyArr[0].HP;
         for(var findEnemy:number = 1;findEnemy < this.enemyArr.length;findEnemy++)
         {
             if((this.enemyArr[findEnemy - 1].HP <= 0 && this.enemyArr[findEnemy].HP > 0) || 
             (this.enemyArr[findEnemy].enemyItem.getPosition().y < this.enemyArr[findEnemy - 1].enemyItem.getPosition().y && this.enemyArr[findEnemy].HP > 0))
             {
-                if(this.enemyArr[findEnemy].enemyType == 1 || this.enemyArr[findEnemy].enemyType == 2)
+                if(this.enemyArr[findEnemy].enemyType >= 1 || this.enemyArr[findEnemy].enemyType <= 5)
                 {
                     frontEnemySerialNum = this.enemyArr[findEnemy].enemyItem["enemySerialNum"];
                     frontHP = this.enemyArr[findEnemy].HP;
                 }
                 //盗贼需要在有效范围内，才能进行选择 x小于-195或大于220时不在选择攻击范围
-                else if(this.enemyArr[findEnemy].enemyType == 3 && this.enemyArr[findEnemy].enemyItem.getPosition().x > -195 
+                else if(this.enemyArr[findEnemy].enemyType == 6 && this.enemyArr[findEnemy].enemyItem.getPosition().x > -195 
                 && this.enemyArr[findEnemy].enemyItem.getPosition().x < 220)
                 {
                     frontEnemySerialNum = this.enemyArr[findEnemy].enemyItem["enemySerialNum"];
@@ -1527,17 +1599,17 @@ export class FightMoveHeroView extends Component {
     }
 
     //创建子弹 enemyNode 发射子弹的敌人
-    createBullet(enemyNode:Node)
-    {
-        let item = instantiate(this.bulletItemPre);
-        //在敌人的手部生成子弹
-        item.setPosition(enemyNode.getPosition().x,enemyNode.getPosition().y + 20);
-        item["bulletID"] = this.bulletArr.length + 1;
-        //随机一个英雄做为攻击目标
-        var attackHeroIndex:number = Math.floor(Math.random() * this.heroArr.length);
-        var newBullet:bulletStructure = {bulletID:this.bulletArr.length + 1,bulletImgPath:"",goalHeroID:this.heroArr[attackHeroIndex].heroID};
-        this.bulletArr.push(newBullet);
-    }
+    // createBullet(enemyNode:Node)
+    // {
+    //     let item = instantiate(this.bulletItemPre);
+    //     //在敌人的手部生成子弹
+    //     item.setPosition(enemyNode.getPosition().x,enemyNode.getPosition().y + 20);
+    //     item["bulletID"] = this.bulletArr.length + 1;
+    //     //随机一个英雄做为攻击目标
+    //     var attackHeroIndex:number = Math.floor(Math.random() * this.heroArr.length);
+    //     var newBullet:bulletStructure = {bulletID:this.bulletArr.length + 1,bulletImgPath:"",goalHeroID:this.heroArr[attackHeroIndex].heroID};
+    //     this.bulletArr.push(newBullet);
+    // }
 
     //刷新关卡显示
     freshLevel(lvName:string)
@@ -1562,6 +1634,12 @@ export class FightMoveHeroView extends Component {
         this.maxHP = Math.floor(this.maxHP);
         this.lab_HPProportion.string = this.HP + "/" + this.maxHP;
         this.pro_HP.progress = this.HP/this.maxHP;
+    }
+
+    //刷新Boss大血条
+    freshBossBigHP(bossHP:number)
+    {
+        this.pro_bossBigHP.progress = bossHP/this.bossMaxHP;
     }
 
     //刷新经验显示
@@ -1687,9 +1765,187 @@ export class FightMoveHeroView extends Component {
         this.node_menu.active = false;
     }
 
-    //技能释放
-    conjure(e)
+    //技能释放 esn 敌人编号 front 是否正面
+    skillConjure(esn:number,front:boolean = true)
     {
+        //当前拥有的英雄技能（不重复）
+        var heroSkillArr:Array<relevanceProStructure> = [];
+        //查找非空位英雄
+        for(var fh:number = 0;fh < this.heroArr.length;fh++)
+        {
+            if(this.heroArr[fh].heroItem["temp"] == false)
+            {
+                //查找非空位英雄的激活技能
+                for(var hs:number = 0;hs < this.heroArr[fh].skillProArr.length;hs++)
+                {
+                    console.log(this.heroArr[fh].heroID,this.heroArr[fh].skillProArr[hs].level);
+                    if(this.heroArr[fh].skillProArr[hs].level > 0)
+                    {
+                        //已添加的上阵英雄技能中是否有该技能
+                        var haveSkill:boolean = false;
+                        for(var hso:number = 0;hso < heroSkillArr.length;hso++)
+                        {
+                            //相同技能取等级高的
+                            if(this.heroArr[fh].skillProArr[hs].ID == heroSkillArr[hso].ID && this.heroArr[fh].skillProArr[hs].level > heroSkillArr[hso].level)
+                            {
+                                heroSkillArr[hso].level = this.heroArr[fh].skillProArr[hs].level;
+                                haveSkill = true;
+                                break;
+                            }
+                        }
+                        if(haveSkill == false)
+                        {
+                            heroSkillArr.push(this.heroArr[fh].skillProArr[hs]);
+                        }
+                    }
+                }
+            }
+        }
+
+        var enemy:enemyStructure = this.findEnemy(esn);
+        if(enemy == null || heroSkillArr.length <= 0)
+        {
+            return;
+        }
+
+        for(var s:number = 0;s < heroSkillArr.length;s++)
+        {
+            //技能表中找到对应的值
+            for(var hst:number = 0;hst < GlobalData.Instance.heroSkillTableArr.length;hst++)
+            {
+                if(heroSkillArr[s].ID == GlobalData.Instance.heroSkillTableArr[hst].skillID)
+                {
+                    for(var sa:number = 0;sa < GlobalData.Instance.heroSkillTableArr[hst].skillArr.length;sa++)
+                    {
+                        //找到对应的等级
+                        if(heroSkillArr[s].level == GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].level)
+                        {
+                            //根据技能等级产生不同的效果
+                            if(heroSkillArr[s].ID == 101 && front == false)
+                            {
+                                //回击 回击伤害 = 队伍英雄总攻击力 * 对应等级数值
+                                if(enemy.HP > Math.floor(this.allAttack * GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect))
+                                {
+                                    enemy.HP -= Math.floor(this.allAttack * GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect);
+                                }else{
+                                    enemy.HP = 0;
+                                }
+                                //创建一个扣血文本
+                                let textItem = instantiate(this.harmItemPre);
+                                enemy.enemyItem.getChildByName("pro_blood").getComponent(ProgressBar).progress = 
+                                    OperationTool.Instance.retainDecimal(2,enemy.HP/enemy.maxHP);
+                                textItem.getChildByName("lab_harm").getComponent(Label).string = "-" + Math.floor(this.allAttack * GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect);
+                                textItem.getChildByName("lab_harm").getComponent(Label).color = new Color(CharacterTool.Instance.color16Code(1));
+                                enemy.enemyItem.getChildByName("node_harmText").addChild(textItem);
+                                var _this = this;
+                                var _harmNode = enemy.enemyItem.getChildByName("node_harmText");
+                                tween(textItem).to(0.3,{position:new Vec3(0,50,0)}).delay(0.2).call(()=>{
+                                    //文本消失
+                                    _harmNode.removeChild(textItem);
+                                    _this.enemyDead();
+                                }).start();
+                                break;
+                            }else if(heroSkillArr[s].ID == 102 && front && enemy.enemyType == 1)
+                            {
+                                var newY:number = 0;
+                                //击退：无附加伤害，只作用于小怪，Boss、盗贼、障碍、宝箱、奖杯免疫击退
+                                if(enemy.enemyItem.getPosition().y + 28 * GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect < 280)
+                                {
+                                    newY = enemy.enemyItem.getPosition().y + 28 * GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect;
+                                }else{
+                                    newY = 280;
+                                }
+                                tween(enemy.enemyItem).to(0.3,{position:new Vec3(enemy.enemyItem.getPosition().x,newY,0)}).start();
+                                // enemy.enemyItem.setPosition(enemy.enemyItem.getPosition().x,newY);
+                            }else if(heroSkillArr[s].ID == 107 && front)
+                            {
+                                //恢复 队伍HP * （1 + 增加HP百分比）
+                                var addHP:number = Math.floor(this.HP * (1 + GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect));
+                                if(addHP < this.maxHP)
+                                {
+                                    this.HP = addHP;
+                                }else{
+                                    this.HP = this.maxHP;
+                                }
+                                this.freshHP();
+                                //创建一个加血文本
+                                let textAddHPItem = instantiate(this.harmItemPre);
+                                textAddHPItem.getChildByName("lab_harm").getComponent(Label).string = "+" + Math.floor(this.HP * GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect);
+                                textAddHPItem.getChildByName("lab_harm").getComponent(Label).color = new Color(CharacterTool.Instance.color16Code(4));
+                                this.node_HPChangeText.addChild(textAddHPItem);
+                                var _this = this;
+                                var _harmNode = enemy.enemyItem.getChildByName("node_harmText");
+                                tween(textAddHPItem).to(0.3,{position:new Vec3(0,50,0)}).delay(0.2).call(()=>{
+                                    //文本消失
+                                    _this.node_HPChangeText.removeChild(textAddHPItem);
+                                }).start();
+                            }else if(heroSkillArr[s].ID == 108 && front)
+                            {
+                                //爆炸
+                                this.createBoom(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y);
+                            }else if(heroSkillArr[s].ID == 109 && front)
+                            {
+                                //冰冻
+                                this.frozen(esn);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    //创建爆炸 enemyX 敌人x enemyY 敌人y
+    createBoom(enemyX:number,enemyY:number)
+    {
+        let item = instantiate(this.boomItemPre);
+        item.setPosition(enemyX,enemyY);
+        this.node_skill.addChild(item);
+        this.boomArea(item.getPosition().x,item.getPosition().y,item.getComponent(UITransform).width,item.getComponent(UITransform).height);
+        setTimeout(() => {
+            this.node_skill.removeChild(item);
+        }, 400);
+    }
+
+    //爆炸区域
+    boomArea(boomX:number,boomY:number,boomWidth:number,boomHeight:number)
+    {}
+
+    //奖杯有效区域 x 爆炸点x y 爆炸点y boomWidth 爆炸宽度 boomHeight 爆炸高度 trophy 奖杯
+    trophyArea(boomX:number,boomY:number,boomWidth:number,boomHeight:number,trophy:Node):number
+    {
+        //爆炸有效区域
+        var efficaciousArea:number = 0;
+        for(var ea:number = 0;ea < 7;ea++)
+        {
+            //判断x和y是否在区域内
+            trophy.getChildByName("node_area1").getPosition().x,trophy.getChildByName("node_area1").getPosition().y,
+            trophy.getChildByName("node_area1").getComponent(UITransform).width;
+            trophy.getChildByName("node_area1").getComponent(UITransform).height;
+        }
+        efficaciousArea++;
+        return efficaciousArea;
+    }
+
+    //冰冻 esn 敌人编号
+    frozen(esn:number)
+    {
+        //障碍、宝箱、奖杯免疫冰冻
+        if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3 || this.saveLevel.levelType == 5)
+        {
+            return;
+        }
+        let enemyHurtSkeEvent = new GameEventName({ eventCode: 3 });
+        GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
+        setTimeout(() => {
+            var aName:string = "idle";
+            if(this.saveLevel.levelType == 1 || this.saveLevel.levelType == 4 || this.saveLevel.levelType == 6)
+            {
+                aName = "move";
+            }
+            let enemyIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:esn, aniName:aName, aniLoop: true });
+            GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent);
+        }, 2000);
     }
 
     otherViewEveFun(ovEvent: GameEventName)
@@ -1740,14 +1996,22 @@ export class FightMoveHeroView extends Component {
                                 addPromote = this.heroArr[proHero].maxHP;
                             }else if(ovEvent.getCustomProperty().pcArr[ae].promote == 5)
                             {
+                                var haveSkill:boolean = false;
                                 //根据技能ID找到技能，再对其等级进行提升
                                 for(var sk:number = 0;sk < this.heroArr[proHero].skillProArr.length;sk++)
                                 {
                                     if(ovEvent.getCustomProperty().pcArr[ae].skillID == this.heroArr[proHero].skillProArr[sk].ID)
                                     {
                                         this.heroArr[proHero].skillProArr[sk].level++;
+                                        haveSkill = true;
                                         break;
                                     }
+                                }
+                                if(haveSkill == false)
+                                {
+                                    var spa:relevanceProStructure = {ID:ovEvent.getCustomProperty().pcArr[ae].ID,level:1,multiple:ovEvent.getCustomProperty().pcArr[ae].multiple,
+                                        percent:ovEvent.getCustomProperty().pcArr[ae].percent,seconds:ovEvent.getCustomProperty().pcArr[ae].seconds}
+                                    this.heroArr[proHero].skillProArr.push(spa);
                                 }
                             }
                             this.heroArr[proHero].promoteTotal++;
@@ -1969,12 +2233,12 @@ export class FightMoveHeroView extends Component {
                 var soState:number = this.findSoccerState(controllerEvent.getCustomProperty().soccerID);
                 console.log("球与敌人碰撞状态",soState);
                 //判断球的状态
-                if(soState == 4)
+                if(soState == 5)
                 {
-                    ///球从上往下，背面碰撞，运动轨迹不变，均无折返
-                    //背面碰撞无伤害，回击除外
-                    //判断是否带有回击BUFF
                     console.log("球与敌人背面碰撞");
+                    ///球从上往下，背面碰撞，运动轨迹不变，均无折返
+                    //背面碰撞无伤害，回击除外，判断是否带有回击BUFF
+                    this.skillConjure(controllerEvent.getCustomProperty().enemySerialNum,false);
                 }else if(soState == 1 || soState == 3){
                     console.log("球与敌人正面碰撞",controllerEvent.getCustomProperty().enemySerialNum);
                     //判断敌人是否已死亡(有些敌人已死亡，但仍在播放死亡动画未消失，此时球无视碰撞继续向上)
@@ -2030,12 +2294,12 @@ export class FightMoveHeroView extends Component {
                         if(this.heroArr[findHero].heroID == rHeroID)
                         {
                             // baseHarm = this.heroArr[findHero].harm;
-                            if(soState == 1)
+                            if(soState == 1 && this.doubleHit > 0)
                             {
                                 //漏球时正面碰撞敌人，不算暴击和会心、技能
-                                isBreakOutHarm = this.drawALotteryOrRaffle(this.heroArr[findHero].breakOutHarmChance);
+                                isBreakOutHarm = this.drawALotteryOrRaffle(this.allBreakOutHarmChance);
                                 if(isBreakOutHarm == false){
-                                    isCritical = this.drawALotteryOrRaffle(this.heroArr[findHero].criticalChance);
+                                    isCritical = this.drawALotteryOrRaffle(this.allCriticalChance);
                                 }
                             }
                             break;
@@ -2085,6 +2349,18 @@ export class FightMoveHeroView extends Component {
                             var newHP:number = this.enemyArr[findEnemy].HP - lastHarm;
                             //敌人受到伤害，并扣除血量，如扣除后的血量低于0，敌人消失
                             this.enemyArr[findEnemy].HP = newHP;
+                            //如果是Boss，刷新大血条
+                            if(this.enemyArr[findEnemy].outline == 4)
+                            {
+                                this.freshBossBigHP(this.enemyArr[findEnemy].HP);
+                            }
+
+                            if(this.doubleHit > 0)
+                            {
+                                //漏球时，不计算回击以外的技能
+                                this.skillConjure(controllerEvent.getCustomProperty().enemySerialNum,true);
+                            }
+                            // this.createBoom(this.soccerArr[fSoccer].soccerItem.getPosition().x,this.soccerArr[fSoccer].soccerItem.getPosition().y)
 
                             if(this.enemyArr[findEnemy].HP > 0)
                             {
@@ -2092,25 +2368,24 @@ export class FightMoveHeroView extends Component {
                                 GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
                                 setTimeout(() => {
                                     var aName:string = "idle";
-                                    if(this.moveHeroState)
+                                    if(this.saveLevel.levelType == 1 || this.saveLevel.levelType == 4 || this.saveLevel.levelType == 6)
                                     {
                                         aName = "move";
                                     }
-                                    let heroIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:aName, aniLoop: true });
-                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, heroIdleSkeEvent);
-                                }, 700);
+                                    let enemyIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:aName, aniLoop: true });
+                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent);
+                                }, 350);
                             }else{
                                 let enemyDeathSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:"death", aniLoop: false });
                                 GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyDeathSkeEvent);
                             }
                             
-                            //不能在材质里创建带有系统字的label材质，会导致外层的系统字label显示冲突而消失，可改用图片形式的艺术字
                             //创建一个扣血文本
                             let textItem = instantiate(this.harmItemPre);
                             this.enemyArr[findEnemy].enemyItem.getChildByName("pro_blood").getComponent(ProgressBar).progress = 
                                 OperationTool.Instance.retainDecimal(2,this.enemyArr[findEnemy].HP/this.enemyArr[findEnemy].maxHP);
                             textItem.getChildByName("lab_harm").getComponent(Label).string = "-" + lastHarm;
-                            textItem.getChildByName("lab_harm").getComponent(Label).color = new Color(this.color16Code(harmType));
+                            textItem.getChildByName("lab_harm").getComponent(Label).color = new Color(CharacterTool.Instance.color16Code(harmType));
                             this.enemyArr[findEnemy].enemyItem.getChildByName("node_harmText").addChild(textItem);
                             var _this = this;
                             var _harmNode = this.enemyArr[findEnemy].enemyItem.getChildByName("node_harmText");
@@ -2144,6 +2419,11 @@ export class FightMoveHeroView extends Component {
                     {
                         //找到位置最前面的敌人发球
                         this.soccerArr[soccerBack].goalEnemySerialNum = this.findFrontEnemySerialNum();
+                        if(this.saveLevel.levelType == 5)
+                        {
+                            //偏移值
+                            this.trophySkewing = Math.floor(Math.random() * 71) - 35;
+                        }
                         //如果敌人已进入攻击状态，则选最近的攻击状态的敌人
                         console.log("目标敌人",this.soccerArr[soccerBack].goalEnemySerialNum);
                         //如果没有目标敌人（比如第一个死亡，第二个怪还没出），固定中心墙点（10,316）踢球
@@ -2273,7 +2553,6 @@ export class FightMoveHeroView extends Component {
             //判断游戏是否失败
             if(this.HP <= 0 && this.changeHeroState == false)
             {
-                console.log("血量：",this.HP,"：",this.changeHeroState)
                 this.soccerGameState = gameState.over;
                 //弹出失败页面
                 Layer.Instance.show("lose",Layer.Instance.layerView);
@@ -2329,7 +2608,8 @@ export class FightMoveHeroView extends Component {
             }
             else if(this.saveLevel.levelType == 3)
             {
-                //只计算得分
+                //只计算积分 积分 = 总伤害值
+                //若提前打完宝箱，提前通过关卡
                 if(this.findResidueEnemyType(3) <= 0 && this.saveWave.total == 0)
                 {
                     this.soccerGameState = gameState.result;
@@ -2338,7 +2618,7 @@ export class FightMoveHeroView extends Component {
                 }
                 this.saveLevel.maxTime--;
                 this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
-                //倒计时结束通关，无论是否打完宝箱，若提前打完宝箱，提前通过关卡
+                //倒计时结束通关，无论是否打完宝箱
                 if(this.saveLevel.maxTime == 0)
                 {
                     this.soccerGameState = gameState.result;
@@ -2348,9 +2628,21 @@ export class FightMoveHeroView extends Component {
             else if(this.saveLevel.levelType == 4)
             {
                 //判断Boss是否死亡
-                if(this.findResidueEnemyType(4) <= 0 && this.saveWave.total == 0)
+                if(this.findResidueEnemyType(4) <= 0 && this.saveWave.total == 0 && this.saveWave.BossBornTime <= 0)
                 {
                     //Boss死亡直接通关，不管其余小怪是否死亡
+                    this.soccerGameState = gameState.result;
+                    this.readNextWave();
+                }
+            }else if(this.saveLevel.levelType == 5)
+            {
+                //只计算积分，奖杯的血量是无限的
+                this.saveLevel.maxTime--;
+                this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
+                //倒计时结束通关
+                if(this.saveLevel.maxTime == 0)
+                {
+                    this.trophySkewing = 0;
                     this.soccerGameState = gameState.result;
                     this.readNextWave();
                 }
@@ -2375,12 +2667,15 @@ export class FightMoveHeroView extends Component {
                 if(this.saveWave.BossID != 0 && this.saveWave.BossBornTime > 0)
                 {
                     this.saveWave.BossBornTime--;
+                    this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
                     if(this.saveWave.BossBornTime <= 0)
                     {
+                        console.log("倒计时时间到，出现Boss");
                         this.createEnemy(this.saveWave.BossID);
                     }else if(this.enemyArr.length == 0 && this.saveWave.total == 0)
                     {
                         //若所有小怪死亡，Boss提前出现
+                        console.log("所有怪物已死，出现Boss");
                         this.createEnemy(this.saveWave.BossID);
                         //不再进入Boss出现计时
                         this.saveWave.BossBornTime = -1;
@@ -2433,7 +2728,7 @@ export class FightMoveHeroView extends Component {
             {
                 if(this.enemyArr[moveEnemy].enemyItem != null)
                 {
-                    if(this.enemyArr[moveEnemy].enemyType == 1)
+                    if(this.enemyArr[moveEnemy].enemyWay == 1)
                     {
                         //如果走到了发动攻击位置，y不再变，攻击水晶
                         if(this.enemyArr[moveEnemy].enemyItem.getPosition().y < this.enemyStopYFun(this.enemyArr[moveEnemy].outline))
@@ -2445,6 +2740,14 @@ export class FightMoveHeroView extends Component {
                                 if(this.enemyArr[moveEnemy].attackSpeedTime <= 0)
                                 {
                                     this.enemyArr[moveEnemy].attackSpeedTime = this.enemyArr[moveEnemy].attackSpeed;
+
+                                    let enemyHurtSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:this.enemyArr[moveEnemy].enemyItem["enemySerialNum"], aniName:"hit", aniLoop: false });
+                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
+                                    var esn:number = this.enemyArr[moveEnemy].enemyItem["enemySerialNum"];
+                                    setTimeout(() => {
+                                        let enemyIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:esn, aniName:"move", aniLoop: true });
+                                        GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent);
+                                    }, 300);
                                     //水晶扣血
                                     this.HP -= this.enemyArr[moveEnemy].harm;
                                     this.freshHP();
@@ -2459,7 +2762,7 @@ export class FightMoveHeroView extends Component {
                             this.enemyArr[moveEnemy].enemyItem.setPosition(this.enemyArr[moveEnemy].enemyItem.getPosition().x,
                             this.enemyArr[moveEnemy].enemyItem.getPosition().y - this.enemyArr[moveEnemy].moveSpeed);
                         }
-                    }else if(this.enemyArr[moveEnemy].enemyType == 3)
+                    }else if(this.enemyArr[moveEnemy].enemyWay == 3)
                     {
                         //向右行走
                         var newEnemyX:number = this.enemyArr[moveEnemy].enemyItem.getPosition().x + 1;
@@ -2548,7 +2851,7 @@ export class FightMoveHeroView extends Component {
                                 let lastX:number = 0;
                                 let lastY:number = 0;
                                 //x相差距离 = 敌人x - 足球x
-                                var xEquation:number = this.enemyArr[findEnemy].enemyItem.getPosition().x - this.soccerArr[so].soccerItem.getPosition().x;
+                                var xEquation:number = this.enemyArr[findEnemy].enemyItem.getPosition().x - this.soccerArr[so].soccerItem.getPosition().x + this.trophySkewing;
                                 // y相差距离 = 敌人y - 足球y
                                 var yEquation:number = this.enemyArr[findEnemy].enemyItem.getPosition().y - this.soccerArr[so].soccerItem.getPosition().y;
                                 //相差速度 = 足球移动速度 - 敌人移动速度
@@ -2696,35 +2999,6 @@ export class FightMoveHeroView extends Component {
             return true;
         }else{
             return false;
-        }
-    }
-
-    //字体颜色16进制编码
-    color16Code(quality:number):string
-    {
-        switch(quality)
-        {
-            case 1:
-                //白色
-                return "#ffffff";
-            case 2:
-                //红色 暴击
-                return "#ff0000";
-            case 3:
-                //黄色 会心
-                return "#febf00";
-            case 4:
-                //绿色 加血
-                return "#36ff00";
-            case 5:
-                //浅蓝色
-                return "#49c8fd";
-            case 6:
-                //橙色
-                return "#fd8d49";
-            case 7:
-                //黑色
-                return "#000000";
         }
     }
     
