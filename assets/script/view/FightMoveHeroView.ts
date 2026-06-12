@@ -52,6 +52,9 @@ export class FightMoveHeroView extends Component {
 
     @property(Prefab)
     private boomItemPre: Prefab = null;
+    
+    @property(Prefab)
+    private frozenItemPre: Prefab = null;
 
     //静态背景
     private img_soccerField:Sprite;
@@ -137,6 +140,8 @@ export class FightMoveHeroView extends Component {
     private strikeArr:Array<any> = [];
     //子弹
     private bulletArr:Array<bulletStructure> = [];
+    //冰冻Buff
+    private frozenBuffArr:Array<Node> = [];
     //游戏状态
     private soccerGameState:number = 0;
     //选择的章节
@@ -398,6 +403,8 @@ export class FightMoveHeroView extends Component {
         this.soccerArr[0].soccerState = 1;
         this.updatePlayerMaxEXP();
         this.freshWave();
+        //经验条重置
+        this.HP = this.maxHP;
         this.freshHP();
         this.freshEXP();
         this.soccerGameState = gameState.start;
@@ -1206,7 +1213,7 @@ export class FightMoveHeroView extends Component {
                     //创建新敌人数据
                     var es:enemyStructure = {enemyID:1,enemyHeadImgPath:"",enemySkePath:"",enemyName:"敌人1",enemyIntroduce:"敌人介绍",outline:1,enemyType:1,enemyWay:1,
                         enemyOccupation:1,maxHP:50,moveSpeed:0.2,attackSpeed:1,attackDistance:10,harm:1,EXP:1,gold:1,prop:1,skillProbability:10,speak:"杀光他们！",
-                        enemyItem:null,HP:10,attackSpeedTime:0};
+                        enemyItem:null,HP:10,attackSpeedTime:0,thawTime:0};
                     
                     es.enemyID = GlobalData.Instance.enemyTableArr[eta].enemyID;
                     es.enemyHeadImgPath = GlobalData.Instance.enemyTableArr[eta].enemyHeadImgPath;
@@ -1497,6 +1504,12 @@ export class FightMoveHeroView extends Component {
                         }
                     }
                 }
+                //如果冰冻期间被打死，需要移除BUFF（冰晶）
+                if(this.enemyArr[findDeadEnemy].thawTime > 0)
+                {
+                    
+                    this.thaw(this.enemyArr[findDeadEnemy].enemyItem["enemySerialNum"]);
+                }
                 //经验条增加经验
                 this.EXP += this.enemyArr[findDeadEnemy].EXP;
                 this.freshEXP();
@@ -1778,7 +1791,6 @@ export class FightMoveHeroView extends Component {
                 //查找非空位英雄的激活技能
                 for(var hs:number = 0;hs < this.heroArr[fh].skillProArr.length;hs++)
                 {
-                    console.log(this.heroArr[fh].heroID,this.heroArr[fh].skillProArr[hs].level);
                     if(this.heroArr[fh].skillProArr[hs].level > 0)
                     {
                         //已添加的上阵英雄技能中是否有该技能
@@ -1883,10 +1895,50 @@ export class FightMoveHeroView extends Component {
                             {
                                 //爆炸
                                 this.createBoom(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y);
-                            }else if(heroSkillArr[s].ID == 109 && front)
+                            }else if(heroSkillArr[s].ID == 112 && front)
                             {
-                                //冰冻
-                                this.frozen(esn);
+                                //障碍、宝箱、奖杯免疫冰冻
+                                if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3 || this.saveLevel.levelType == 5)
+                                {
+                                    return;
+                                }
+                                //随机触发概率 以100为百分比
+                                var t:number = Math.random() * 100;
+                                if(t < GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].trigger * 100)
+                                {
+                                    //冰冻
+                                    enemy.thawTime = GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].second * 100;
+                                    let enemyHurtSkeEvent = new GameEventName({ eventCode: 3 , enemySerialNum:esn});
+                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
+                                    enemy.enemyWay = 4;
+
+                                    //如果已经冰冻，只重置时长，不再重新创建冰晶
+                                    if(this.findFrozen(esn))
+                                    {
+                                        return;
+                                    }
+                                    //创建冰晶
+                                    let item = instantiate(this.frozenItemPre);
+                                    item["frozenID"] = esn;
+                                    //根据体型摆放冰晶位置
+                                    switch(enemy.outline)
+                                    {
+                                        case 1:
+                                            item.getChildByName("ske_monsterBuff").scale = new Vec3(0.4,0.4,0);
+                                            item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 45);
+                                            break;
+                                        case 2:
+                                            item.getChildByName("ske_monsterBuff").scale = new Vec3(0.6,0.6,0);
+                                            item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 45);
+                                            break;
+                                        case 3:
+                                            item.getChildByName("ske_monsterBuff").scale = new Vec3(0.8,0.8,0);
+                                            item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 65);
+                                            break;
+                                    }
+                                    this.frozenBuffArr.push(item);
+                                    this.node_skill.addChild(item);
+                                }
                             }
                         }
                     }
@@ -1911,6 +1963,33 @@ export class FightMoveHeroView extends Component {
     boomArea(boomX:number,boomY:number,boomWidth:number,boomHeight:number)
     {}
 
+    //冰晶是否已存在
+    findFrozen(eid:number):boolean
+    {
+        for(var te:number = 0;te < this.frozenBuffArr.length;te++)
+        {
+            if(this.frozenBuffArr[te]["frozenID"] == eid)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    //解冻
+    thaw(eid:number)
+    {
+        for(var te:number = 0;te < this.frozenBuffArr.length;te++)
+        {
+            if(this.frozenBuffArr[te]["frozenID"] == eid)
+            {
+                this.node_skill.removeChild(this.frozenBuffArr[te]);
+                this.frozenBuffArr.splice(te,1);
+                break;
+            }
+        }
+    }
+
     //奖杯有效区域 x 爆炸点x y 爆炸点y boomWidth 爆炸宽度 boomHeight 爆炸高度 trophy 奖杯
     trophyArea(boomX:number,boomY:number,boomWidth:number,boomHeight:number,trophy:Node):number
     {
@@ -1925,27 +2004,6 @@ export class FightMoveHeroView extends Component {
         }
         efficaciousArea++;
         return efficaciousArea;
-    }
-
-    //冰冻 esn 敌人编号
-    frozen(esn:number)
-    {
-        //障碍、宝箱、奖杯免疫冰冻
-        if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3 || this.saveLevel.levelType == 5)
-        {
-            return;
-        }
-        let enemyHurtSkeEvent = new GameEventName({ eventCode: 3 });
-        GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
-        setTimeout(() => {
-            var aName:string = "idle";
-            if(this.saveLevel.levelType == 1 || this.saveLevel.levelType == 4 || this.saveLevel.levelType == 6)
-            {
-                aName = "move";
-            }
-            let enemyIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:esn, aniName:aName, aniLoop: true });
-            GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent);
-        }, 2000);
     }
 
     otherViewEveFun(ovEvent: GameEventName)
@@ -2362,22 +2420,27 @@ export class FightMoveHeroView extends Component {
                             }
                             // this.createBoom(this.soccerArr[fSoccer].soccerItem.getPosition().x,this.soccerArr[fSoccer].soccerItem.getPosition().y)
 
-                            if(this.enemyArr[findEnemy].HP > 0)
+                            //冰冻期间挨打没有动作
+                            if(this.enemyArr[findEnemy].thawTime <= 0)
                             {
-                                let enemyHurtSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:"hurt", aniLoop: false });
-                                GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
-                                setTimeout(() => {
-                                    var aName:string = "idle";
-                                    if(this.saveLevel.levelType == 1 || this.saveLevel.levelType == 4 || this.saveLevel.levelType == 6)
-                                    {
-                                        aName = "move";
-                                    }
-                                    let enemyIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:aName, aniLoop: true });
-                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent);
-                                }, 350);
-                            }else{
-                                let enemyDeathSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:"death", aniLoop: false });
-                                GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyDeathSkeEvent);
+                                if(this.enemyArr[findEnemy].HP > 0)
+                                {
+                                    let enemyHurtSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:"hurt", aniLoop: false });
+                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyHurtSkeEvent);
+                                    setTimeout(() => {
+                                        var aName:string = "idle";
+                                        if(this.saveLevel.levelType == 1 || this.saveLevel.levelType == 4 || this.saveLevel.levelType == 6)
+                                        {
+                                            aName = "move";
+                                        }
+                                        let enemyIdleSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:aName, aniLoop: true });
+                                        GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent);
+                                    }, 350);
+                                }else{
+                                    //如果冰冻期间被打死，不播放死亡动画
+                                    let enemyDeathSkeEvent = new GameEventName({ eventCode: 2, enemySerialNum:controllerEvent.getCustomProperty().enemySerialNum, aniName:"death", aniLoop: false });
+                                    GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyDeathSkeEvent);
+                                }
                             }
                             
                             //创建一个扣血文本
@@ -2726,7 +2789,7 @@ export class FightMoveHeroView extends Component {
             //敌人移动
             for(var moveEnemy:number = 0;moveEnemy < this.enemyArr.length;moveEnemy++)
             {
-                if(this.enemyArr[moveEnemy].enemyItem != null)
+                if(this.enemyArr[moveEnemy].enemyItem != null && this.enemyArr[moveEnemy].HP > 0)
                 {
                     if(this.enemyArr[moveEnemy].enemyWay == 1)
                     {
@@ -2773,6 +2836,22 @@ export class FightMoveHeroView extends Component {
                             this.enemyArr[moveEnemy].HP = this.enemyArr[moveEnemy].maxHP;
                             //回到初始位置等待
                             this.enemyArr[moveEnemy].enemyItem.setPosition(-450,this.enemyArr[moveEnemy].enemyItem.getPosition().y);
+                        }
+                    }else if(this.enemyArr[moveEnemy].enemyWay == 4)
+                    {
+                        if(this.enemyArr[moveEnemy].thawTime > 0)
+                        {
+                            this.enemyArr[moveEnemy].thawTime--;
+                            if(this.enemyArr[moveEnemy].thawTime == 0)
+                            {
+                                var aName:string = "move";
+                                this.thaw(this.enemyArr[moveEnemy].enemyItem["enemySerialNum"]);
+                                let enemyIdleSkeEvent2 = new GameEventName({ eventCode: 2, enemySerialNum:this.enemyArr[moveEnemy].enemyItem["enemySerialNum"], aniName:aName, aniLoop: true });
+                                GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent2);
+                                let enemyIdleSkeEvent4 = new GameEventName({ eventCode: 4, enemySerialNum:this.enemyArr[moveEnemy].enemyItem["enemySerialNum"] });
+                                GameCustomEvent.Instance.node.emit(GameEventName.ENEMY_SKE_EVENT, enemyIdleSkeEvent4);
+                                this.enemyArr[moveEnemy].enemyWay = 1;
+                            }
                         }
                     }
                 }

@@ -215,7 +215,7 @@ export interface enemyStructure {
     outline:number;
     //敌人类型 1 怪物 2 障碍 3 宝箱 4 boss 5 合体怪（奖杯） 6 盗贼
     enemyType:number;
-    //敌人路线（区分行走方向）1 从上到下 2 静止 3 从左到右
+    //敌人路线（区分行走方向）1 从上到下 2 静止 3 从左到右 4 禁锢（暂时禁止）
     enemyWay:number;
     //敌人职业（区分功能，怪物的不同技能）
     enemyOccupation:number;
@@ -251,6 +251,8 @@ export interface enemyStructure {
     // attackState:number;
     //敌人攻击计时
     attackSpeedTime:number;
+    //敌人解冻剩余时间 0 未被冰冻
+    thawTime:number;
 }
 
 //敌人子弹
@@ -326,6 +328,8 @@ export interface skillEffectStructure {
     scope:number;
     //持续秒数
     second:number;
+    //触发概率
+    trigger:number;
     //技能冷却CD
     // CD:number;
     

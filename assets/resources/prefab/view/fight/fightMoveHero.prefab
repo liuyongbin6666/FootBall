@@ -20558,6 +20558,10 @@
       "__uuid__": "09c82d03-49fb-48fb-b095-fcf3b56b923f",
       "__expectedType__": "cc.Prefab"
     },
+    "frozenItemPre": {
+      "__uuid__": "145c779b-68dd-4197-bd6b-2580957beaba",
+      "__expectedType__": "cc.Prefab"
+    },
     "_id": ""
   },
   {
