@@ -238,7 +238,7 @@
     "_lpos": {
       "__type__": "cc.Vec3",
       "x": 0,
-      "y": 0,
+      "y": -5,
       "z": 0
     },
     "_lrot": {
@@ -250,8 +250,8 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 0.5,
-      "y": 0.5,
+      "x": 1,
+      "y": 1,
       "z": 1
     },
     "_mobility": 0,
@@ -315,7 +315,7 @@
       "a": 255
     },
     "_skeletonData": {
-      "__uuid__": "8762a165-6774-4bda-8758-0d71f7dbbf3c",
+      "__uuid__": "7f7cd996-d685-4b2c-860d-86d7edcfd2f7",
       "__expectedType__": "sp.SkeletonData"
     },
     "defaultSkin": "default",

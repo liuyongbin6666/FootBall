@@ -331,9 +331,9 @@ export class FightMoveHeroView extends Component {
         this.freshEXP();
         this.soccerGameState = gameState.start;
 
-        AudioMG.Instance.changeMusicAudio("audio/battle_bgyy");
+        AudioMG.Instance.changeMusicAudio("battle_bgyy");
         
-        Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
+        // Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
 
         this.schedule(this.soccerGame,this.timeHS);
 
@@ -1329,14 +1329,17 @@ export class FightMoveHeroView extends Component {
             var enemyOutline:number = 0;
             //怪物权重数组
             var enemyPer:Array<number> = [];
+            var addArise:number = 0;
             //根据小怪种类，定权重范围
             for(var en:number = 0;en < this.saveWave.enemyAriseArr.length;en++)
             {
                 if(en == 0)
                 {
-                    this.saveWave.enemyAriseArr[0].percent;
+                    addArise = this.saveWave.enemyAriseArr[0].percent;
+                    enemyPer.push(this.saveWave.enemyAriseArr[0].percent);
                 }else{
-                    enemyPer.push(this.saveWave.enemyAriseArr[en].percent + this.saveWave.enemyAriseArr[en - 1].percent);
+                    addArise = addArise + this.saveWave.enemyAriseArr[en].percent;
+                    enemyPer.push(addArise);
                 }
             }
             //根据权重随机产生怪物
@@ -2304,7 +2307,7 @@ export class FightMoveHeroView extends Component {
                     {
                         return;
                     }
-                    AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
+                    AudioMG.Instance.playSoundAudio("soccer_kick","soccer_kick");
                     //球从下往上，正面碰撞，运动轨迹改变，均向英雄折返
                     var rHeroID:number = 0;
                     var gSerialNum:number = 0;
@@ -2532,7 +2535,7 @@ export class FightMoveHeroView extends Component {
                         // }
                         //球不论任何状态，碰到英雄均视为发球，球状态改变
                         this.soccerArr[soccerBack].soccerState = 1;
-                        AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
+                        AudioMG.Instance.playSoundAudio("soccer_kick","soccer_kick");
                         //接球一次加一次（不管怪物是否死亡漏球碰上墙）
                         this.doubleHit++;
                         //刷新连击显示
@@ -2647,6 +2650,16 @@ export class FightMoveHeroView extends Component {
                     this.soccerGameState = gameState.result;
                     //读取下一波数据
                     this.readNextWave();
+                }else{
+                    this.saveLevel.maxTime--;
+                    this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
+                    //倒计时结束，游戏失败
+                    if(this.saveLevel.maxTime == 0)
+                    {
+                        this.soccerGameState = gameState.over;
+                        //弹出失败页面
+                        Layer.Instance.show("lose",Layer.Instance.layerView);
+                    }
                 }
             }
             else if(this.saveLevel.levelType == 2)
