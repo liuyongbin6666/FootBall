@@ -144,6 +144,9 @@ export class CharacterTool extends Component {
             case 8:
                 //浅蓝色
                 return "#49c8fd";
+            case 9:
+                //浅红色
+                return "#f5b4b2";
         }
         return "#ffffff";
     }

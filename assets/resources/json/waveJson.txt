@@ -4,9 +4,9 @@
         "enemyAriseArr": [{"ID": 101, "percent": 100}],
         "total": 10,
         "intervalTime": 0,
-        "BossID": 105,
-        "BossBornTime": 60,
-        "minEnemy": 5
+        "BossID": 0,
+        "BossBornTime": 0,
+        "minEnemy": 0
     },
     {
         "waveID": 10102,
