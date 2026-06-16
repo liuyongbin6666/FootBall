@@ -1,5 +1,6 @@
 import { _decorator, AudioClip, AudioSource, Component, Node, resources } from 'cc';
 import { clipNameStructure, soundStructure } from '../data/GlobalStructure';
+import { ResMgr } from '../../BHY_Framework/Manager/ResMgr';
 const { ccclass, property } = _decorator;
 
 /**
@@ -48,39 +49,53 @@ export class AudioMG extends Component {
     }
 
     // 单个背景音乐播放（根据音频资源路径加载音频资源）
-    public playMusicAudio(audioPath:string)
+    public async playMusicAudio(audioPath:string)
     {
         if(this.main_audio == null)
         {
             this.main_audio = new AudioSource();
         }
+        //微信分包
+        const clip = await ResMgr.Ins.getOrLoadAsset("audio", audioPath, AudioClip);
+        this.main_audio.clip = clip;
+        this.main_audio.loop = true;
+        this.main_audio.play();
+        
+        //非微信分包
         // var audioPath = "audio/main_music";
-        var _this = this;
-        resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
-        {
-            _this.main_audio.clip = clip;
-            _this.main_audio.loop = true;
-            _this.main_audio.play();
-            // console.log("音乐加载完毕！",_this.main_audio);
-        });
+        // var _this = this;
+        // resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
+        // {
+        //     _this.main_audio.clip = clip;
+        //     _this.main_audio.loop = true;
+        //     _this.main_audio.play();
+        //     // console.log("音乐加载完毕！",_this.main_audio);
+        // });
     }
 
     //更换背景音乐
-    public changeMusicAudio(audioPath:string)
+    public async changeMusicAudio(audioPath:string)
     {
         if(this.main_audio == null)
         {
             this.main_audio = new AudioSource();
         }
         this.main_audio.stop();
+        //微信分包
+        const clip = await ResMgr.Ins.getOrLoadAsset("audio", audioPath, AudioClip);
+        this.main_audio.clip = clip;
+        this.main_audio.loop = true;
+        this.main_audio.play();
         var _this = this;
-        resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
-        {
-            _this.main_audio.clip = clip;
-            _this.main_audio.loop = true;
-            _this.main_audio.play();
-            // console.log("音乐加载完毕！",_this.main_audio);
-        });
+        
+        //非微信分包
+        // resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
+        // {
+        //     _this.main_audio.clip = clip;
+        //     _this.main_audio.loop = true;
+        //     _this.main_audio.play();
+        //     // console.log("音乐加载完毕！",_this.main_audio);
+        // });
     }
     
     // 单个音效播放 audioPath 音效路径（不用加后缀.wav等，能自动识别）
@@ -108,7 +123,7 @@ export class AudioMG extends Component {
     }
 
     //单个音效加载
-    private loadOneSoundAudio(audioPath:string,name:string,soundOne: AudioSource)
+    private async loadOneSoundAudio(audioPath:string,name:string,soundOne: AudioSource)
     {
         //如果已加载过，无需重复加载
         for(var cn:number = 0;cn < this.clipArr.length;cn++)
@@ -121,26 +136,35 @@ export class AudioMG extends Component {
                 return;
             }
         }
+        //微信分包
+        const clip = await ResMgr.Ins.getOrLoadAsset("audio", audioPath, AudioClip);
+        soundOne.clip = clip;
+        soundOne.loop = false;
+        soundOne.play();
+        var newClip:clipNameStructure = {name:name,clip:clip};
+        this.clipArr.push(newClip);
+        
+        //非微信分包
         // var audioPath = "audio/main_music";
-        var _this = this;
-        var _soundOne = soundOne;
-        resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
-        {
-            if(clip == null || clip == undefined)
-            {
-                // console.log("加载音效失败：",audioPath,clip);
-            }else{
-                // _this.sound_once.clip = clip;
-                _soundOne.clip = clip;
-                // _this.sound_once.loop = false;
-                _soundOne.loop = false;
-                // _this.sound_once.play();
-                _soundOne.play();
-                var newClip:clipNameStructure = {name:name,clip:clip};
-                _this.clipArr.push(newClip);
-                // console.log("音效加载完毕！",_soundOne);
-            }
-        });
+        // var _this = this;
+        // var _soundOne = soundOne;
+        // resources.load(audioPath, AudioClip, (err, clip: AudioClip) =>
+        // {
+        //     if(clip == null || clip == undefined)
+        //     {
+        //         // console.log("加载音效失败：",audioPath,clip);
+        //     }else{
+        //         // _this.sound_once.clip = clip;
+        //         _soundOne.clip = clip;
+        //         // _this.sound_once.loop = false;
+        //         _soundOne.loop = false;
+        //         // _this.sound_once.play();
+        //         _soundOne.play();
+        //         var newClip:clipNameStructure = {name:name,clip:clip};
+        //         _this.clipArr.push(newClip);
+        //         // console.log("音效加载完毕！",_soundOne);
+        //     }
+        // });
     }
 
     // 设置音乐音量 0~1

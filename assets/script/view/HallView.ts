@@ -103,7 +103,7 @@ export class HallView extends Component {
         //默认页面征程
         this.freshChapter();
         
-        AudioMG.Instance.playMusicAudio("audio/hall_bgyy");
+        AudioMG.Instance.playMusicAudio("hall_bgyy");
     }
 
     //更换页面

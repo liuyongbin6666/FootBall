@@ -324,7 +324,7 @@ export interface skillEffectStructure {
     level:number;
     //效果
     effect:number;
-    //作用范围
+    //作用范围 宽高
     scope:number;
     //持续秒数
     second:number;

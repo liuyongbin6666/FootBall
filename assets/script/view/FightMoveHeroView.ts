@@ -331,9 +331,9 @@ export class FightMoveHeroView extends Component {
         this.freshEXP();
         this.soccerGameState = gameState.start;
 
-        AudioMG.Instance.changeMusicAudio("audio/battle_bgyy");
+        AudioMG.Instance.changeMusicAudio("battle_bgyy");
         
-        Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
+        // Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
 
         this.schedule(this.soccerGame,this.timeHS);
 
@@ -718,7 +718,7 @@ export class FightMoveHeroView extends Component {
         var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
             criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
-            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
+            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[{ID:108,level:1,multiple:1,percent:1,seconds:1}],promoteTotal:0};
         for(var ht:number = 0;ht < GlobalData.Instance.heroTableArr.length;ht++)
         {
             if(GlobalData.Instance.heroTableArr[ht].heroID == hid)
@@ -1329,14 +1329,17 @@ export class FightMoveHeroView extends Component {
             var enemyOutline:number = 0;
             //怪物权重数组
             var enemyPer:Array<number> = [];
+            var addArise:number = 0;
             //根据小怪种类，定权重范围
             for(var en:number = 0;en < this.saveWave.enemyAriseArr.length;en++)
             {
                 if(en == 0)
                 {
-                    this.saveWave.enemyAriseArr[0].percent;
+                    addArise = this.saveWave.enemyAriseArr[0].percent;
+                    enemyPer.push(this.saveWave.enemyAriseArr[0].percent);
                 }else{
-                    enemyPer.push(this.saveWave.enemyAriseArr[en].percent + this.saveWave.enemyAriseArr[en - 1].percent);
+                    addArise = addArise + this.saveWave.enemyAriseArr[en].percent;
+                    enemyPer.push(addArise);
                 }
             }
             //根据权重随机产生怪物
@@ -1894,7 +1897,13 @@ export class FightMoveHeroView extends Component {
                             }else if(heroSkillArr[s].ID == 108 && front)
                             {
                                 //爆炸
-                                this.createBoom(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y);
+                                this.createBoom(enemy.enemyItem);
+                                if(this.saveLevel.levelType == 5)
+                                {
+                                    this.trophyBoomArea(enemy.enemyItem,GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].scope,GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect);
+                                }else{
+                                    this.boomAreaHarm(enemy.enemyItem,GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].scope,GlobalData.Instance.heroSkillTableArr[hst].skillArr[sa].effect);
+                                }
                             }else if(heroSkillArr[s].ID == 112 && front)
                             {
                                 //障碍、宝箱、奖杯免疫冰冻
@@ -1947,21 +1956,135 @@ export class FightMoveHeroView extends Component {
         }
     }
 
-    //创建爆炸 enemyX 敌人x enemyY 敌人y
-    createBoom(enemyX:number,enemyY:number)
+    //创建爆炸动画 eItem 敌人
+    createBoom(eItem:Node)
     {
         let item = instantiate(this.boomItemPre);
-        item.setPosition(enemyX,enemyY);
+        item.setPosition(eItem.getPosition().x,eItem.getPosition().y);
         this.node_skill.addChild(item);
-        this.boomArea(item.getPosition().x,item.getPosition().y,item.getComponent(UITransform).width,item.getComponent(UITransform).height);
         setTimeout(() => {
             this.node_skill.removeChild(item);
         }, 400);
     }
 
-    //爆炸区域
-    boomArea(boomX:number,boomY:number,boomWidth:number,boomHeight:number)
-    {}
+    //爆炸区域伤害 eItem 敌人 boomScope 爆炸范围 boomHarm 爆炸伤害
+    boomAreaHarm(eItem:Node,boomScope:number,boomHarm:number)
+    {
+        //爆炸范围内造成的伤害
+        var bHarm:number = Math.floor(this.allAttack * boomHarm);
+        //查找在方形范围内的其他敌人,不计算敌人本身
+        for(var findOtherEnemy:number = 0;findOtherEnemy < this.enemyArr.length;findOtherEnemy++)
+        {
+            //左上角的点（x - boomScope/2,y + boomScope/2）,右上角（x + boomScope/2,y + boomScope/2），左下角（x - boomScope/2,y - boomScope/2），右下角（x + boomScope/2,y - boomScope/2）
+            if(eItem["enemySerialNum"] != this.enemyArr[findOtherEnemy].enemyItem["enemySerialNum"] && 
+                this.enemyArr[findOtherEnemy].enemyItem.getPosition().x >= eItem.getPosition().x - boomScope/2 && 
+                this.enemyArr[findOtherEnemy].enemyItem.getPosition().y <= eItem.getPosition().y + boomScope/2 && 
+                this.enemyArr[findOtherEnemy].enemyItem.getPosition().x <= eItem.getPosition().x + boomScope/2 &&
+                this.enemyArr[findOtherEnemy].enemyItem.getPosition().y >= eItem.getPosition().y - boomScope/2)
+            {
+                if(this.enemyArr[findOtherEnemy].HP > bHarm)
+                {
+                    this.enemyArr[findOtherEnemy].HP -= bHarm;
+                }else{
+                    this.enemyArr[findOtherEnemy].HP = 0;
+                }
+                //创建一个扣血文本
+                let textItem = instantiate(this.harmItemPre);
+                this.enemyArr[findOtherEnemy].enemyItem.getChildByName("pro_blood").getComponent(ProgressBar).progress = 
+                    OperationTool.Instance.retainDecimal(2,this.enemyArr[findOtherEnemy].HP/this.enemyArr[findOtherEnemy].maxHP);
+                textItem.getChildByName("lab_harm").getComponent(Label).string = "-" + bHarm;
+                textItem.getChildByName("lab_harm").getComponent(Label).color = new Color(CharacterTool.Instance.color16Code(1));
+                this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_harmText").addChild(textItem);
+                var _this = this;
+                tween(textItem).to(0.3,{position:new Vec3(0,50,0)}).delay(0.2).call(()=>{
+                    //文本消失
+                    // textItem.active = false;
+                    textItem.parent.removeChild(textItem);
+                    _this.enemyDead();
+                }).start();
+            }
+        }
+    }
+
+    //奖杯有效区域 eItem 敌人 boomScope 爆炸范围 boomHarm 爆炸伤害
+    trophyBoomArea(eItem:Node,boomScope:number,boomHarm:number)
+    {
+        //爆炸范围内造成的伤害
+        var bHarm:number = Math.floor(this.allAttack * boomHarm);
+        console.log("爆炸123:",this.allAttack,boomHarm);
+        //引发爆炸的区域块
+        var areaNum:number = 5;
+        for(var findTrophy:number = 0;findTrophy < this.enemyArr.length;findTrophy++)
+        {
+            if(this.enemyArr[findTrophy].enemyType == 5)
+            {
+                //根据偏移值，找到球碰到的区域(5 ~ 7)，该区域不算爆炸
+                for(var eaNum:number = 5;eaNum < 8;eaNum++)
+                {
+                    if(this.enemyArr[findTrophy].enemyItem.getPosition().x + this.trophySkewing <= 
+                        this.enemyArr[findTrophy].enemyItem.getChildByName("node_area" + eaNum).getPosition().x - 
+                        this.enemyArr[findTrophy].enemyItem.getChildByName("node_area" + eaNum).getComponent(UITransform).width
+                        && this.enemyArr[findTrophy].enemyItem.getPosition().x + this.trophySkewing >= 
+                        this.enemyArr[findTrophy].enemyItem.getChildByName("node_area" + eaNum).getPosition().x + 
+                        this.enemyArr[findTrophy].enemyItem.getChildByName("node_area" + eaNum).getComponent(UITransform).width)
+                    {
+                        areaNum = eaNum;
+                        break;
+                    }
+                }
+            }
+        }
+        console.log("引爆爆炸的区域块:",areaNum);
+        //查找在方形范围内的区域,不计算引爆区域
+        for(var findOtherEnemy:number = 0;findOtherEnemy < this.enemyArr.length;findOtherEnemy++)
+        {
+            if(this.enemyArr[findOtherEnemy].enemyType == 5)
+            {
+                //爆炸有效区域
+                var efficaciousArea:number = 0;
+                for(var ea:number = 1;ea < 8;ea++)
+                {
+                    console.log("爆炸左x:",eItem.getPosition().x - boomScope/2);
+                    console.log("爆炸右x:",eItem.getPosition().x + boomScope/2);
+                    console.log("爆炸上y:",eItem.getPosition().y + boomScope/2);
+                    console.log("爆炸下y:",eItem.getPosition().y - boomScope/2);
+                    console.log("区域xy:",ea,this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().x,
+                    this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y);
+                    //this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y <= eItem.getPosition().y + boomScope/2 && 
+                    // && this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y >= eItem.getPosition().y - boomScope/2
+                    //判断有效区域中心点是否在爆炸范围内
+                    if(ea != areaNum && this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().x + this.trophySkewing >= eItem.getPosition().x - boomScope/2 &&
+                        this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().x + this.trophySkewing <= eItem.getPosition().x + boomScope/2)
+                    {
+                        // this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y,
+                        // this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getComponent(UITransform).width;
+                        // this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getComponent(UITransform).height;
+                        console.log("爆炸:",ea);
+                        efficaciousArea++;
+                    }
+                }
+                var lastBoomHarm = bHarm * efficaciousArea;
+                //创建一个扣血文本(因为奖杯血量无限，所以当伤害积分显示，血条无变化)
+                let textItem = instantiate(this.harmItemPre);
+                // this.enemyArr[findOtherEnemy].enemyItem.getChildByName("pro_blood").getComponent(ProgressBar).progress = 
+                //     OperationTool.Instance.retainDecimal(2,this.enemyArr[findOtherEnemy].HP/this.enemyArr[findOtherEnemy].maxHP);
+                textItem.getChildByName("lab_harm").getComponent(Label).string = "-" + lastBoomHarm;
+                textItem.getChildByName("lab_harm").getComponent(Label).color = new Color(CharacterTool.Instance.color16Code(9));
+                this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_harmText").addChild(textItem);
+                textItem.setPosition(textItem.getPosition().x - 50,textItem.getPosition().y - 10);
+                
+                var _this = this;
+                setTimeout(() => {
+                    tween(textItem).to(0.3,{position:new Vec3(-50,40,0)}).delay(0.2).call(()=>{
+                        //文本消失
+                        textItem.parent.removeChild(textItem);
+                        _this.enemyDead();
+                    }).start();
+                }, 100);
+
+            }
+        }
+    }
 
     //冰晶是否已存在
     findFrozen(eid:number):boolean
@@ -1988,22 +2111,6 @@ export class FightMoveHeroView extends Component {
                 break;
             }
         }
-    }
-
-    //奖杯有效区域 x 爆炸点x y 爆炸点y boomWidth 爆炸宽度 boomHeight 爆炸高度 trophy 奖杯
-    trophyArea(boomX:number,boomY:number,boomWidth:number,boomHeight:number,trophy:Node):number
-    {
-        //爆炸有效区域
-        var efficaciousArea:number = 0;
-        for(var ea:number = 0;ea < 7;ea++)
-        {
-            //判断x和y是否在区域内
-            trophy.getChildByName("node_area1").getPosition().x,trophy.getChildByName("node_area1").getPosition().y,
-            trophy.getChildByName("node_area1").getComponent(UITransform).width;
-            trophy.getChildByName("node_area1").getComponent(UITransform).height;
-        }
-        efficaciousArea++;
-        return efficaciousArea;
     }
 
     otherViewEveFun(ovEvent: GameEventName)
@@ -2304,7 +2411,7 @@ export class FightMoveHeroView extends Component {
                     {
                         return;
                     }
-                    AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
+                    AudioMG.Instance.playSoundAudio("soccer_kick","soccer_kick");
                     //球从下往上，正面碰撞，运动轨迹改变，均向英雄折返
                     var rHeroID:number = 0;
                     var gSerialNum:number = 0;
@@ -2532,7 +2639,7 @@ export class FightMoveHeroView extends Component {
                         // }
                         //球不论任何状态，碰到英雄均视为发球，球状态改变
                         this.soccerArr[soccerBack].soccerState = 1;
-                        AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
+                        AudioMG.Instance.playSoundAudio("soccer_kick","soccer_kick");
                         //接球一次加一次（不管怪物是否死亡漏球碰上墙）
                         this.doubleHit++;
                         //刷新连击显示
@@ -2647,6 +2754,16 @@ export class FightMoveHeroView extends Component {
                     this.soccerGameState = gameState.result;
                     //读取下一波数据
                     this.readNextWave();
+                }else{
+                    this.saveLevel.maxTime--;
+                    this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
+                    //倒计时结束，游戏失败
+                    if(this.saveLevel.maxTime == 0)
+                    {
+                        this.soccerGameState = gameState.over;
+                        //弹出失败页面
+                        Layer.Instance.show("lose",Layer.Instance.layerView);
+                    }
                 }
             }
             else if(this.saveLevel.levelType == 2)

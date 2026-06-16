@@ -246,7 +246,7 @@ export class FightView extends Component {
         this.freshEXP();
         this.soccerGameState = gameState.start;
 
-        AudioMG.Instance.playMusicAudio("audio/hall_bgyy");
+        AudioMG.Instance.playMusicAudio("hall_bgyy");
         
         Layer.Instance.show("battleHeroState",Layer.Instance.layerView);
 
@@ -1225,7 +1225,7 @@ export class FightView extends Component {
                     console.log("球与敌人背面碰撞");
                 }else if(soState == 1 || soState == 3){
                     console.log("球与敌人正面碰撞",controllerEvent.getCustomProperty().enemySerialNum);
-                    AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
+                    AudioMG.Instance.playSoundAudio("soccer_kick","soccer_kick");
                     //球从下往上，正面碰撞，运动轨迹改变，均向英雄折返
                     var rHeroID:number = 0;
                     var gSerialNum:number = 0;
@@ -1433,7 +1433,7 @@ export class FightView extends Component {
                         //球不论任何状态，碰到英雄均视为发球，球状态改变
                         this.soccerArr[soccerBack].soccerState = 1;
                         this.leakSoccer = 0;
-                        AudioMG.Instance.playSoundAudio("audio/soccer_kick","soccer_kick");
+                        AudioMG.Instance.playSoundAudio("soccer_kick","soccer_kick");
                         break;
                     }
                 }
