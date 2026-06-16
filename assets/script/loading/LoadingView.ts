@@ -129,6 +129,8 @@ export class LoadingView extends Component {
                 //用符号“\”替换符号“-”，“\”无法在JSON表里被读取，先用其他字符代替，读取后再替换回来
                 var newImgPath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroHeadImgPath);
                 heroArr[r].heroHeadImgPath = newImgPath;
+                var newIntroPath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroIntroduce);
+                heroArr[r].heroIntroduce = newIntroPath;
                 var newSkePath:string = CharacterTool.Instance.pathCharacter(heroArr[r].heroSkePath);
                 heroArr[r].heroSkePath = newSkePath;
             }
