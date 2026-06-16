@@ -2454,11 +2454,11 @@
       "a": 255
     },
     "_skeletonData": {
-      "__uuid__": "fa235f9b-65ee-4cd5-9357-95da20cb30de",
+      "__uuid__": "8117a2f7-4fb7-4e25-8b0b-4e2c7198cdc8",
       "__expectedType__": "sp.SkeletonData"
     },
     "defaultSkin": "default",
-    "defaultAnimation": "",
+    "defaultAnimation": "dance",
     "_premultipliedAlpha": false,
     "_timeScale": 1,
     "_preCacheMode": 0,
