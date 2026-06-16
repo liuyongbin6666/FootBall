@@ -3,7 +3,7 @@
         "waveID": 10101,
         "enemyAriseArr": [{"ID": 101, "percent": 100}],
         "total": 10,
-        "intervalTime": 0,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -12,7 +12,7 @@
         "waveID": 10102,
         "enemyAriseArr": [{"ID": 101, "percent": 100}],
         "total": 15,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -25,7 +25,7 @@
             {"ID": 103, "percent": 10}
         ],
         "total": 20,
-        "intervalTime": 2,
+        "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -38,7 +38,7 @@
             {"ID": 103, "percent": 10}
         ],
         "total": 20,
-        "intervalTime": 2,
+        "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -52,7 +52,7 @@
             {"ID": 104, "percent": 10}
         ],
         "total": 30,
-        "intervalTime": 2,
+        "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -108,7 +108,7 @@
         "waveID": 10401,
         "enemyAriseArr": [{"ID": 101, "percent": 100}],
         "total": 20,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -117,7 +117,7 @@
         "waveID": 10402,
         "enemyAriseArr": [{"ID": 101, "percent": 100}],
         "total": 30,
-        "intervalTime": 2,
+        "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -130,7 +130,7 @@
             {"ID": 103, "percent": 10}
         ],
         "total": 30,
-        "intervalTime": 2,
+        "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -143,7 +143,7 @@
             {"ID": 103, "percent": 10}
         ],
         "total": 30,
-        "intervalTime": 2,
+        "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -157,7 +157,7 @@
             {"ID": 104, "percent": 10}
         ],
         "total": 50,
-        "intervalTime": 2,
+        "intervalTime": 1,
         "BossID": 105,
         "BossBornTime": 1000,
         "minEnemy": 0
