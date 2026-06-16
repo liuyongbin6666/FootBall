@@ -781,7 +781,7 @@ export class FightMoveHeroView extends Component {
     {
         var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
             heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speakArr:[],lockGold:0,speed:1,harm:10,
-            criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
+            criticalChance:0,breakOutHarmChance:0,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         for(var jh:number = 0;jh < this.oldHeroArr.length;jh++)
         {
@@ -808,10 +808,16 @@ export class FightMoveHeroView extends Component {
                 hero.speed = this.oldHeroArr[jh].speed;
                 hero.harm = this.oldHeroArr[jh].harm;
                 this.allAttack += hero.harm;
-                hero.criticalChance = this.oldHeroArr[jh].criticalChance;
-                this.allCriticalChance += hero.criticalChance;
-                hero.breakOutHarmChance = this.oldHeroArr[jh].breakOutHarmChance;
-                this.allBreakOutHarmChance += hero.criticalChance;
+                if(this.oldHeroArr[jh].criticalChance > 0 && this.oldHeroArr[jh].criticalChance != null && !Number.isNaN(this.oldHeroArr[jh].criticalChance))
+                {
+                    hero.criticalChance = this.oldHeroArr[jh].criticalChance;
+                    this.allCriticalChance += hero.criticalChance;
+                }
+                if(this.oldHeroArr[jh].breakOutHarmChance > 0 && this.oldHeroArr[jh].breakOutHarmChance != null && !Number.isNaN(this.oldHeroArr[jh].breakOutHarmChance))
+                {
+                    hero.breakOutHarmChance = this.oldHeroArr[jh].breakOutHarmChance;
+                    this.allBreakOutHarmChance += hero.criticalChance;
+                }
                 hero.join = true;
                 hero.unlock = true;
             }
@@ -935,10 +941,16 @@ export class FightMoveHeroView extends Component {
                 this.heroArr[hIndex].speed = GlobalData.Instance.heroTableArr[ht].speed;
                 this.heroArr[hIndex].harm = GlobalData.Instance.heroTableArr[ht].harm;
                 this.allAttack += this.heroArr[hIndex].harm;
-                this.heroArr[hIndex].criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
-                this.allCriticalChance += this.heroArr[hIndex].criticalChance;
-                this.heroArr[hIndex].breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
-                this.allBreakOutHarmChance += this.heroArr[hIndex].breakOutHarmChance;
+                if(GlobalData.Instance.heroTableArr[ht].criticalChance > 0 && GlobalData.Instance.heroTableArr[ht].criticalChance != null && !Number.isNaN(GlobalData.Instance.heroTableArr[ht].criticalChance))
+                {
+                    this.heroArr[hIndex].criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
+                    this.allCriticalChance += this.heroArr[hIndex].criticalChance;
+                }
+                if(GlobalData.Instance.heroTableArr[ht].breakOutHarmChance > 0 && GlobalData.Instance.heroTableArr[ht].breakOutHarmChance != null && !Number.isNaN(GlobalData.Instance.heroTableArr[ht].breakOutHarmChance))
+                {
+                    this.heroArr[hIndex].breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
+                    this.allBreakOutHarmChance += this.heroArr[hIndex].breakOutHarmChance;
+                }
                 this.heroArr[hIndex].join = true;
                 this.heroArr[hIndex].heroItem["temp"] = false;
                 this.heroArr[hIndex].heroItem.getChildByName("ske_hero").active = true;
@@ -2176,11 +2188,13 @@ export class FightMoveHeroView extends Component {
                                 var lastCriticalPro:number = ovEvent.getCustomProperty().pcArr[ae].multiple;// / 100
                                 this.heroArr[proHero].criticalChance = lastCriticalPro;
                                 addPromote = this.heroArr[proHero].criticalChance;
+                                this.allBreakOutHarmChance += addPromote;
                             }else if(ovEvent.getCustomProperty().pcArr[ae].promote == 3){
                                 this.heroArr[proHero].breakOutLevel++;
                                 var lastbreakOutPro:number = ovEvent.getCustomProperty().pcArr[ae].multiple;// / 100
                                 this.heroArr[proHero].breakOutHarmChance = lastbreakOutPro;
                                 addPromote = this.heroArr[proHero].breakOutHarmChance;
+                                this.allCriticalChance += addPromote;
                             }else if(ovEvent.getCustomProperty().pcArr[ae].promote == 4){
                                 this.heroArr[proHero].HPLevel++;
                                 var addHPPro:number = this.heroArr[proHero].maxHP * ovEvent.getCustomProperty().pcArr[ae].multiple / 100;
@@ -2493,9 +2507,15 @@ export class FightMoveHeroView extends Component {
                             if(soState == 1 && this.doubleHit > 0)
                             {
                                 //漏球时正面碰撞敌人，不算暴击和会心、技能
-                                isBreakOutHarm = this.drawALotteryOrRaffle(this.allBreakOutHarmChance);
+                                if(this.allBreakOutHarmChance > 0)
+                                {
+                                    isBreakOutHarm = this.drawALotteryOrRaffle(this.allBreakOutHarmChance);
+                                }
                                 if(isBreakOutHarm == false){
-                                    isCritical = this.drawALotteryOrRaffle(this.allCriticalChance);
+                                    if(this.allCriticalChance > 0)
+                                    {
+                                        isCritical = this.drawALotteryOrRaffle(this.allCriticalChance);
+                                    }
                                 }
                             }
                             break;

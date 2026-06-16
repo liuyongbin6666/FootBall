@@ -170,7 +170,7 @@
         "enemyName": "宝箱",
         "enemyIntroduce": "怪物介绍，怪物介绍，怪物介绍，怪物介绍，怪物介绍，怪物介绍，怪物介绍，",
         "enemyHeadImgPath": "path/109",
-        "enemySkePath": "monster-middle-monster_treasure109-monster_treasure1",
+        "enemySkePath": "monster-middle-monster_treasure109-monster_treasure",
         "outline": 1,
         "enemyType": 3,
         "enemyWay": 2,
