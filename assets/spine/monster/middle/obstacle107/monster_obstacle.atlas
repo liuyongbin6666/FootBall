@@ -1,6 +1,6 @@
 
-hero101.png
-size: 1302,392
+monster_obstacle.png
+size: 1302,262
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -112,97 +112,6 @@ frame_14
 frame_15
   rotate: false
   xy: 652, 132
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_16
-  rotate: false
-  xy: 782, 132
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_17
-  rotate: false
-  xy: 912, 132
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_18
-  rotate: false
-  xy: 1042, 132
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_19
-  rotate: false
-  xy: 1172, 132
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_20
-  rotate: false
-  xy: 2, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_21
-  rotate: false
-  xy: 132, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_22
-  rotate: false
-  xy: 262, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_23
-  rotate: false
-  xy: 392, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_24
-  rotate: false
-  xy: 522, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_25
-  rotate: false
-  xy: 652, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_26
-  rotate: false
-  xy: 782, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_27
-  rotate: false
-  xy: 912, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_28
-  rotate: false
-  xy: 1042, 262
   size: 128, 128
   orig: 128, 128
   offset: 0, 0

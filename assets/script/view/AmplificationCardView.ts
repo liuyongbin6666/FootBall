@@ -210,36 +210,42 @@ export class AmplificationCardView extends Component {
                     }
                 }
             }
+
+            while(heroQualityArr.length <= 0 && heroQuality > 0)
+            {
+                console.log("抽卡重复，品级降级");
+                heroQuality--;
+                if(heroQuality > 0)
+                {
+                    //7个位置未满时，找到该品级已解锁所有英雄（目前版本默认全解锁）
+                    heroQualityArr = this.findAllLevelHero(heroQuality);
+                    while(heroQualityArr.length <= 0 && heroQuality > 1)
+                    {
+                        //查找上一个品级的英雄解锁情况
+                        heroQuality--;
+                        heroQualityArr = [];
+                        heroQualityArr = this.findAllLevelHero(heroQuality);
+                    }
+                    this.produceCardArr[cardIndex].quality = heroQuality;
+                    console.log("提升品质",this.produceCardArr[cardIndex].quality);
+                    //该品级的满级英雄
+                    var isTopFull:boolean = true;
+                    console.log("该品级的所有英雄",heroQuality,heroQualityArr);
+                    //把前几张牌已上阵的英雄也过滤掉
+                    for(var sz:number = 0;sz < this.cardjoinHeroArr.length;sz++)
+                    {
+                        for(var hq:number = 0;hq < heroQualityArr.length;hq++)
+                        {
+                            if(this.cardjoinHeroArr[sz] == heroQualityArr[hq].heroID)
+                            {
+                                heroQualityArr.splice(hq,1);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
-        // console.log("该品级的满级英雄已满",isTopFull,heroQuality);
-        // while(isTopFull && heroQuality > 1)
-        // {
-        //    var topHeroTotal:number = 0;
-        //     //检查该品级的所有英雄属性和技能是否都已叠满
-        //     for(var tps:number = 0;tps < heroQualityArr.length;tps++)
-        //     {
-        //         if(heroQualityArr[tps].propertyTopArr.length > 5)
-        //         {
-        //             topHeroTotal++;
-        //         }
-        //     }
-        //     if(topHeroTotal >= heroQualityArr.length)
-        //     {
-        //         isTopFull = true;
-        //         //查找上一个品级的英雄解锁情况
-        //         heroQuality--;
-        //         heroQualityArr = [];
-        //         heroQualityArr = this.findAllLevelHero(heroQuality);
-        //     }else{
-        //         isTopFull = false;
-        //     }
-        // }
-        // if(topHeroTotal >= heroQualityArr.length && heroQuality == 1)
-        // {
-        //     //若所有白色英雄已满级，且未解锁更高等级的英雄，酒馆显示暂无已上阵英雄可提升
-        //     console.log("暂无已上阵英雄可提升");
-        //     return;
-        // }
         if(heroQualityArr.length <= 0)
         {
             //酒馆显示暂无已上阵英雄可提升

@@ -127,6 +127,10 @@ export interface heroStructure {
     harm:number;
     //英雄技能
     skillArr:Array<number>;
+    //英雄对话
+    speakArr:Array<string>;
+    //解锁英雄花费金币 0 默认解锁
+    lockGold:number;
     //克制类型
     // restrainType:number;
 

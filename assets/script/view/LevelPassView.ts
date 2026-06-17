@@ -5,6 +5,7 @@ import { heroStructure } from '../data/GlobalStructure';
 import { GlobalData } from '../data/GlobalData';
 import { LoadImgTool } from '../tool/LoadImgTool';
 import { Layer } from '../manager/Layer';
+import { AudioMG } from '../sound/AudioMG';
 const { ccclass, property } = _decorator;
 
 /**
@@ -45,6 +46,8 @@ export class LevelPassView extends Component {
     //刷新通关显示
     freshLevelPass(lpEvent: GameEventName)
     {
+        AudioMG.Instance.playSoundAudio("battle_win","battle_win");
+        
         this.hideAllHero();
 
         this.lab_doubleHit.string = "" + lpEvent.getCustomProperty().doubleHit;

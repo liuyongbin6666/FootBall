@@ -367,6 +367,8 @@ export class FightMoveHeroView extends Component {
         this.node_enemy.removeAllChildren();
         this.node_soccer.removeAllChildren();
         this.node_skill.removeAllChildren();
+        
+        this.node_boss.active = false;
 
         this.heroArr = [];
         this.oldHeroArr = [];
@@ -419,8 +421,8 @@ export class FightMoveHeroView extends Component {
             for(var la:number = 0;la < GlobalData.Instance.locationArr.length;la++)
             {
                 var newLocation:locationTableStructure = {locationID:GlobalData.Instance.locationArr[la].locationID,
-                    locationX:GlobalData.Instance.locationArr[la].locationX,locationY:GlobalData.Instance.locationArr[la].locationY
-                }
+                    locationX:GlobalData.Instance.locationArr[la].locationX,locationY:GlobalData.Instance.locationArr[la].locationY};
+                
                 this.saveLocationArr.push(newLocation);
             }
         }
@@ -431,7 +433,7 @@ export class FightMoveHeroView extends Component {
     {
         //不能直接=数组，会变成索引，修改该数组会影响原数组的值
         var hero:heroStructure = {heroID:0,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
-            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
+            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speakArr:[],lockGold:0,speed:1,harm:10,
             criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:0,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         //清空数组
@@ -450,6 +452,8 @@ export class FightMoveHeroView extends Component {
             hero.maxHP = copyHrArr[h].maxHP;
             hero.HP = copyHrArr[h].maxHP;
             hero.skillArr = copyHrArr[h].skillArr;
+            hero.speakArr = copyHrArr[h].speakArr;
+            hero.lockGold = copyHrArr[h].lockGold;
             hero.skillProArr = copyHrArr[h].skillProArr;
             hero.promoteTotal = copyHrArr[h].promoteTotal;
             hero.speed = copyHrArr[h].speed;
@@ -496,6 +500,11 @@ export class FightMoveHeroView extends Component {
             }
         }
         
+        this.readLevelData();
+    }
+
+    readLevelData()
+    {
         for(var findLevel:number = 0;findLevel < GlobalData.Instance.levelTableArr.length;findLevel++){
             //当前关卡
             if(GlobalData.Instance.levelTableArr[findLevel].levelID == GlobalData.Instance.gameRecord.levelID)
@@ -563,6 +572,7 @@ export class FightMoveHeroView extends Component {
                         if(findChapterLevel + 1 < GlobalData.Instance.chapterTableArr[findChapter].levelArr.length)
                         {
                             GlobalData.Instance.gameRecord.levelID = GlobalData.Instance.chapterTableArr[findChapter].levelArr[findChapterLevel + 1];
+                            this.readLevelData();
                             return true;
                         }
                         break;
@@ -571,6 +581,8 @@ export class FightMoveHeroView extends Component {
                 break;
             }
         }
+
+        this.readLevelData();
 
         //目前章节为主页面选取，暂不自动读取下一章
         // if(isLastLv == false)
@@ -716,9 +728,9 @@ export class FightMoveHeroView extends Component {
     createNewHeroOrTemp(hid:number,hIndex:number)
     {
         var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
-            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
+            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speakArr:[],lockGold:0,speed:1,harm:10,
             criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
-            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[{ID:108,level:1,multiple:1,percent:1,seconds:1}],promoteTotal:0};
+            join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};//{ID:108,level:1,multiple:1,percent:1,seconds:1}
         for(var ht:number = 0;ht < GlobalData.Instance.heroTableArr.length;ht++)
         {
             if(GlobalData.Instance.heroTableArr[ht].heroID == hid)
@@ -738,6 +750,8 @@ export class FightMoveHeroView extends Component {
                 this.maxHP += GlobalData.Instance.heroTableArr[ht].maxHP;
                 this.HP += GlobalData.Instance.heroTableArr[ht].maxHP;
                 hero.skillArr = GlobalData.Instance.heroTableArr[ht].skillArr;
+                hero.speakArr = GlobalData.Instance.heroTableArr[ht].speakArr;
+                hero.lockGold = GlobalData.Instance.heroTableArr[ht].lockGold;
                 for(var asl:number = 0;asl < GlobalData.Instance.heroTableArr[ht].skillArr.length;asl++)
                 {
                     var newSkillLevel:relevanceProStructure = {ID:GlobalData.Instance.heroTableArr[ht].skillArr[asl],level:0,multiple:0,percent:0,seconds:0};
@@ -766,8 +780,8 @@ export class FightMoveHeroView extends Component {
     createOldHeroOrTemp(hid:number,hIndex:number)
     {
         var hero:heroStructure = {heroID:hid,heroImgPath:"hero/hero1",heroHeadImgPath:"hero/heroHead/icon_heroHead_1",heroSkePath:"hero/hero101/hero101",
-            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speed:1,harm:10,
-            criticalChance:0,breakOutHarmChance:30,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
+            heroName:"空位",heroIntroduce:"英雄介绍",heroType:0,quality:1,restrainType:1,maxHP:30,skillArr:[],speakArr:[],lockGold:0,speed:1,harm:10,
+            criticalChance:0,breakOutHarmChance:0,heroItem:null,heroIndex:hIndex,HP:10,catchSoccerID:0,unlock:true,
             join:false,harmLevel:0,criticalLevel:0,breakOutLevel:0,HPLevel:0,skillProArr:[],promoteTotal:0};
         for(var jh:number = 0;jh < this.oldHeroArr.length;jh++)
         {
@@ -787,15 +801,23 @@ export class FightMoveHeroView extends Component {
                 this.maxHP += this.oldHeroArr[jh].maxHP;
                 this.HP += this.oldHeroArr[jh].maxHP;
                 hero.skillArr = this.oldHeroArr[jh].skillArr;
+                hero.speakArr = this.oldHeroArr[jh].speakArr;
+                hero.lockGold = this.oldHeroArr[jh].lockGold;
                 hero.skillProArr = this.oldHeroArr[jh].skillProArr;
                 hero.promoteTotal = this.oldHeroArr[jh].promoteTotal;
                 hero.speed = this.oldHeroArr[jh].speed;
                 hero.harm = this.oldHeroArr[jh].harm;
                 this.allAttack += hero.harm;
-                hero.criticalChance = this.oldHeroArr[jh].criticalChance;
-                this.allCriticalChance += hero.criticalChance;
-                hero.breakOutHarmChance = this.oldHeroArr[jh].breakOutHarmChance;
-                this.allBreakOutHarmChance += hero.criticalChance;
+                if(this.oldHeroArr[jh].criticalChance > 0 && this.oldHeroArr[jh].criticalChance != null && !Number.isNaN(this.oldHeroArr[jh].criticalChance))
+                {
+                    hero.criticalChance = this.oldHeroArr[jh].criticalChance;
+                    this.allCriticalChance += hero.criticalChance;
+                }
+                if(this.oldHeroArr[jh].breakOutHarmChance > 0 && this.oldHeroArr[jh].breakOutHarmChance != null && !Number.isNaN(this.oldHeroArr[jh].breakOutHarmChance))
+                {
+                    hero.breakOutHarmChance = this.oldHeroArr[jh].breakOutHarmChance;
+                    this.allBreakOutHarmChance += hero.criticalChance;
+                }
                 hero.join = true;
                 hero.unlock = true;
             }
@@ -919,10 +941,16 @@ export class FightMoveHeroView extends Component {
                 this.heroArr[hIndex].speed = GlobalData.Instance.heroTableArr[ht].speed;
                 this.heroArr[hIndex].harm = GlobalData.Instance.heroTableArr[ht].harm;
                 this.allAttack += this.heroArr[hIndex].harm;
-                this.heroArr[hIndex].criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
-                this.allCriticalChance += this.heroArr[hIndex].criticalChance;
-                this.heroArr[hIndex].breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
-                this.allBreakOutHarmChance += this.heroArr[hIndex].breakOutHarmChance;
+                if(GlobalData.Instance.heroTableArr[ht].criticalChance > 0 && GlobalData.Instance.heroTableArr[ht].criticalChance != null && !Number.isNaN(GlobalData.Instance.heroTableArr[ht].criticalChance))
+                {
+                    this.heroArr[hIndex].criticalChance = GlobalData.Instance.heroTableArr[ht].criticalChance;
+                    this.allCriticalChance += this.heroArr[hIndex].criticalChance;
+                }
+                if(GlobalData.Instance.heroTableArr[ht].breakOutHarmChance > 0 && GlobalData.Instance.heroTableArr[ht].breakOutHarmChance != null && !Number.isNaN(GlobalData.Instance.heroTableArr[ht].breakOutHarmChance))
+                {
+                    this.heroArr[hIndex].breakOutHarmChance = GlobalData.Instance.heroTableArr[ht].breakOutHarmChance;
+                    this.allBreakOutHarmChance += this.heroArr[hIndex].breakOutHarmChance;
+                }
                 this.heroArr[hIndex].join = true;
                 this.heroArr[hIndex].heroItem["temp"] = false;
                 this.heroArr[hIndex].heroItem.getChildByName("ske_hero").active = true;
@@ -1239,6 +1267,11 @@ export class FightMoveHeroView extends Component {
 
                     es.HP = es.maxHP;
 
+                    var inAni:string = "move";
+                    if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3)
+                    {
+                        inAni = "idle";
+                    }
                     let item;
                     switch(es.outline)
                     {
@@ -1246,20 +1279,19 @@ export class FightMoveHeroView extends Component {
                             item = instantiate(this.enemySmallItemPre);
                             console.log("创建小怪",es.enemySkePath);
                             // 更换其他同品级怪物动画
-                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_small_monster").getComponent(sp.Skeleton),"move");
-                            //"spine/monster/small/unit_anim_ monster_01/unit_anim_ monster_01""spine/monster/small/monster101/monster101"
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_small_monster").getComponent(sp.Skeleton),inAni);
                             break;
                         case 2:
                             item = instantiate(this.enemyMiddleItemPre);
-                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_middle_monster").getComponent(sp.Skeleton),"move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_middle_monster").getComponent(sp.Skeleton),inAni);
                             break;
                         case 3:
                             item = instantiate(this.enemyBigItemPre);
-                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_big_monster").getComponent(sp.Skeleton),"move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_big_monster").getComponent(sp.Skeleton),inAni);
                             break;
                         case 4:
                             item = instantiate(this.bossItemPre);
-                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_boss_monster").getComponent(sp.Skeleton),"move");
+                            LoadImgTool.Instance.loadSkeletonData(es.enemySkePath,item.getChildByName("ske_boss_monster").getComponent(sp.Skeleton),inAni);
                             this.node_boss.active = true;
                             LoadImgTool.Instance.loadSpriteFrame(es.enemyHeadImgPath,this.icon_bossHead.getComponent(Sprite).node);
                             this.lab_bossName.string = es.enemyName;
@@ -1483,6 +1515,21 @@ export class FightMoveHeroView extends Component {
         return dead;
     }
 
+    //移除某个类型的敌人
+    removeEnemyType(eType:number)
+    {
+        for(var removeEnemy:number = 0;removeEnemy < this.enemyArr.length;removeEnemy++)
+        {
+            if(this.enemyArr[removeEnemy].enemyType == eType)
+            {
+                //移除敌人显示
+                this.node_enemy.removeChild(this.enemyArr[removeEnemy].enemyItem);
+                //移除敌人数据
+                this.enemyArr.splice(removeEnemy,1);
+            }
+        }
+    }
+
     //敌人死亡
     enemyDead()
     {
@@ -1524,10 +1571,13 @@ export class FightMoveHeroView extends Component {
                 // this.recycleEnemyArr.push(this.enemyArr[findDeadEnemy]);
                 //移除敌人数据
                 this.enemyArr.splice(findDeadEnemy,1);
-                //障碍/宝箱在消除掉一个后，在有余量的情况下需要立即创建，以保证最少存在个数
-                this.ariseEnemy();
-                //新的障碍/宝箱生成后，再将之前占用的随机位置返还，避免新生成的位置刚好是之前消失的位置
-                this.saveLocationArr.push(loc);
+                if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3)
+                {
+                    //障碍/宝箱在消除掉一个后，在有余量的情况下需要立即创建，以保证最少存在个数
+                    this.ariseEnemy();
+                    //新的障碍/宝箱生成后，再将之前占用的随机位置返还，避免新生成的位置刚好是之前消失的位置
+                    this.saveLocationArr.push(loc);
+                }
 
             }
         }
@@ -2011,7 +2061,7 @@ export class FightMoveHeroView extends Component {
     {
         //爆炸范围内造成的伤害
         var bHarm:number = Math.floor(this.allAttack * boomHarm);
-        console.log("爆炸123:",this.allAttack,boomHarm);
+        
         //引发爆炸的区域块
         var areaNum:number = 5;
         for(var findTrophy:number = 0;findTrophy < this.enemyArr.length;findTrophy++)
@@ -2034,7 +2084,7 @@ export class FightMoveHeroView extends Component {
                 }
             }
         }
-        console.log("引爆爆炸的区域块:",areaNum);
+        
         //查找在方形范围内的区域,不计算引爆区域
         for(var findOtherEnemy:number = 0;findOtherEnemy < this.enemyArr.length;findOtherEnemy++)
         {
@@ -2044,12 +2094,6 @@ export class FightMoveHeroView extends Component {
                 var efficaciousArea:number = 0;
                 for(var ea:number = 1;ea < 8;ea++)
                 {
-                    console.log("爆炸左x:",eItem.getPosition().x - boomScope/2);
-                    console.log("爆炸右x:",eItem.getPosition().x + boomScope/2);
-                    console.log("爆炸上y:",eItem.getPosition().y + boomScope/2);
-                    console.log("爆炸下y:",eItem.getPosition().y - boomScope/2);
-                    console.log("区域xy:",ea,this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().x,
-                    this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y);
                     //this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y <= eItem.getPosition().y + boomScope/2 && 
                     // && this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y >= eItem.getPosition().y - boomScope/2
                     //判断有效区域中心点是否在爆炸范围内
@@ -2059,7 +2103,6 @@ export class FightMoveHeroView extends Component {
                         // this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getPosition().y,
                         // this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getComponent(UITransform).width;
                         // this.enemyArr[findOtherEnemy].enemyItem.getChildByName("node_area" + ea).getComponent(UITransform).height;
-                        console.log("爆炸:",ea);
                         efficaciousArea++;
                     }
                 }
@@ -2145,11 +2188,13 @@ export class FightMoveHeroView extends Component {
                                 var lastCriticalPro:number = ovEvent.getCustomProperty().pcArr[ae].multiple;// / 100
                                 this.heroArr[proHero].criticalChance = lastCriticalPro;
                                 addPromote = this.heroArr[proHero].criticalChance;
+                                this.allBreakOutHarmChance += addPromote;
                             }else if(ovEvent.getCustomProperty().pcArr[ae].promote == 3){
                                 this.heroArr[proHero].breakOutLevel++;
                                 var lastbreakOutPro:number = ovEvent.getCustomProperty().pcArr[ae].multiple;// / 100
                                 this.heroArr[proHero].breakOutHarmChance = lastbreakOutPro;
                                 addPromote = this.heroArr[proHero].breakOutHarmChance;
+                                this.allCriticalChance += addPromote;
                             }else if(ovEvent.getCustomProperty().pcArr[ae].promote == 4){
                                 this.heroArr[proHero].HPLevel++;
                                 var addHPPro:number = this.heroArr[proHero].maxHP * ovEvent.getCustomProperty().pcArr[ae].multiple / 100;
@@ -2308,13 +2353,13 @@ export class FightMoveHeroView extends Component {
             GameCustomEvent.Instance.node.emit(GameEventName.HERO_SKE_EVENT, heroAttackSkeEvent);
             this.moveHeroState = false;
         }
-        //是否为计时关卡
-        if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3)
-        {
-            this.img_sandClockBG.node.active = true;
-        }else{
-            this.img_sandClockBG.node.active = false;
-        }
+        //默认都为计时关卡
+        // if(this.saveLevel.levelType == 2 || this.saveLevel.levelType == 3)
+        // {
+        //     this.img_sandClockBG.node.active = true;
+        // }else{
+        //     this.img_sandClockBG.node.active = false;
+        // }
         //连击重置
         this.doubleHit = 0;
         this.freshDoubleHit();
@@ -2462,9 +2507,15 @@ export class FightMoveHeroView extends Component {
                             if(soState == 1 && this.doubleHit > 0)
                             {
                                 //漏球时正面碰撞敌人，不算暴击和会心、技能
-                                isBreakOutHarm = this.drawALotteryOrRaffle(this.allBreakOutHarmChance);
+                                if(this.allBreakOutHarmChance > 0)
+                                {
+                                    isBreakOutHarm = this.drawALotteryOrRaffle(this.allBreakOutHarmChance);
+                                }
                                 if(isBreakOutHarm == false){
-                                    isCritical = this.drawALotteryOrRaffle(this.allCriticalChance);
+                                    if(this.allCriticalChance > 0)
+                                    {
+                                        isCritical = this.drawALotteryOrRaffle(this.allCriticalChance);
+                                    }
                                 }
                             }
                             break;
@@ -2724,6 +2775,7 @@ export class FightMoveHeroView extends Component {
             if(this.HP <= 0 && this.changeHeroState == false)
             {
                 this.soccerGameState = gameState.over;
+                AudioMG.Instance.playSoundAudio("battle_fail","battle_fail");
                 //弹出失败页面
                 Layer.Instance.show("lose",Layer.Instance.layerView);
             }
@@ -2751,6 +2803,9 @@ export class FightMoveHeroView extends Component {
                 if(this.findResidueEnemyType(1) <= 0 && this.saveWave.total == 0)
                 {
                     console.log("所有怪物已死亡，进入结算");
+                    //移除盗贼
+                    this.removeEnemyType(6);
+
                     this.soccerGameState = gameState.result;
                     //读取下一波数据
                     this.readNextWave();
@@ -2761,6 +2816,7 @@ export class FightMoveHeroView extends Component {
                     if(this.saveLevel.maxTime == 0)
                     {
                         this.soccerGameState = gameState.over;
+                        AudioMG.Instance.playSoundAudio("battle_fail","battle_fail");
                         //弹出失败页面
                         Layer.Instance.show("lose",Layer.Instance.layerView);
                     }
@@ -2778,9 +2834,10 @@ export class FightMoveHeroView extends Component {
                     this.saveLevel.maxTime--;
                     this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
                     //倒计时结束，游戏失败
-                    if(this.saveLevel.maxTime == 0)
+                    if(this.saveLevel.maxTime <= 0)
                     {
                         this.soccerGameState = gameState.over;
+                        AudioMG.Instance.playSoundAudio("battle_fail","battle_fail");
                         //弹出失败页面
                         Layer.Instance.show("lose",Layer.Instance.layerView);
                     }
@@ -2801,16 +2858,25 @@ export class FightMoveHeroView extends Component {
                 //倒计时结束通关，无论是否打完宝箱
                 if(this.saveLevel.maxTime == 0)
                 {
+                    //移除剩余未打完的宝箱
+                    this.removeEnemyType(3);
+                    
                     this.soccerGameState = gameState.result;
                     this.readNextWave();
                 }
             }
             else if(this.saveLevel.levelType == 4)
             {
-                //判断Boss是否死亡
+                //判断Boss是否死亡，Boss死亡直接通关，不管其余小怪是否死亡
                 if(this.findResidueEnemyType(4) <= 0 && this.saveWave.total == 0 && this.saveWave.BossBornTime <= 0)
                 {
-                    //Boss死亡直接通关，不管其余小怪是否死亡
+                    //移除剩余小怪
+                    this.removeEnemyType(1);
+                    //移除盗贼
+                    this.removeEnemyType(6);
+                    //隐藏boss板块显示
+                    this.node_boss.active = false;
+                    
                     this.soccerGameState = gameState.result;
                     this.readNextWave();
                 }
@@ -2822,7 +2888,11 @@ export class FightMoveHeroView extends Component {
                 //倒计时结束通关
                 if(this.saveLevel.maxTime == 0)
                 {
+                    //移除奖杯
+                    this.removeEnemyType(5);
+                    //奖杯偏移值归零
                     this.trophySkewing = 0;
+
                     this.soccerGameState = gameState.result;
                     this.readNextWave();
                 }
@@ -2931,7 +3001,6 @@ export class FightMoveHeroView extends Component {
                                     //水晶扣血
                                     this.HP -= this.enemyArr[moveEnemy].harm;
                                     this.freshHP();
-                                    console.log("扣血：",this.HP);
                                 }
                                 //投射子弹
                                 // this.createBullet(this.enemyArr[moveEnemy].enemyItem);

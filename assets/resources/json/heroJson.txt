@@ -1,38 +1,24 @@
 [
     {
         "heroID": 101,
-        "heroName": "小白鸡1",
+        "heroName": "惊讶鸡",
         "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_101",
         "heroSkePath": "hero-hero101-hero101",
         "quality": 1,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 20,
-        "harm": 0,
+        "maxHP": 5,
+        "harm": 3,
         "speed": 1,
         "skillArr": []
     },
     {
         "heroID": 102,
-        "heroName": "小白鸡2",
+        "heroName": "尖叫鸡",
         "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_102",
         "heroSkePath": "hero-hero102-hero102",
-        "quality": 1,
-        "heroType": 1,
-        "restrainType": 1,
-        "maxHP": 15,
-        "harm": 1,
-        "speed": 1,
-        "skillArr": []
-    },
-    {
-        "heroID": 103,
-        "heroName": "小白鸡3",
-        "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
-        "heroHeadImgPath": "hero-heroHead-icon_heroHead_103",
-        "heroSkePath": "hero-hero103-hero103",
         "quality": 1,
         "heroType": 1,
         "restrainType": 1,
@@ -42,22 +28,36 @@
         "skillArr": []
     },
     {
+        "heroID": 103,
+        "heroName": "蛋蛋鸡",
+        "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
+        "heroHeadImgPath": "hero-heroHead-icon_heroHead_103",
+        "heroSkePath": "hero-hero103-hero103",
+        "quality": 1,
+        "heroType": 1,
+        "restrainType": 1,
+        "maxHP": 15,
+        "harm": 1,
+        "speed": 1,
+        "skillArr": []
+    },
+    {
         "heroID": 201,
-        "heroName": "小绿鸡1",
+        "heroName": "方块鸡",
         "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_201",
         "heroSkePath": "hero-hero201-hero201",
         "quality": 2,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 50,
-        "harm": 3,
+        "maxHP": 40,
+        "harm": 4,
         "speed": 1,
         "skillArr": [107]
     },
     {
         "heroID": 301,
-        "heroName": "小蓝鸡",
+        "heroName": "神龟鸡",
         "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_301",
         "heroSkePath": "hero-hero301-hero301",
@@ -65,13 +65,14 @@
         "heroType": 1,
         "restrainType": 1,
         "maxHP": 70,
-        "harm": 7,
+        "harm": 8,
         "speed": 1,
+        "heroType": 0,
         "skillArr": [102]
     },
     {
         "heroID": 401,
-        "heroName": "小紫鸡",
+        "heroName": "火焰鸡",
         "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_401",
         "heroSkePath": "hero-hero401-hero401",
@@ -81,11 +82,12 @@
         "maxHP": 100,
         "harm": 10,
         "speed": 1,
+        "heroType": 100,
         "skillArr": [108]
     },
     {
         "heroID": 501,
-        "heroName": "小红鸡",
+        "heroName": "科幻鸡",
         "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_501",
         "heroSkePath": "hero-hero501-hero501",
@@ -95,11 +97,12 @@
         "maxHP": 150,
         "harm": 15,
         "speed": 1,
+        "heroType": 100,
         "skillArr": [112]
     },
     {
         "heroID": 601,
-        "heroName": "小金鸡",
+        "heroName": "如来鸡",
         "heroIntroduce": "英雄故事，英雄故事，英雄故事，英雄故事，英雄故事，英雄故事",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_601",
         "heroSkePath": "hero-hero601-hero601",
@@ -109,6 +112,7 @@
         "maxHP": 200,
         "harm": 20,
         "speed": 1,
+        "heroType": 100,
         "skillArr": [101, 108, 112]
     }
 ]
