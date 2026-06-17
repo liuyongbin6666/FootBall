@@ -49,8 +49,6 @@ export class HallView extends Component {
     */
     //章节更换
     private chapterChangeCount:number = 0;
-    //章节是否重新开始
-    private restart:boolean = false;
     //正在进行的章节
     private saveChapter:chapterStructure;
     protected onLoad(): void {
@@ -134,7 +132,6 @@ export class HallView extends Component {
                 this.btn_farm.node.getChildByName("img_toggle_selected").getComponent(Sprite).node.active = false;
                 this.node_journey.active = true;
                 this.btn_journey.node.getChildByName("img_toggle_selected").getComponent(Sprite).node.active = true;
-                // this.freshChapter();
                 break;
             case 4:
                 break;
@@ -184,43 +181,40 @@ export class HallView extends Component {
     //开启战斗
     openFight()
     {
-        this.restart = true;
-        this.fightSelectOver();
+        // Layer.Instance.show("fight",Layer.Instance.layerView);
+        Layer.Instance.show("fightMoveHero",Layer.Instance.layerView);
+
+        //将关卡设为0，0为重置标识
+        GlobalData.Instance.gameRecord.levelID = 0;
+
+        //向战斗界面传递当前选择的章节号，读取数据
+        let fightEvent = new GameEventName({ eventCode: 2,chapterID: GlobalData.Instance.gameRecord.chapterID + this.chapterChangeCount });
+        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,fightEvent);
+        this.closeView();
     }
 
     //新战斗
     newFightFun()
     {
         //从本章节第一个关卡开始
-        this.restart = true;
-        this.fightSelectOver();
-        // Layer.Instance.show("fightMoveHero",Layer.Instance.layerView);
-        // //发送重新开始消息
-        // let ampCardEvent = new GameEventName({ eventCode: 5 });
-        // GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,ampCardEvent);
+        // this.fightSelectOver();
+        Layer.Instance.show("fightMoveHero",Layer.Instance.layerView);
+        GlobalData.Instance.gameRecord.levelID = 0;
+        //发送重新开始消息
+        let newFightEvent = new GameEventName({ eventCode: 8 });
+        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,newFightEvent);
+        // let fightEvent = new GameEventName({ eventCode: 5,chapterID: GlobalData.Instance.gameRecord.chapterID + this.chapterChangeCount });
+        // GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,fightEvent);
+        this.closeView();
     }
 
     //继续战斗
     goOnFightFun()
     {
         //读取上一次的关卡进度
-        this.restart = false;
-        this.fightSelectOver();
-    }
-
-    fightSelectOver()
-    {
-        // Layer.Instance.show("fight",Layer.Instance.layerView);
         Layer.Instance.show("fightMoveHero",Layer.Instance.layerView);
-
-        if(this.chapterChangeCount != 0 || this.restart)
-        {
-            //如果不是上一次的章节，将关卡设为0，0为重置标识
-            GlobalData.Instance.gameRecord.levelID = 0;
-        }
-        //向战斗界面传递当前选择的章节号，读取数据
-        let fightEvent = new GameEventName({ eventCode: 2,chapterID: GlobalData.Instance.gameRecord.chapterID + this.chapterChangeCount });
-        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,fightEvent);
+        let goOnEvent = new GameEventName({ eventCode: 7 ,chapterID: GlobalData.Instance.gameRecord.chapterID + this.chapterChangeCount});
+        GameCustomEvent.Instance.node.emit(GameEventName.FIGHT_OTHER_VIEW_EVENT,goOnEvent);
         this.closeView();
     }
 
@@ -303,6 +297,7 @@ export class HallView extends Component {
     freshHallFun()
     {
         this.freshGoOnFightLv();
+        this.freshChapter();
     }
 
     //刷新继续征程关卡进度
