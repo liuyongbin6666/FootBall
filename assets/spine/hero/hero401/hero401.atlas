@@ -1,6 +1,6 @@
 
 hero401.png
-size: 1302,522
+size: 1302,392
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -203,62 +203,6 @@ frame_27
 frame_28
   rotate: false
   xy: 1042, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_29
-  rotate: false
-  xy: 1172, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_30
-  rotate: false
-  xy: 2, 392
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_31
-  rotate: false
-  xy: 132, 392
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_32
-  rotate: false
-  xy: 262, 392
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_33
-  rotate: false
-  xy: 392, 392
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_34
-  rotate: false
-  xy: 522, 392
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_35
-  rotate: false
-  xy: 652, 392
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_36
-  rotate: false
-  xy: 782, 392
   size: 128, 128
   orig: 128, 128
   offset: 0, 0

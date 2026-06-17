@@ -2,7 +2,7 @@
     {
         "waveID": 10101,
         "enemyAriseArr": [{"ID": 101, "percent": 100}],
-        "total": 10,
+        "total": 1,
         "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
@@ -11,7 +11,7 @@
     {
         "waveID": 10102,
         "enemyAriseArr": [{"ID": 101, "percent": 100}],
-        "total": 15,
+        "total": 1,
         "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
@@ -24,7 +24,7 @@
             {"ID": 102, "percent": 10},
             {"ID": 103, "percent": 10}
         ],
-        "total": 20,
+        "total": 2,
         "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
@@ -37,7 +37,7 @@
             {"ID": 102, "percent": 20},
             {"ID": 103, "percent": 10}
         ],
-        "total": 20,
+        "total": 2,
         "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,
@@ -51,7 +51,7 @@
             {"ID": 103, "percent": 10},
             {"ID": 104, "percent": 10}
         ],
-        "total": 30,
+        "total": 3,
         "intervalTime": 1,
         "BossID": 0,
         "BossBornTime": 0,

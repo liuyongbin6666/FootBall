@@ -33,6 +33,12 @@ export interface gameRecordStructure{
     unlockChapterArr:Array<number>;
     //中途退出关卡时的英雄数据（下次继续时，使用该数据）
     levelHeroArr:Array<heroStructure>;
+    //中途退出时的经验等级
+    playerLevel:number;
+    //当前等级溢出经验
+    overflowEXP:number;
+    //剩余秒数
+    residueTime:number;
 }
 
 //章节
