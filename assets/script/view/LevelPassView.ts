@@ -88,7 +88,7 @@ export class LevelPassView extends Component {
             for(var hpa:number = 0;hpa < heroPromoteArr.length;hpa++)
             {
                 //上一关卡的英雄数据
-                for(var lha:number = 0;lha < GlobalData.Instance.gameRecord.levelHeroArr.length;hpa++)
+                for(var lha:number = 0;lha < GlobalData.Instance.gameRecord.levelHeroArr.length;lha++)
                 {
                     //无翻牌增加时，不做记录
                     if(heroPromoteArr[hpa].heroID == GlobalData.Instance.gameRecord.levelHeroArr[lha].heroID && 
