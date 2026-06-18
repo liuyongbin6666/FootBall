@@ -2,12 +2,12 @@
   "ver": "1.1.50",
   "importer": "prefab",
   "imported": true,
-  "uuid": "8e918fa1-72cd-4769-ab13-84db22e7e866",
+  "uuid": "51709d34-5f49-4ab6-982e-db069e155f9a",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "hall-001"
+    "syncNodeName": "RankBox"
   }
 }
