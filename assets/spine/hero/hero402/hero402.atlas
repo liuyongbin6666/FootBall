@@ -1,6 +1,6 @@
 
-hero501.png
-size: 1302,522
+hero402.png
+size: 1302,392
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
@@ -196,34 +196,6 @@ frame_26
 frame_27
   rotate: false
   xy: 912, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_28
-  rotate: false
-  xy: 1042, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_29
-  rotate: false
-  xy: 1172, 262
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_30
-  rotate: false
-  xy: 2, 392
-  size: 128, 128
-  orig: 128, 128
-  offset: 0, 0
-  index: -1
-frame_31
-  rotate: false
-  xy: 132, 392
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
