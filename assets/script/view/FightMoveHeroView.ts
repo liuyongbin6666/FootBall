@@ -2987,6 +2987,16 @@ export class FightMoveHeroView extends Component {
             }
             else if(this.saveLevel.levelType == 4)
             {
+                this.saveLevel.maxTime--;
+                this.lab_countDown.string = TimeTool.Instance.getMS(this.saveLevel.maxTime,100);
+                //倒计时结束，游戏失败
+                if(this.saveLevel.maxTime == 0)
+                {
+                    this.soccerGameState = gameState.over;
+                    AudioMG.Instance.playSoundAudio("battle_fail","battle_fail");
+                    //弹出失败页面
+                    Layer.Instance.show("lose",Layer.Instance.layerView);
+                }
                 //判断Boss是否死亡，Boss死亡直接通关，不管其余小怪是否死亡
                 if(this.findResidueEnemyType(4) <= 0 && this.saveWave.total == 0 && this.saveWave.BossBornTime <= 0)
                 {
