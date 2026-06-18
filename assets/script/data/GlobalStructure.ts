@@ -59,6 +59,8 @@ export interface chapterStructure {
     // passScore:number;
     //初始英雄
     initialHeroArr:Array<number>;
+    //推荐英雄阵容
+    recommendedLineupArr:Array<number>;
     //下一个章节ID
     nextChapterID:number;
 }

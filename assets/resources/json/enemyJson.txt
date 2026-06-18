@@ -13,7 +13,7 @@
         "moveSpeed": 0.3,
         "attackDistance": 1,
         "attackSpeed": 3,
-        "harm": 50,
+        "harm": 5,
         "EXP": 1,
         "gold": 1,
         "propArr": [
