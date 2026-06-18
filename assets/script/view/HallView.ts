@@ -20,7 +20,7 @@ export class HallView extends Component {
     private node_farm:Node;
 
     private node_journey:Node;
-    private lay_initialHero:Layout;
+    private lay_recommendedLineup:Layout;
     //章节序列名
     private lab_chapter:Label;
     //章节名
@@ -62,7 +62,7 @@ export class HallView extends Component {
         this.node_farm = find('node_farm', this.node);
         
         this.node_journey = find('node_journey', this.node);
-        this.lay_initialHero = find('node_journey/lay_initialHero', this.node).getComponent(Layout);
+        this.lay_recommendedLineup = find('node_journey/lay_recommendedLineup', this.node).getComponent(Layout);
         this.lab_chapter = find('node_journey/lab_chapter', this.node).getComponent(Label);
         this.lab_chapterTitle = find('node_journey/lab_chapterTitle', this.node).getComponent(Label);
         this.img_cartoon = find('node_journey/img_journeyBg/img_cartoon', this.node).getComponent(Sprite);
@@ -229,7 +229,9 @@ export class HallView extends Component {
             if(GlobalData.Instance.chapterTableArr[findChapter].chapterID == GlobalData.Instance.gameRecord.chapterID + this.chapterChangeCount)
             {
                 //初始英雄
-                this.freshInitialHero(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr);
+                // this.freshInitialHero(GlobalData.Instance.chapterTableArr[findChapter].initialHeroArr);
+                //推荐英雄
+                this.freshRecommendedLineupArr(GlobalData.Instance.chapterTableArr[findChapter].recommendedLineupArr);
                 //章节序列号
                 this.lab_chapter.string = GlobalData.Instance.chapterTableArr[findChapter].chapterSequence;
                 this.lab_chapterTitle.string = GlobalData.Instance.chapterTableArr[findChapter].chapterName;
@@ -320,19 +322,38 @@ export class HallView extends Component {
     freshInitialHero(initialHeroArr:Array<number>)
     {
         //根据ID找到英雄对应的动画模型并更新
-        for(var ih:number = 0;ih < initialHeroArr.length;ih++)
-        {
-            for(var h:number = 0;h < GlobalData.Instance.heroTableArr.length;h++)
-            {
-                if(initialHeroArr[ih] == GlobalData.Instance.heroTableArr[h].heroID)
-                {
-                    this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).active = true;
-                    LoadImgTool.Instance.loadSkeletonData(GlobalData.Instance.heroTableArr[h].heroSkePath,
-                        this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).getChildByName("ske_hero").getComponent(sp.Skeleton),"dance");
-                    break;
-                }
-            }
-        }
+        // for(var ih:number = 0;ih < initialHeroArr.length;ih++)
+        // {
+        //     for(var h:number = 0;h < GlobalData.Instance.heroTableArr.length;h++)
+        //     {
+        //         if(initialHeroArr[ih] == GlobalData.Instance.heroTableArr[h].heroID)
+        //         {
+        //             this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).active = true;
+        //             LoadImgTool.Instance.loadSkeletonData(GlobalData.Instance.heroTableArr[h].heroSkePath,
+        //                 this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).getChildByName("ske_hero").getComponent(sp.Skeleton),"dance");
+        //             break;
+        //         }
+        //     }
+        // }
+    }
+
+    //刷新关卡推荐英雄模型
+    freshRecommendedLineupArr(recommendedLineupArr:Array<number>)
+    {
+        //根据ID找到英雄对应的动画模型并更新
+        // for(var ih:number = 0;ih < recommendedLineupArr.length;ih++)
+        // {
+        //     for(var h:number = 0;h < GlobalData.Instance.heroTableArr.length;h++)
+        //     {
+        //         if(initialHeroArr[ih] == GlobalData.Instance.heroTableArr[h].heroID)
+        //         {
+        //             this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).active = true;
+        //             LoadImgTool.Instance.loadSkeletonData(GlobalData.Instance.heroTableArr[h].heroSkePath,
+        //                 this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).getChildByName("ske_hero").getComponent(sp.Skeleton),"dance");
+        //             break;
+        //         }
+        //     }
+        // }
     }
 
     closeView()

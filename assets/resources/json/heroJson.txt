@@ -128,6 +128,38 @@
         "speakArr": ["太慢啦！","跟得上吗？","追我呀！","已经进啦！","风都追不上！"]
     },
     {
+        "heroID": 302,
+        "heroName": "忍者鸡",
+        "heroIntroduce": "忍者鸡总觉得自己隐身了。-n事实上根本没有。-n只是大家懒得提醒它。-n它经常蹲在纸箱后面。-n露着半个屁股。-n自信等待偷袭时机。-n然后被所有人围观。",
+        "heroHeadImgPath": "hero-heroHead-icon_heroHead_301",
+        "heroSkePath": "hero-hero301-hero301",
+        "quality": 3,
+        "heroType": 1,
+        "restrainType": 1,
+        "maxHP": 21,
+        "harm": 7,
+        "speed": 1,
+        "lockGold": 0,
+        "skillArr": [102],
+        "speakArr": ["看不见我。","我消失了。","嘘——","完美潜伏","谁在说话？"]
+    },
+    {
+        "heroID": 303,
+        "heroName": "冰冻鸡",
+        "heroIntroduce": "冰冻鸡情绪极其稳定。-n稳定到离谱。-n有次猪怪偷走它的足球。-n它说“哦”。-n猪怪拆了它的球门。-n它还是说“哦”。-n后来猪怪被冻进冰块里。-n它依旧只说了一个字。",
+        "heroHeadImgPath": "hero-heroHead-icon_heroHead_301",
+        "heroSkePath": "hero-hero301-hero301",
+        "quality": 3,
+        "heroType": 1,
+        "restrainType": 1,
+        "maxHP": 18,
+        "harm": 8,
+        "speed": 1,
+        "lockGold": 0,
+        "skillArr": [102],
+        "speakArr": ["哦。","行。","随便。","无所谓。","哦。"]
+    },
+    {
         "heroID": 401,
         "heroName": "火焰鸡",
         "heroIntroduce": "刚出生时烧掉了自己的蛋壳。-n学走路时烧掉了鸡窝。-n第一次踢球时烧掉了球网。-n后来猪怪们想办法对付它。-n浇水。-n埋土。-n甚至把它塞进冰库。-n结果第二天打开门。-n冰库变成了温泉。-n火焰鸡正泡着脚吃玉米。-n直到今天。-n农场里仍流传着一句话。-n火焰可以熄灭。-n但火焰鸡的青春不灭。",
