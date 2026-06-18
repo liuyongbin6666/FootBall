@@ -3860,7 +3860,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "img_cartoon_chapter_1",
+    "_name": "img_cartoon",
     "_objFlags": 0,
     "__editorExtras__": {},
     "_parent": {
@@ -3894,8 +3894,8 @@
     },
     "_lscale": {
       "__type__": "cc.Vec3",
-      "x": 1,
-      "y": 1,
+      "x": 1.3,
+      "y": 1.3,
       "z": 1
     },
     "_mobility": 0,
@@ -3922,8 +3922,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 632,
-      "height": 386
+      "width": 500,
+      "height": 300
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -3959,7 +3959,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "4d0e42af-886d-4050-b7f5-55d5e223158d@f9941",
+      "__uuid__": "7018eb36-8dc6-4e1a-913d-5a3cbcef7740@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -4262,7 +4262,7 @@
     },
     "_lpos": {
       "__type__": "cc.Vec3",
-      "x": -175,
+      "x": -230,
       "y": 170,
       "z": 0
     },
@@ -4308,7 +4308,7 @@
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
-      "x": 0.5,
+      "x": 0,
       "y": 0.5
     },
     "_id": ""
@@ -4340,7 +4340,7 @@
       "a": 255
     },
     "_string": "保卫农场",
-    "_horizontalAlign": 1,
+    "_horizontalAlign": 0,
     "_verticalAlign": 1,
     "_actualFontSize": 28,
     "_fontSize": 28,

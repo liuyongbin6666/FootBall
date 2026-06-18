@@ -8,11 +8,12 @@
         "quality": 1,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 5,
-        "harm": 600,
+        "maxHP": 3,
+        "harm": 3,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": []
+        "skillArr": [],
+        "speakArr": ["天呐？！","啥玩意儿？！","真的假的？","又来？！","我不理解！"]
     },
     {
         "heroID": 102,
@@ -23,11 +24,12 @@
         "quality": 1,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 10,
-        "harm": 4,
+        "maxHP": 4,
+        "harm": 2,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": []
+        "skillArr": [],
+        "speakArr": ["啊啊啊啊！！","鸡哇乱叫！","谁踩我脚！","冲啊啊啊！","继续叫！"]
     },
     {
         "heroID": 103,
@@ -38,26 +40,28 @@
         "quality": 1,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 15,
-        "harm": 2,
+        "maxHP": 5,
+        "harm": 1,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": []
+        "skillArr": [],
+        "speakArr": ["快出来吧！","有反应了！","还能孵！","马上成功！","别打扰我！"]
     },
     {
         "heroID": 104,
         "heroName": "蛋壳鸡",
         "heroIntroduce": "蛋壳鸡觉得脑袋是全身最硬的部位。-n为了证明这一点。-n它试过拿头撞树。-n撞墙。-n撞猪。-n撞足球。-n后来树断了，墙裂了，猪飞了。-n它更加坚定了自己的理论。",
-        "heroHeadImgPath": "hero-heroHead-icon_heroHead_103",
+        "heroHeadImgPath": "hero-heroHead-icon_heroHead_104",
         "heroSkePath": "hero-hero104-hero104",
         "quality": 1,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 20,
-        "harm": 1,
+        "maxHP": 6,
+        "harm": 0,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": []
+        "skillArr": [],
+        "speakArr": ["用头解决！","我头铁！","再撞一次！","小问题！","包赢的！"]
     },
     {
         "heroID": 201,
@@ -68,41 +72,44 @@
         "quality": 2,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 40,
-        "harm": 8,
+        "maxHP": 15,
+        "harm": 3,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": [107]
+        "skillArr": [107],
+        "speakArr": ["弹回去！","不对劲！","又弹回来！","角度完美！","我算过了！"]
     },
     {
         "heroID": 202,
         "heroName": "发条鸡",
         "heroIntroduce": "发条鸡害怕浪费时间。-n于是给自己装了发条。-n结果有天忘记关机。-n绕着农场跑了三圈半。-n顺便追上了自己的昨天。-n直到今天它都没想明白那天发生了什么。",
-        "heroHeadImgPath": "hero-heroHead-icon_heroHead_201",
+        "heroHeadImgPath": "hero-heroHead-icon_heroHead_202",
         "heroSkePath": "hero-hero202-hero202",
         "quality": 2,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 30,
-        "harm": 10,
+        "maxHP": 12,
+        "harm": 4,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": [107]
+        "skillArr": [107],
+        "speakArr": ["没时间啦！","快快快！","别挡路！","我要超速！","冒烟啦！"]
     },
     {
         "heroID": 203,
         "heroName": "菜小鸡",
         "heroIntroduce": "菜小鸡特别讨厌别人说它菜。-n谁说一次。-n它就练球一天。-n后来农场所有动物都开始故意说它菜。-n结果它越来越强。-n如今已经没人敢说了。-n除了它自己。",
-        "heroHeadImgPath": "hero-heroHead-icon_heroHead_201",
+        "heroHeadImgPath": "hero-heroHead-icon_heroHead_203",
         "heroSkePath": "hero-hero203-hero203",
         "quality": 2,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 50,
-        "harm": 6,
+        "maxHP": 9,
+        "harm": 5,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": [107]
+        "skillArr": [107],
+        "speakArr": ["我真菜啊！","不可能！","再来一局！","我能赢！","差一点点！"]
     },
     {
         "heroID": 301,
@@ -113,11 +120,12 @@
         "quality": 3,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 70,
-        "harm": 18,
+        "maxHP": 24,
+        "harm": 6,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": [102]
+        "skillArr": [102],
+        "speakArr": ["太慢啦！","跟得上吗？","追我呀！","已经进啦！","风都追不上！"]
     },
     {
         "heroID": 401,
@@ -128,11 +136,12 @@
         "quality": 4,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 100,
-        "harm": 20,
+        "maxHP": 45,
+        "harm": 10,
         "speed": 1,
         "lockGold": 100,
-        "skillArr": [108]
+        "skillArr": [108],
+        "speakArr": ["青春不灭！","继续燃烧！","火还旺着！","别想熄灭我！","梦想在发光！"]
     },
     {
         "heroID": 501,
@@ -143,11 +152,12 @@
         "quality": 5,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 150,
-        "harm": 30,
+        "maxHP": 30,
+        "harm": 15,
         "speed": 1,
         "lockGold": 100,
-        "skillArr": [112]
+        "skillArr": [112],
+        "speakArr": ["根据计算……","数据有误！","问题不大！","我预判到了！","这是计划！"]
     },
     {
         "heroID": 601,
@@ -158,10 +168,11 @@
         "quality": 6,
         "heroType": 1,
         "restrainType": 1,
-        "maxHP": 200,
-        "harm": 40,
+        "maxHP": 66,
+        "harm": 20,
         "speed": 1,
         "lockGold": 100,
-        "skillArr": [101, 108, 112]
+        "skillArr": [101, 108, 112],
+        "speakArr": ["我早知道。","数据有误！","不必惊慌。","一切随球。","球自会来。"]
     }
 ]

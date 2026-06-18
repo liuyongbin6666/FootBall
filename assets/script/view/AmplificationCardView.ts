@@ -527,19 +527,28 @@ export class AmplificationCardView extends Component {
                                 //查找下一级技能等级，所有技能默认初始等级0
                                 if((proJoinHero.skillProArr[skillIndex].level + 1) == GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl].level)
                                 {
-                                    //技能文字描述，是否有替换字符{0}和{1}
-                                    if(GlobalData.Instance.heroSkillTableArr[hs].describe.includes("{0}"))
+                                    //技能文字描述，是否有替换字符{0}和{1}和{2}
+                                    if(GlobalData.Instance.heroSkillTableArr[hs].describe.includes("{0}") || GlobalData.Instance.heroSkillTableArr[hs].describe.includes("{1}")
+                                    || GlobalData.Instance.heroSkillTableArr[hs].describe.includes("{2}"))
                                     {
-                                        // var efStr:string = ""+ OperationTool.Instance.retainDecimal(1,(100+GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl])/100);
-                                        var efStr:string = ""+ GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl].effect;
-                                        var newDesStr:string = CharacterTool.Instance.replaceCharacter(GlobalData.Instance.heroSkillTableArr[hs].describe,"{0}", efStr);
-                                        cardNode.getChildByName("lab_describe").getComponent(Label).string = newDesStr;
+                                        var essDesStr:string = GlobalData.Instance.heroSkillTableArr[hs].describe;
+                                        if(GlobalData.Instance.heroSkillTableArr[hs].describe.includes("{0}"))
+                                        {
+                                            // var efStr:string = ""+ OperationTool.Instance.retainDecimal(1,(100+GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl])/100);
+                                            var efStr:string = ""+ GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl].effect;
+                                            essDesStr = CharacterTool.Instance.replaceCharacter(GlobalData.Instance.heroSkillTableArr[hs].describe,"{0}", efStr);
+                                        }
                                         if(GlobalData.Instance.heroSkillTableArr[hs].describe.includes("{1}"))
                                         {
-                                            var scStr:string = ""+ GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl].effect;
-                                            var lastDesStr:string = CharacterTool.Instance.replaceCharacter(newDesStr,"{1}", scStr);
-                                            cardNode.getChildByName("lab_describe").getComponent(Label).string = lastDesStr;
+                                            var scStr:string = ""+ GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl].scope;
+                                            essDesStr = CharacterTool.Instance.replaceCharacter(essDesStr,"{1}", scStr);
                                         }
+                                        if(GlobalData.Instance.heroSkillTableArr[hs].describe.includes("{2}"))
+                                        {
+                                            var scStr:string = ""+ GlobalData.Instance.heroSkillTableArr[hs].skillArr[sl].second;
+                                            essDesStr = CharacterTool.Instance.replaceCharacter(essDesStr,"{2}", scStr);
+                                        }
+                                        cardNode.getChildByName("lab_describe").getComponent(Label).string = essDesStr;
                                     }else{
                                         cardNode.getChildByName("lab_describe").getComponent(Label).string = GlobalData.Instance.heroSkillTableArr[hs].describe;
                                     }
