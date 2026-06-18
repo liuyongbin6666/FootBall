@@ -341,19 +341,19 @@ export class HallView extends Component {
     freshRecommendedLineupArr(recommendedLineupArr:Array<number>)
     {
         //根据ID找到英雄对应的动画模型并更新
-        // for(var ih:number = 0;ih < recommendedLineupArr.length;ih++)
-        // {
-        //     for(var h:number = 0;h < GlobalData.Instance.heroTableArr.length;h++)
-        //     {
-        //         if(initialHeroArr[ih] == GlobalData.Instance.heroTableArr[h].heroID)
-        //         {
-        //             this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).active = true;
-        //             LoadImgTool.Instance.loadSkeletonData(GlobalData.Instance.heroTableArr[h].heroSkePath,
-        //                 this.lay_initialHero.node.getChildByName("initialHero" + (ih+1)).getChildByName("ske_hero").getComponent(sp.Skeleton),"dance");
-        //             break;
-        //         }
-        //     }
-        // }
+        for(var ih:number = 0;ih < recommendedLineupArr.length;ih++)
+        {
+            for(var h:number = 0;h < GlobalData.Instance.heroTableArr.length;h++)
+            {
+                if(recommendedLineupArr[ih] == GlobalData.Instance.heroTableArr[h].heroID)
+                {
+                    this.lay_recommendedLineup.node.getChildByName("hero" + (ih+1)).active = true;
+                    LoadImgTool.Instance.loadSkeletonData(GlobalData.Instance.heroTableArr[h].heroSkePath,
+                        this.lay_recommendedLineup.node.getChildByName("hero" + (ih+1)).getChildByName("ske_hero").getComponent(sp.Skeleton),"dance");
+                    break;
+                }
+            }
+        }
     }
 
     closeView()

@@ -7,7 +7,8 @@
         "chapterImgPath": 1001,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [101],
+        "initialHeroArr": [301],
+        "recommendedLineupArr": [101,102,103,201,202],
         "nextChapterID": 2,
         "chapterSequence": "第一章"
     },
@@ -19,7 +20,8 @@
         "chapterImgPath": 1002,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [101],
+        "initialHeroArr": [301],
+        "recommendedLineupArr": [101,102,103,201,202],
         "nextChapterID": 3,
         "chapterSequence": "第二章"
     },
@@ -31,7 +33,8 @@
         "chapterImgPath": 1003,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [101],
+        "initialHeroArr": [301],
+        "recommendedLineupArr": [101,102,103,201,202],
         "nextChapterID": 4,
         "chapterSequence": "第三章"
     },
@@ -43,7 +46,8 @@
         "chapterImgPath": 1004,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [101],
+        "initialHeroArr": [301],
+        "recommendedLineupArr": [101,102,103,201,202],
         "nextChapterID": 5,
         "chapterSequence": "第四章"
     },
@@ -55,7 +59,8 @@
         "chapterImgPath": 1005,
         "chapterType": 1,
         "levelArr": [101, 102, 103, 104, 105],
-        "initialHeroArr": [101],
+        "recommendedLineupArr": [101,102,103,201,202],
+        "initialHeroArr": [301],
         "nextChapterID": 0,
         "chapterSequence": "第五章"
     }
