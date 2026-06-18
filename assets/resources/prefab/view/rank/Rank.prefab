@@ -1005,6 +1005,8 @@
       "__id__": 0
     },
     "fileId": "b7Ht/HRURMoJBc+fD3GzK2",
+    "instance": null,
+    "targetOverrides": null,
     "nestedPrefabInstanceRoots": null
   },
   {
@@ -1111,7 +1113,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "f0dd3b09-addd-433c-8de6-90e6865ea6f3@f9941",
+      "__uuid__": "adce800b-82d2-4f6c-993d-db2ca24bde7c@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -1947,7 +1949,7 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "42312456-cbc6-4d28-8d98-2d73130c2009@f9941",
+      "__uuid__": "18bc84ed-e6b3-4202-bce7-03aacc352664@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
@@ -2541,12 +2543,12 @@
       "a": 255
     },
     "_spriteFrame": {
-      "__uuid__": "8ccc6bf6-ecce-496a-9970-69b8eea6e838@f9941",
+      "__uuid__": "1e387b3e-059f-4d3a-b3e4-f7744e6e5448@f9941",
       "__expectedType__": "cc.SpriteFrame"
     },
     "_type": 0,
     "_fillType": 0,
-    "_sizeMode": 1,
+    "_sizeMode": 0,
     "_fillCenter": {
       "__type__": "cc.Vec2",
       "x": 0,

@@ -2,7 +2,7 @@
   "ver": "1.0.27",
   "importer": "image",
   "imported": true,
-  "uuid": "da7a0c95-f118-4f91-8b51-3fea9ee7afe9",
+  "uuid": "dca95702-16d7-46b3-8f1a-29a8dbae1711",
   "files": [
     ".json",
     ".png"
@@ -10,14 +10,14 @@
   "subMetas": {
     "6c48a": {
       "importer": "texture",
-      "uuid": "da7a0c95-f118-4f91-8b51-3fea9ee7afe9@6c48a",
+      "uuid": "dca95702-16d7-46b3-8f1a-29a8dbae1711@6c48a",
       "displayName": "soccerField",
       "id": "6c48a",
       "name": "texture",
       "userData": {
         "wrapModeS": "clamp-to-edge",
         "wrapModeT": "clamp-to-edge",
-        "imageUuidOrDatabaseUri": "da7a0c95-f118-4f91-8b51-3fea9ee7afe9",
+        "imageUuidOrDatabaseUri": "dca95702-16d7-46b3-8f1a-29a8dbae1711",
         "isUuid": true,
         "visible": false,
         "minfilter": "linear",
@@ -34,22 +34,21 @@
     },
     "f9941": {
       "importer": "sprite-frame",
-      "uuid": "da7a0c95-f118-4f91-8b51-3fea9ee7afe9@f9941",
+      "uuid": "dca95702-16d7-46b3-8f1a-29a8dbae1711@f9941",
       "displayName": "soccerField",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
-        "trimType": "auto",
         "trimThreshold": 1,
         "rotated": false,
         "offsetX": 0,
         "offsetY": 0,
         "trimX": 0,
         "trimY": 0,
-        "width": 796,
-        "height": 1376,
-        "rawWidth": 796,
-        "rawHeight": 1376,
+        "width": 750,
+        "height": 1334,
+        "rawWidth": 750,
+        "rawHeight": 1334,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
@@ -61,17 +60,17 @@
         "meshType": 0,
         "vertices": {
           "rawPosition": [
-            -398,
-            -688,
+            -375,
+            -667,
             0,
-            398,
-            -688,
+            375,
+            -667,
             0,
-            -398,
-            688,
+            -375,
+            667,
             0,
-            398,
-            688,
+            375,
+            667,
             0
           ],
           "indexes": [
@@ -84,12 +83,12 @@
           ],
           "uv": [
             0,
-            1376,
-            796,
-            1376,
+            1334,
+            750,
+            1334,
             0,
             0,
-            796,
+            750,
             0
           ],
           "nuv": [
@@ -103,19 +102,20 @@
             1
           ],
           "minPos": [
-            -398,
-            -688,
+            -375,
+            -667,
             0
           ],
           "maxPos": [
-            398,
-            688,
+            375,
+            667,
             0
           ]
         },
         "isUuid": true,
-        "imageUuidOrDatabaseUri": "da7a0c95-f118-4f91-8b51-3fea9ee7afe9@6c48a",
-        "atlasUuid": ""
+        "imageUuidOrDatabaseUri": "dca95702-16d7-46b3-8f1a-29a8dbae1711@6c48a",
+        "atlasUuid": "",
+        "trimType": "auto"
       },
       "ver": "1.0.12",
       "imported": true,
@@ -129,6 +129,6 @@
     "type": "sprite-frame",
     "hasAlpha": true,
     "fixAlphaTransparencyArtifacts": false,
-    "redirect": "da7a0c95-f118-4f91-8b51-3fea9ee7afe9@6c48a"
+    "redirect": "dca95702-16d7-46b3-8f1a-29a8dbae1711@6c48a"
   }
 }
