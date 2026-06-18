@@ -32,7 +32,7 @@
         "levelArr": [101, 102, 103, 104, 105],
         "initialHeroArr": [301],
         "nextChapterID": 4,
-        "recommendedLineupArr": [301, 301, 303, 102, 202],
+        "recommendedLineupArr": [301, 302, 303, 102, 202],
         "chapterSequence": "第三章"
     },
     {
