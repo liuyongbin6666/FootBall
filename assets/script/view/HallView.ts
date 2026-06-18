@@ -337,9 +337,18 @@ export class HallView extends Component {
         // }
     }
 
+    closeAllRecommendedLineup()
+    {
+        for(var ca:number = 0;ca < 5;ca++)
+        {
+            this.lay_recommendedLineup.node.getChildByName("hero" + (ca+1)).active = false;
+        }
+    }
+
     //刷新关卡推荐英雄模型
     freshRecommendedLineupArr(recommendedLineupArr:Array<number>)
     {
+        this.closeAllRecommendedLineup();
         //根据ID找到英雄对应的动画模型并更新
         for(var ih:number = 0;ih < recommendedLineupArr.length;ih++)
         {

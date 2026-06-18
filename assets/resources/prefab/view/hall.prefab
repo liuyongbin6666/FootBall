@@ -2621,11 +2621,11 @@
       "a": 255
     },
     "_skeletonData": {
-      "__uuid__": "8117a2f7-4fb7-4e25-8b0b-4e2c7198cdc8",
+      "__uuid__": "1e388c16-db24-43f3-9f9a-43b5ed607db8",
       "__expectedType__": "sp.SkeletonData"
     },
-    "defaultSkin": "",
-    "defaultAnimation": "",
+    "defaultSkin": "default",
+    "defaultAnimation": "dance",
     "_premultipliedAlpha": false,
     "_timeScale": 1,
     "_preCacheMode": 0,
@@ -3152,8 +3152,8 @@
       "__uuid__": "a10e30b8-9aee-4c1d-b991-855123fff743",
       "__expectedType__": "sp.SkeletonData"
     },
-    "defaultSkin": "",
-    "defaultAnimation": "",
+    "defaultSkin": "default",
+    "defaultAnimation": "dance",
     "_premultipliedAlpha": false,
     "_timeScale": 1,
     "_preCacheMode": 0,
@@ -3680,8 +3680,8 @@
       "__uuid__": "41c857e2-1f70-4402-81b3-e2c40bbbed96",
       "__expectedType__": "sp.SkeletonData"
     },
-    "defaultSkin": "",
-    "defaultAnimation": "",
+    "defaultSkin": "default",
+    "defaultAnimation": "dance",
     "_premultipliedAlpha": false,
     "_timeScale": 1,
     "_preCacheMode": 0,
@@ -4205,11 +4205,11 @@
       "a": 255
     },
     "_skeletonData": {
-      "__uuid__": "8117a2f7-4fb7-4e25-8b0b-4e2c7198cdc8",
+      "__uuid__": "65895711-f643-4601-8f31-cf5407b56be6",
       "__expectedType__": "sp.SkeletonData"
     },
-    "defaultSkin": "",
-    "defaultAnimation": "",
+    "defaultSkin": "default",
+    "defaultAnimation": "dance",
     "_premultipliedAlpha": false,
     "_timeScale": 1,
     "_preCacheMode": 0,
@@ -4733,11 +4733,11 @@
       "a": 255
     },
     "_skeletonData": {
-      "__uuid__": "8117a2f7-4fb7-4e25-8b0b-4e2c7198cdc8",
+      "__uuid__": "e85d2c87-855c-4943-8733-9265b0b29fad",
       "__expectedType__": "sp.SkeletonData"
     },
-    "defaultSkin": "",
-    "defaultAnimation": "",
+    "defaultSkin": "default",
+    "defaultAnimation": "dance",
     "_premultipliedAlpha": false,
     "_timeScale": 1,
     "_preCacheMode": 0,
