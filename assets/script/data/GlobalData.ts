@@ -66,17 +66,14 @@ export class GlobalData{
     //用户密钥
     public userVerify:number = 0;
     //用户信息
-    public userInfo:userStructure = {userId:10001,nickName:"玩家abc",gold:1000,headIcon:""};
+    public userInfo:userStructure = {userId:10001,nickName:"玩家abc",headIcon:""};
 
     //游戏当前记录
-    public gameRecord:gameRecordStructure = {chapterID:1,levelID:101,unlockChapterArr:[1],levelHeroArr:[],playerLevel:1,overflowEXP:0,residueTime:0};
+    public gameRecord:gameRecordStructure = {chapterID:1,levelID:101,unlockChapterArr:[1],gold:0,getGold:0,levelHeroArr:[],playerLevel:1,overflowEXP:0,residueTime:0};
 
     /**
      * 临时数据，下线清零
     */
-    //通关当前章节的评分
-    public chapterScore:number = 0;
-    
     //音乐是否开启
     public musicState:boolean = true;
     //音效是否开启

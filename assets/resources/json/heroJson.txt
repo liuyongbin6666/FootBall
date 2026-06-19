@@ -121,7 +121,7 @@
         "heroType": 1,
         "restrainType": 1,
         "maxHP": 24,
-        "harm": 600,
+        "harm": 6,
         "speed": 1,
         "lockGold": 0,
         "skillArr": [102],

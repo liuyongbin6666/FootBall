@@ -2,11 +2,7 @@
   "ver": "1.0.0",
   "importer": "*",
   "imported": true,
-<<<<<<< HEAD
-  "uuid": "a83338ce-7c76-4822-ad16-c0e9e1a33a91",
-=======
-  "uuid": "e6fa03fb-4a68-4e7a-a865-70c8df4f3010",
->>>>>>> a23bba66dcc9f9111a6a4337bbecb85d89b68e25
+  "uuid": "33471a11-f511-4247-9d63-4352629e84fc",
   "files": [
     ".atlas",
     ".json"

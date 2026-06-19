@@ -532,11 +532,11 @@
       "a": 255
     },
     "_skeletonData": {
-      "__uuid__": "10a76e96-7185-426a-bb2f-dcadaa5e975b",
+      "__uuid__": "1e388c16-db24-43f3-9f9a-43b5ed607db8",
       "__expectedType__": "sp.SkeletonData"
     },
     "defaultSkin": "default",
-    "defaultAnimation": "",
+    "defaultAnimation": "idle",
     "_premultipliedAlpha": false,
     "_timeScale": 1,
     "_preCacheMode": 0,
@@ -641,7 +641,7 @@
     },
     "_size": {
       "__type__": "cc.Size",
-      "width": 20,
+      "width": 40,
       "height": 20
     },
     "_id": ""

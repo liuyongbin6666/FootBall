@@ -17,8 +17,6 @@ export interface userStructure {
     userId:number;
     //用户昵称
     nickName:string;
-    //用户金币
-    gold:number;
     //用户头像
     headIcon:string;
 }
@@ -31,6 +29,13 @@ export interface gameRecordStructure{
     levelID:number;
     //已解锁的章节
     unlockChapterArr:Array<number>;
+    /**
+     * 游戏内记录，每过一个关卡记录一次，用于中途退出或读取进度，未完成一个章节的情况下不记录
+    */
+    //金币
+    gold:number;
+    //已经获得的金币
+    getGold:number;
     //中途退出关卡时的英雄数据（下次继续时，使用该数据）
     levelHeroArr:Array<heroStructure>;
     //中途退出时的经验等级
@@ -55,14 +60,19 @@ export interface chapterStructure {
     unlock:boolean;
     //章节关卡
     levelArr:Array<number>;
-    //章节通关评分
-    // passScore:number;
     //初始英雄
     initialHeroArr:Array<number>;
     //推荐英雄阵容
     recommendedLineupArr:Array<number>;
     //下一个章节ID
     nextChapterID:number;
+    /**
+     * 动态属性
+     */
+    //章节通关评分
+    passScore:number;
+    //排行榜礼物是否为可领取状态
+    giftState:boolean;
 }
 
 //关卡

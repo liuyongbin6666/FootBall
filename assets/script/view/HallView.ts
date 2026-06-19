@@ -16,11 +16,15 @@ export class HallView extends Component {
     /**
      * 组件
     */
+    //金币
+    private lab_gold:Label;
+
     private node_grocery:Node;
     private node_farm:Node;
 
     private node_journey:Node;
     private lay_recommendedLineup:Layout;
+    private btn_checkRank:Button;
     //章节序列名
     private lab_chapter:Label;
     //章节名
@@ -58,11 +62,14 @@ export class HallView extends Component {
     }
 
     private _initObect() {
+        this.lab_gold = find('node_top/lab_gold', this.node).getComponent(Label);
+
         this.node_grocery = find('node_grocery', this.node);
         this.node_farm = find('node_farm', this.node);
         
         this.node_journey = find('node_journey', this.node);
         this.lay_recommendedLineup = find('node_journey/lay_recommendedLineup', this.node).getComponent(Layout);
+        this.btn_checkRank = find('node_journey/btn_checkRank', this.node).getComponent(Button);
         this.lab_chapter = find('node_journey/lab_chapter', this.node).getComponent(Label);
         this.lab_chapterTitle = find('node_journey/lab_chapterTitle', this.node).getComponent(Label);
         this.img_cartoon = find('node_journey/img_journeyBg/img_cartoon', this.node).getComponent(Sprite);
@@ -81,6 +88,7 @@ export class HallView extends Component {
     }
 
     private _onEvent() {
+        this.btn_checkRank.node.on(Node.EventType.TOUCH_START, this.openRank, this);
         this.btn_previousChapter.node.on(Node.EventType.TOUCH_START, this.reduceChapterIndexFun, this);
         this.btn_nextChapter.node.on(Node.EventType.TOUCH_START, this.increaseChapterIndexFun, this);
         this.btn_fight.node.on(Node.EventType.TOUCH_START, this.openFight, this);
@@ -100,6 +108,8 @@ export class HallView extends Component {
         // let pathAward = Layer.Instance.getGamePrePath("award");
         // LoadImgTool.Instance.loadPrefab("award",pathAward,Layer.Instance.layerView,false);
         
+        this.lab_gold.string = "" + GlobalData.Instance.gameRecord.gold;
+
         //默认页面征程
         this.freshChapter();
         
@@ -140,6 +150,11 @@ export class HallView extends Component {
             case 5:
                 break;
         }
+    }
+
+    openRank()
+    {
+        Layer.Instance.show("rank",Layer.Instance.layerView);
     }
 
     reduceChapterIndexFun()
@@ -298,10 +313,20 @@ export class HallView extends Component {
     }
 
     //刷新大厅显示
-    freshHallFun()
+    freshHallFun(ovEvent: GameEventName)
     {
-        this.freshGoOnFightLv();
-        this.freshChapter();
+        switch(ovEvent.getCustomProperty().eventCode)
+        {
+            case 1:
+                //重新开始
+                this.freshGoOnFightLv();
+                this.freshChapter();
+                break;
+            case 2:
+                //通关
+                this.lab_gold.string = "" + GlobalData.Instance.gameRecord.gold;
+                break;
+        }
     }
 
     //刷新继续征程关卡进度

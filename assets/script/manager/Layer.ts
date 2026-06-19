@@ -276,9 +276,9 @@ export class Layer extends Component {
             //奖励
             case "award":
                 return "prefab/view/award/award";
-            //章节结算排行
-            case "chapterRank":
-                return "prefab/view/chapterRank/chapterRank";
+            //排行榜
+            case "rank":
+                return "prefab/view/rank/Rank";
             //角色属性
             case "roleProperty":
                 return "prefab/view/roleProperty/roleProperty";
