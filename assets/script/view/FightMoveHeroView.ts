@@ -1577,6 +1577,7 @@ export class FightMoveHeroView extends Component {
             return -1;
         }
         var frontEnemySerialNum:number = this.enemyArr[0].enemyItem["enemySerialNum"];
+        //奖杯模式仅1个敌人
         if(this.saveLevel.levelType == 5)
         {
             return frontEnemySerialNum;
@@ -1584,7 +1585,15 @@ export class FightMoveHeroView extends Component {
         var frontHP:number = this.enemyArr[0].HP;
         for(var findEnemy:number = 1;findEnemy < this.enemyArr.length;findEnemy++)
         {
-            if((this.enemyArr[findEnemy - 1].HP <= 0 && this.enemyArr[findEnemy].HP > 0) || 
+            //如果为boss模式且boss已出现
+            if(this.saveLevel.levelType == 4)
+            {
+                if(this.enemyArr[findEnemy].enemyType == 4 && this.enemyArr[findEnemy].HP > 0)
+                {
+                    return this.enemyArr[findEnemy].enemyItem["enemySerialNum"];
+                }
+            }
+            else if((this.enemyArr[findEnemy - 1].HP <= 0 && this.enemyArr[findEnemy].HP > 0) || 
             (this.enemyArr[findEnemy].enemyItem.getPosition().y < this.enemyArr[findEnemy - 1].enemyItem.getPosition().y && this.enemyArr[findEnemy].HP > 0))
             {
                 if(this.enemyArr[findEnemy].enemyType >= 1 || this.enemyArr[findEnemy].enemyType <= 5)
@@ -2489,6 +2498,12 @@ export class FightMoveHeroView extends Component {
     //章节结算
     chapterResultFun()
     {
+        Layer.Instance.show("hall",Layer.Instance.layerView);
+        //向大厅发送通关消息
+        let hallEvent = new GameEventName({ eventCode: 2 });
+        GameCustomEvent.Instance.node.emit(GameEventName.HALL_EVENT,hallEvent);
+
+        Layer.Instance.show("rank",Layer.Instance.layerView);
         //弹出章节结算页面
         Layer.Instance.show("rank",Layer.Instance.layerView);
         //金币更新
@@ -3070,8 +3085,14 @@ export class FightMoveHeroView extends Component {
                     //弹出失败页面
                     Layer.Instance.show("lose",Layer.Instance.layerView);
                 }
+                //若boss未出现，判断小怪是否全死亡即可
+                if(this.saveWave.BossID <= 0 && this.saveWave.total == 0 && this.findResidueEnemyType(1) <= 0)
+                {
+                    this.soccerGameState = gameState.result;
+                    this.readNextWave();
+                }
                 //判断Boss是否死亡，Boss死亡直接通关，不管其余小怪是否死亡
-                if(this.findResidueEnemyType(4) <= 0 && this.saveWave.total == 0 && this.saveWave.BossBornTime <= 0)
+                else if(this.saveWave.BossID > 0 && this.saveWave.BossBornTime <= 0 && this.findResidueEnemyType(4) <= 0)
                 {
                     //移除剩余小怪
                     this.removeEnemyType(1);

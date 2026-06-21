@@ -325,6 +325,26 @@ export class HallView extends Component {
             case 2:
                 //通关
                 this.lab_gold.string = "" + GlobalData.Instance.gameRecord.gold;
+                var nextChapter:number = GlobalData.Instance.gameRecord.chapterID;
+                //找到下一个章节，本章节按钮变为新的征程***
+                for(var nextChapter:number = 0;unlockNextChapter < GlobalData.Instance.chapterTableArr.length;unlockNextChapter++)
+                {
+                    if(GlobalData.Instance.gameRecord.chapterID == GlobalData.Instance.chapterTableArr[unlockNextChapter].chapterID)
+                    {
+                        nextChapter = GlobalData.Instance.chapterTableArr[unlockNextChapter].nextChapterID;
+                    }
+                }
+                for(var unlockNextChapter:number = 0;unlockNextChapter < GlobalData.Instance.chapterTableArr.length;unlockNextChapter++)
+                {
+                    if(nextChapter == GlobalData.Instance.chapterTableArr[unlockNextChapter].chapterID)
+                    {
+                        //解锁下一个章节
+                        GlobalData.Instance.chapterTableArr[unlockNextChapter].unlock = true;
+                        //章节ID变为新的章节ID
+                        GlobalData.Instance.gameRecord.chapterID = nextChapter;
+                        this.freshChapter();
+                    }
+                }
                 break;
         }
     }
