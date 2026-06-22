@@ -56,9 +56,6 @@ export class GlobalData{
     //英雄属性满级记录
     public heroProTopArr:Array<heroProTopStructure> = [];
 
-    //酒馆等级
-    public amplificationCardLevel:number = 1;
-
     //用户账户
     public userAccount:string = "";
     //用户ID
@@ -69,7 +66,8 @@ export class GlobalData{
     public userInfo:userStructure = {userId:10001,nickName:"玩家abc",headIcon:""};
 
     //游戏当前记录
-    public gameRecord:gameRecordStructure = {chapterID:1,levelID:101,unlockChapterArr:[1],gold:0,getGold:0,levelHeroArr:[],playerLevel:1,overflowEXP:0,residueTime:0};
+    public gameRecord:gameRecordStructure = {chapterID:1,levelID:101,unlockChapterArr:[1],amplificationCardLevel:1,gold:0,getGold:0,levelHeroArr:[],
+        playerLevel:1,overflowEXP:0,residueTime:0};
 
     /**
      * 临时数据，下线清零

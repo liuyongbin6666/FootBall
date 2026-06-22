@@ -29,6 +29,8 @@ export interface gameRecordStructure{
     levelID:number;
     //已解锁的章节
     unlockChapterArr:Array<number>;
+    //酒馆等级
+    amplificationCardLevel:number;
     /**
      * 游戏内记录，每过一个关卡记录一次，用于中途退出或读取进度，未完成一个章节的情况下不记录
     */
@@ -202,7 +204,7 @@ export interface heroStructure {
     maxHP:number;
     //英雄品质
     quality:number;
-    //英雄技能随等级成长
+    //英雄技能随等级成长(有技能的英雄，上阵后会立即拥有1个技能（下标0），初始等级为1)
     skillProArr:Array<relevanceProStructure>;
     //英雄加强次数（一共抽过几次牌）
     promoteTotal:number;

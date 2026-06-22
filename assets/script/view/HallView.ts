@@ -88,15 +88,17 @@ export class HallView extends Component {
     }
 
     private _onEvent() {
-        this.btn_checkRank.node.on(Node.EventType.TOUCH_START, this.openRank, this);
-        this.btn_previousChapter.node.on(Node.EventType.TOUCH_START, this.reduceChapterIndexFun, this);
-        this.btn_nextChapter.node.on(Node.EventType.TOUCH_START, this.increaseChapterIndexFun, this);
-        this.btn_fight.node.on(Node.EventType.TOUCH_START, this.openFight, this);
-        this.btn_newFight.node.on(Node.EventType.TOUCH_START, this.newFightFun, this);
-        this.btn_goOnFight.node.on(Node.EventType.TOUCH_START, this.goOnFightFun, this);
-        this.btn_grocery.node.on(Node.EventType.TOUCH_START, this.changePage, this);
-        this.btn_farm.node.on(Node.EventType.TOUCH_START, this.changePage, this);
-        this.btn_journey.node.on(Node.EventType.TOUCH_START, this.changePage, this);
+        setTimeout(() => {
+            this.btn_checkRank.node.on(Node.EventType.TOUCH_START, this.openRank, this);
+            this.btn_previousChapter.node.on(Node.EventType.TOUCH_START, this.reduceChapterIndexFun, this);
+            this.btn_nextChapter.node.on(Node.EventType.TOUCH_START, this.increaseChapterIndexFun, this);
+            this.btn_fight.node.on(Node.EventType.TOUCH_START, this.openFight, this);
+            this.btn_newFight.node.on(Node.EventType.TOUCH_START, this.newFightFun, this);
+            this.btn_goOnFight.node.on(Node.EventType.TOUCH_START, this.goOnFightFun, this);
+            this.btn_grocery.node.on(Node.EventType.TOUCH_START, this.changePage, this);
+            this.btn_farm.node.on(Node.EventType.TOUCH_START, this.changePage, this);
+            this.btn_journey.node.on(Node.EventType.TOUCH_START, this.changePage, this);
+        }, 1000);
         GameCustomEvent.Instance.addCustomEvent(GameEventName.HALL_EVENT,this.freshHallFun,this);
     }
 
@@ -260,7 +262,8 @@ export class HallView extends Component {
                 //判断是否解锁
                 for(var uca:number = 0;uca < GlobalData.Instance.gameRecord.unlockChapterArr.length;uca++)
                 {
-                    console.log(GlobalData.Instance.gameRecord.unlockChapterArr[uca],GlobalData.Instance.chapterTableArr[findChapter].chapterID);
+                    console.log("解锁章节：",GlobalData.Instance.gameRecord.unlockChapterArr[uca]);
+                    console.log("章节ID：",GlobalData.Instance.chapterTableArr[findChapter].chapterID);
                     if(GlobalData.Instance.gameRecord.unlockChapterArr[uca] == GlobalData.Instance.chapterTableArr[findChapter].chapterID)
                     {
                         chapterBtnstate = 1;
@@ -271,7 +274,7 @@ export class HallView extends Component {
                         }
                     }
                 }
-                console.log(chapterBtnstate);
+                
                 this.freshFightBtnFun(chapterBtnstate);
                 break;
             }
@@ -325,23 +328,38 @@ export class HallView extends Component {
             case 2:
                 //通关
                 this.lab_gold.string = "" + GlobalData.Instance.gameRecord.gold;
-                var nextChapter:number = GlobalData.Instance.gameRecord.chapterID;
-                //找到下一个章节，本章节按钮变为新的征程***
-                for(var nextChapter:number = 0;unlockNextChapter < GlobalData.Instance.chapterTableArr.length;unlockNextChapter++)
+                //下一个章节
+                var nextChapter:number = 0;
+                //找到下一个章节
+                for(var findNextChapter:number = 0;findNextChapter < GlobalData.Instance.chapterTableArr.length;findNextChapter++)
                 {
-                    if(GlobalData.Instance.gameRecord.chapterID == GlobalData.Instance.chapterTableArr[unlockNextChapter].chapterID)
+                    if(GlobalData.Instance.gameRecord.chapterID == GlobalData.Instance.chapterTableArr[findNextChapter].chapterID 
+                        && GlobalData.Instance.chapterTableArr[findNextChapter].nextChapterID != 0)
                     {
-                        nextChapter = GlobalData.Instance.chapterTableArr[unlockNextChapter].nextChapterID;
+                        console.log("下一个章节：",nextChapter);
+                        nextChapter = GlobalData.Instance.chapterTableArr[findNextChapter].nextChapterID;
                     }
                 }
+
+                if(nextChapter == 0)
+                {
+                    //如果为最后一章，停留在本章，默认本章第一关，按钮扔需重置为新的征程
+                    nextChapter = GlobalData.Instance.gameRecord.chapterID;
+                }
+
                 for(var unlockNextChapter:number = 0;unlockNextChapter < GlobalData.Instance.chapterTableArr.length;unlockNextChapter++)
                 {
                     if(nextChapter == GlobalData.Instance.chapterTableArr[unlockNextChapter].chapterID)
                     {
                         //解锁下一个章节
                         GlobalData.Instance.chapterTableArr[unlockNextChapter].unlock = true;
+                        //添加到已解锁章节数组
+                        GlobalData.Instance.gameRecord.unlockChapterArr.push(nextChapter);
                         //章节ID变为新的章节ID
                         GlobalData.Instance.gameRecord.chapterID = nextChapter;
+                        //关卡ID为新解锁的章节的第一个关卡
+                        GlobalData.Instance.gameRecord.levelID = GlobalData.Instance.chapterTableArr[unlockNextChapter].levelArr[0];
+                        this.chapterChangeCount = 0;
                         this.freshChapter();
                     }
                 }

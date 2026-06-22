@@ -22,8 +22,8 @@ export class GameEventName {
     static AWARD_EVENT = "award_event";
     /** 通关关卡界面 */
     static LEVER_PASS_EVENT = "level_pass_event";
-    /** 通关章节结算排行界面 */
-    static CHAPTER_RANK_EVENT = "chapter_rank_event";
+    /** 排行榜界面 */
+    static RANK_EVENT = "rank_event";
     /** 英雄动作 */
     static HERO_SKE_EVENT = "hero_ske_event";
     /** 敌人动作 */
