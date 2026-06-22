@@ -87,7 +87,7 @@
                 "percent": 10
             }
         ],
-        "total": 10,
+        "total": 5,
         "intervalTime": 5,
         "BossID": 0,
         "BossBornTime": 0,
@@ -113,7 +113,7 @@
                 "percent": 10
             }
         ],
-        "total": 15,
+        "total": 10,
         "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
@@ -207,8 +207,8 @@
                 "percent": 10
             }
         ],
-        "total": 10,
-        "intervalTime": 4,
+        "total": 15,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -324,7 +324,7 @@
             }
         ],
         "total": 15,
-        "intervalTime": 5,
+        "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
