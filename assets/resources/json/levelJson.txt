@@ -56,7 +56,7 @@
         "waveArr": [20101, 20102, 20103],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "201",
+        "levelName": "1",
         "taskArr": [101, 102, 103]
     },
     {
@@ -68,7 +68,7 @@
         "waveArr": [20201, 20202, 20203],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "202",
+        "levelName": "2",
         "taskArr": [101, 102, 103]
     },
     {
@@ -80,7 +80,7 @@
         "waveArr": [20301],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "203",
+        "levelName": "3",
         "taskArr": [101, 102, 103]
     },
     {
@@ -92,7 +92,7 @@
         "waveArr": [20401,20402,20403,20404,20405],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "104",
+        "levelName": "4",
         "taskArr": [101, 102, 103]
     },
     {
@@ -104,7 +104,7 @@
         "waveArr": [20501],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "104",
+        "levelName": "5",
         "taskArr": [101, 102, 103]
     },
     {
@@ -116,7 +116,7 @@
         "waveArr": [30101, 30102, 30103],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "301",
+        "levelName": "1",
         "taskArr": [101, 102, 103]
     },
     {
@@ -128,7 +128,7 @@
         "waveArr": [30201, 30202, 30203],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "302",
+        "levelName": "2",
         "taskArr": [101, 102, 103]
     },
     {
@@ -140,7 +140,7 @@
         "waveArr": [30301],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "303",
+        "levelName": "3",
         "taskArr": [101, 102, 103]
     },
     {
@@ -152,7 +152,7 @@
         "waveArr": [30401, 30402, 30403],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "304",
+        "levelName": "4",
         "taskArr": [101, 102, 103]
     },
     {
@@ -164,7 +164,7 @@
         "waveArr": [30501, 30502, 30503, 30504, 30505],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "305",
+        "levelName": "5",
         "taskArr": [101, 102, 103]
     },
     {
@@ -176,7 +176,7 @@
         "waveArr": [30601],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "306",
+        "levelName": "6",
         "taskArr": [101, 102, 103]
     }
 ]
