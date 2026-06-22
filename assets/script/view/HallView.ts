@@ -262,8 +262,6 @@ export class HallView extends Component {
                 //判断是否解锁
                 for(var uca:number = 0;uca < GlobalData.Instance.gameRecord.unlockChapterArr.length;uca++)
                 {
-                    console.log("解锁章节：",GlobalData.Instance.gameRecord.unlockChapterArr[uca]);
-                    console.log("章节ID：",GlobalData.Instance.chapterTableArr[findChapter].chapterID);
                     if(GlobalData.Instance.gameRecord.unlockChapterArr[uca] == GlobalData.Instance.chapterTableArr[findChapter].chapterID)
                     {
                         chapterBtnstate = 1;
@@ -359,7 +357,14 @@ export class HallView extends Component {
                         GlobalData.Instance.gameRecord.chapterID = nextChapter;
                         //关卡ID为新解锁的章节的第一个关卡
                         GlobalData.Instance.gameRecord.levelID = GlobalData.Instance.chapterTableArr[unlockNextChapter].levelArr[0];
+                        //选择标签页重置
                         this.chapterChangeCount = 0;
+                        //游戏中的记录重置
+                        GlobalData.Instance.gameRecord.levelHeroArr = [];
+                        GlobalData.Instance.gameRecord.getGold = 0;
+                        GlobalData.Instance.gameRecord.playerLevel = 1;
+                        GlobalData.Instance.gameRecord.overflowEXP = 0;
+                        GlobalData.Instance.gameRecord.residueTime = 0;
                         this.freshChapter();
                     }
                 }

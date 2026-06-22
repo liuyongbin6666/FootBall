@@ -340,11 +340,14 @@ export class FightMoveHeroView extends Component {
         this.enemyFirstOutput();
 
         this.heroShow();
+        //英雄条
+        this.moveHeroStance(1);
         this.createSoccer();
         this.updatePlayerMaxEXP();
         this.freshWave();
         this.freshHP();
         this.freshEXP();
+        this.resetHPAndEXP();
         this.soccerGameState = gameState.start;
 
         AudioMG.Instance.changeMusicAudio("battle_bgyy");
@@ -1749,7 +1752,7 @@ export class FightMoveHeroView extends Component {
         var newHeroIndex:number = Math.floor(Math.random() * noTempheroArr.length);
         //获取该英雄的x,y，使球起始位置在英雄脚下
         let item = instantiate(this.soccerItemPre);
-        item.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
+        item.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x,noTempheroArr[newHeroIndex].heroItem.getPosition().y - 70);
         item["soccerID"] = this.soccerArr.length + 1;
         var newSoccer:soccerStructure = {soccerID:this.soccerArr.length + 1,soccerImgPath:"",soccerType:1,speed:7,soccerItem:item,soccerState:0,
             relevanceHeroID:noTempheroArr[newHeroIndex].heroID,goalEnemySerialNum:0,goalWallX:0,goalHeroID:0,speedWallX:0,moveTotal:0};
@@ -1933,8 +1936,8 @@ export class FightMoveHeroView extends Component {
         }
         if(e.getLocationX() - this.moveIntervalX >= this.moveLeftX && e.getLocationX() - this.moveIntervalX <= this.moveRightX)
         {
-            this.node_moveHero.setPosition(e.getLocationX() - this.moveIntervalX,-360);
-            // this.btn_moveHero.node.setPosition(e.getLocationX() - this.moveIntervalX,-360);
+            this.node_moveHero.setPosition(e.getLocationX() - this.moveIntervalX,-435);
+            // this.btn_moveHero.node.setPosition(e.getLocationX() - this.moveIntervalX,-435);
             //移动块最后位置(不在end中记录，因为鼠标可能移除屏幕外，导致没有end检测)
             this.lastMoveX = e.getLocationX() - this.moveIntervalX;
         }
@@ -1944,7 +1947,7 @@ export class FightMoveHeroView extends Component {
     moveHeroStance(heroCount:number)
     {
         //添加英雄时，英雄位置重置，防止新添加的英雄加到限制区域外
-        this.node_moveHero.setPosition(0,-360);
+        this.node_moveHero.setPosition(0,-435);
         this.lastMoveX = 0;
         this.lastMoveHeroX = this.node_moveHero.getPosition().x;
         switch(heroCount)
@@ -2330,7 +2333,7 @@ export class FightMoveHeroView extends Component {
             if(this.frozenBuffArr[te]["frozenID"] == eid)
             {
                 var enemy:enemyStructure = this.findEnemy(eid);
-                enemy.enemyItem.removeChild(this.frozenBuffArr[te]);
+                enemy.enemyItem.getChildByName("node_moveBuff").removeChild(this.frozenBuffArr[te]);
                 // this.node_skill.removeChild(this.frozenBuffArr[te]);
                 this.frozenBuffArr.splice(te,1);
                 break;
@@ -2555,7 +2558,8 @@ export class FightMoveHeroView extends Component {
             //弹出关卡通关页面
             Layer.Instance.show("levelPass",Layer.Instance.layerView);
             //向关卡通关页面发送数据
-            let lpEvent = new GameEventName({ doubleHit:this.maxDoubleHit, allHarm: this.harmTotal, heroArr: this.heroArr });
+            let lpEvent = new GameEventName({ doubleHit:this.maxDoubleHit, allHarm: this.harmTotal, heroArr: this.heroArr, gold:this.getGold });
+            console.log("金币结算1：",this.getGold);
             GameCustomEvent.Instance.node.emit(GameEventName.LEVER_PASS_EVENT,lpEvent);
             // var _this = this;
             // tween(this.img_fog.node).to(2,{position:new Vec3(0,0,0)}).delay(0.5).to(2,{position:new Vec3(750,0,0)}).start();
@@ -2643,7 +2647,7 @@ export class FightMoveHeroView extends Component {
         //         var newHeroIndex:number = Math.floor(Math.random() * noTempheroArr.length);
         //         //获取该英雄的x,y，使球起始位置在英雄脚下，需要加上计算拖动的差距值
         //         this.soccerArr[0].soccerItem.setPosition(noTempheroArr[newHeroIndex].heroItem.getPosition().x + this.lastMoveX,
-        //             noTempheroArr[newHeroIndex].heroItem.getPosition().y - 20);
+        //             noTempheroArr[newHeroIndex].heroItem.getPosition().y - 70);
         //         //球状态改为发球
         //         this.soccerArr[0].soccerState = 1;
         //         //球变回原来大小

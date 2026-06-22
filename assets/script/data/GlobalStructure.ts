@@ -31,11 +31,11 @@ export interface gameRecordStructure{
     unlockChapterArr:Array<number>;
     //酒馆等级
     amplificationCardLevel:number;
+    //金币
+    gold:number;
     /**
      * 游戏内记录，每过一个关卡记录一次，用于中途退出或读取进度，未完成一个章节的情况下不记录
     */
-    //金币
-    gold:number;
     //已经获得的金币
     getGold:number;
     //中途退出关卡时的英雄数据（下次继续时，使用该数据）

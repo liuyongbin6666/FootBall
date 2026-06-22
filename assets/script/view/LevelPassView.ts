@@ -20,6 +20,7 @@ export class LevelPassView extends Component {
     private lab_allHarm:Label;
     private btn_continue:Button;
     private lay_hero:Layout;
+    private gold:number = 0;
     protected onLoad(): void {
         this._initObect();
         this._onEvent();
@@ -50,6 +51,7 @@ export class LevelPassView extends Component {
         
         this.hideAllHero();
 
+        this.gold = lpEvent.getCustomProperty().gold;
         this.lab_doubleHit.string = "" + lpEvent.getCustomProperty().doubleHit;
         // this.lab_allHarm.string = "连击伤害 " + lpEvent.getCustomProperty().allHarm;
         var heroPromoteArr:Array<heroStructure> = [];
@@ -127,7 +129,8 @@ export class LevelPassView extends Component {
         //弹出奖励页面
         Layer.Instance.show("award",Layer.Instance.layerView);
         //发送奖励列表
-        let aEvent = new GameEventName({ openState: 1, awardList:[] });
+        let aEvent = new GameEventName({ openState: 1, awardList:[] , gold:this.gold});
+            console.log("金币结算2：",this.gold);
         GameCustomEvent.Instance.node.emit(GameEventName.AWARD_EVENT,aEvent);
 
         this.closeView();

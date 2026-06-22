@@ -2,6 +2,7 @@ import { _decorator, Button, Component, find, Node, Layout, instantiate, Label, 
 import { GameCustomEvent } from '../manager/GameCustomEvent';
 import { GameEventName } from '../manager/GameEventName';
 import { LoadImgTool } from '../tool/LoadImgTool';
+import { GlobalData } from '../data/GlobalData';
 const { ccclass, property } = _decorator;
 
 /**
@@ -42,25 +43,29 @@ export class AwardView extends Component {
     {
         this.openState = aEvent.getCustomProperty().openState;
         console.log("收到openState",this.openState);
-        // switch(aEvent.getCustomProperty().openState)
-        // {
-        //     case 0:
-        //         break;
-        //     case 1:
-        //         break;
-        // }
-        //移除所有奖励
-        // this.con_lay_award.node.removeAllChildren();
-        // for(var a:number = 0;a < aEvent.getCustomProperty().awardList;a++)
-        // {
-        //     let item = instantiate(this.rankItemPre);
-        //     item.getChildByName("lab_awardName").getComponent(Label).string = aEvent.getCustomProperty().awardList[a].awardName;
-        //     item.getChildByName("lab_count").getComponent(Label).string = "x" + aEvent.getCustomProperty().awardList[a].count;
-        //     //奖励图标
-        //     LoadImgTool.Instance.loadSpriteFrame(aEvent.getCustomProperty().awardList[a].awardImgPath,
-        //         item.getChildByName("icon_award").getComponent(Sprite).node);
-        //     this.con_lay_award.node.addChild(item);
-        // }
+        switch(aEvent.getCustomProperty().openState)
+        {
+            case 0:
+                break;
+            case 1:
+                //先加金币
+                this.con_lay_award.node.getChildByName("awardItem1").getChildByName("lab_count").getComponent(Label).string = 
+                    "x" + aEvent.getCustomProperty().gold;//GlobalData.Instance.gameRecord.getGold
+                //再加道具
+                //移除所有奖励
+                // this.con_lay_award.node.removeAllChildren();
+                // for(var a:number = 0;a < aEvent.getCustomProperty().awardList;a++)
+                // {
+                //     let item = instantiate(this.rankItemPre);
+                //     item.getChildByName("lab_awardName").getComponent(Label).string = aEvent.getCustomProperty().awardList[a].awardName;
+                //     item.getChildByName("lab_count").getComponent(Label).string = "x" + aEvent.getCustomProperty().awardList[a].count;
+                //     //奖励图标
+                //     LoadImgTool.Instance.loadSpriteFrame(aEvent.getCustomProperty().awardList[a].awardImgPath,
+                //         item.getChildByName("icon_award").getComponent(Sprite).node);
+                //     this.con_lay_award.node.addChild(item);
+                // }
+                break;
+        }
     }
 
     okFun()
