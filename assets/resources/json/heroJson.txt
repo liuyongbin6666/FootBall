@@ -121,7 +121,7 @@
         "heroType": 1,
         "restrainType": 1,
         "maxHP": 24,
-        "harm": 60,
+        "harm": 6,
         "speed": 1,
         "lockGold": 0,
         "skillArr": [102],
@@ -140,7 +140,7 @@
         "harm": 7,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": [102],
+        "skillArr": [107],
         "speakArr": ["看不见我。","我消失了。","嘘——","完美潜伏","谁在说话？"]
     },
     {
@@ -156,7 +156,7 @@
         "harm": 8,
         "speed": 1,
         "lockGold": 0,
-        "skillArr": [102],
+        "skillArr": [112],
         "speakArr": ["哦。","行。","随便。","无所谓。","哦。"]
     },
     {

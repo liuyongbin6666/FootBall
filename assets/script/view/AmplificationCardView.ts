@@ -636,7 +636,7 @@ export class AmplificationCardView extends Component {
         //根据酒馆等级，确定最终品级随机概率
         for(var ampLevel:number = 0;ampLevel < GlobalData.Instance.ampCardProTableArr.length;ampLevel++)
         {
-            if(GlobalData.Instance.amplificationCardLevel == GlobalData.Instance.ampCardProTableArr[ampLevel].level)
+            if(GlobalData.Instance.gameRecord.amplificationCardLevel == GlobalData.Instance.ampCardProTableArr[ampLevel].level)
             {
                 this.saveAmpCardPro = GlobalData.Instance.ampCardProTableArr[ampLevel];
                 break;

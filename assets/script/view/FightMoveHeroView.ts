@@ -170,6 +170,10 @@ export class FightMoveHeroView extends Component {
     private maxEXP:number = 200;
     //溢出经验
     private overflowEXP:number = 0;
+    //玩家攻击力（非英雄）
+    private playerAttack:number = 20;
+    //玩家HP（非英雄）
+    private playerHP:number = 100;
     //当前总攻击力
     private allAttack:number = 0;
     //当前总暴击率
@@ -178,6 +182,7 @@ export class FightMoveHeroView extends Component {
     private allCriticalChance:number = 0;
     //本章节内造成的伤害总和
     private harmTotal:number = 0;
+    //上一次造成的总伤害(用于检测数值刷新)
     private lastHarmTotal:number = 0;
     //连击次数统计
     private doubleHit:number = 0;
@@ -351,6 +356,9 @@ export class FightMoveHeroView extends Component {
         //预加载
         let pathlevelPass = Layer.Instance.getGamePrePath("levelPass");
         LoadImgTool.Instance.loadPrefab("levelPass",pathlevelPass,Layer.Instance.layerView,false);
+
+        let pathRank = Layer.Instance.getGamePrePath("rank");
+        LoadImgTool.Instance.loadPrefab("rank",pathRank,Layer.Instance.layerView,false);
     }
     
     //看视频得奖励
@@ -386,12 +394,12 @@ export class FightMoveHeroView extends Component {
         this.heroArr = [];
 
         this.soccerGameState = gameState.wait;
-        this.HP = 0;
-        this.EXP = 0;
-        this.allAttack = 0;
+        this.allAttack = this.playerAttack;
         this.allBreakOutHarmChance = 0;
         this.allCriticalChance = 0;
-        this.maxHP = 0;
+        this.HP = this.playerHP;
+        this.maxHP = this.playerHP;
+        this.EXP = 0;
         this.maxEXP = 0;
         //波次重置
         this.wave = 1;
@@ -864,6 +872,11 @@ export class FightMoveHeroView extends Component {
                 for(var asl:number = 0;asl < GlobalData.Instance.heroTableArr[ht].skillArr.length;asl++)
                 {
                     var newSkillLevel:relevanceProStructure = {ID:GlobalData.Instance.heroTableArr[ht].skillArr[asl],level:0,multiple:0,percent:0,seconds:0};
+                    //绿色以上品级，给到一个技能下标为0的初始技能
+                    if(GlobalData.Instance.heroTableArr[ht].quality > 1 && asl == 0)
+                    {
+                        newSkillLevel = {ID:GlobalData.Instance.heroTableArr[ht].skillArr[asl],level:1,multiple:0,percent:0,seconds:0};
+                    }
                     hero.skillProArr.push(newSkillLevel);
                 }
                 hero.speed = GlobalData.Instance.heroTableArr[ht].speed;
@@ -1059,6 +1072,11 @@ export class FightMoveHeroView extends Component {
                 for(var asl:number = 0;asl < GlobalData.Instance.heroTableArr[ht].skillArr.length;asl++)
                 {
                     var newSkillLevel:relevanceProStructure = {ID:GlobalData.Instance.heroTableArr[ht].skillArr[asl],level:0,multiple:0,percent:0,seconds:0};
+                    //绿色以上品级，给到一个技能下标为0的初始技能
+                    if(GlobalData.Instance.heroTableArr[ht].quality > 1 && asl == 0)
+                    {
+                        newSkillLevel = {ID:GlobalData.Instance.heroTableArr[ht].skillArr[asl],level:1,multiple:0,percent:0,seconds:0};
+                    }
                     this.heroArr[hIndex].skillProArr.push(newSkillLevel);
                 }
                 this.heroArr[hIndex].speed = GlobalData.Instance.heroTableArr[ht].speed;
@@ -1146,9 +1164,9 @@ export class FightMoveHeroView extends Component {
         }
         this.node_hero.removeAllChildren();
         this.heroArr = [];
-        this.HP = 0;
-        this.maxHP = 0;
-        this.allAttack = 0;
+        this.HP = this.playerHP;
+        this.maxHP = this.playerHP;
+        this.allAttack = this.playerAttack;
         this.allBreakOutHarmChance = 0;
         this.allCriticalChance = 0;
         //重新排序
@@ -2142,19 +2160,23 @@ export class FightMoveHeroView extends Component {
                                     {
                                         case 1:
                                             item.getChildByName("ske_monsterBuff").scale = new Vec3(0.4,0.4,0);
-                                            item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 45);
+                                            // item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 45);
+                                            item.setPosition(0,-45);
                                             break;
                                         case 2:
                                             item.getChildByName("ske_monsterBuff").scale = new Vec3(0.6,0.6,0);
-                                            item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 45);
+                                            // item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 45);
+                                            item.setPosition(0,-45);
                                             break;
                                         case 3:
                                             item.getChildByName("ske_monsterBuff").scale = new Vec3(0.8,0.8,0);
-                                            item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 65);
+                                            // item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 65);
+                                            item.setPosition(0,-65);
                                             break;
                                     }
                                     this.frozenBuffArr.push(item);
-                                    this.node_skill.addChild(item);
+                                    enemy.enemyItem.getChildByName("node_moveBuff").addChild(item);
+                                    // this.node_skill.addChild(item);
                                 }
                             }
                         }
@@ -2307,7 +2329,9 @@ export class FightMoveHeroView extends Component {
         {
             if(this.frozenBuffArr[te]["frozenID"] == eid)
             {
-                this.node_skill.removeChild(this.frozenBuffArr[te]);
+                var enemy:enemyStructure = this.findEnemy(eid);
+                enemy.enemyItem.removeChild(this.frozenBuffArr[te]);
+                // this.node_skill.removeChild(this.frozenBuffArr[te]);
                 this.frozenBuffArr.splice(te,1);
                 break;
             }
@@ -2498,19 +2522,22 @@ export class FightMoveHeroView extends Component {
     //章节结算
     chapterResultFun()
     {
+        //金币更新
+        GlobalData.Instance.gameRecord.gold += this.getGold;
+        this.getGold = 0;
+        GlobalData.Instance.gameRecord.getGold = 0;
+
         Layer.Instance.show("hall",Layer.Instance.layerView);
         //向大厅发送通关消息
         let hallEvent = new GameEventName({ eventCode: 2 });
         GameCustomEvent.Instance.node.emit(GameEventName.HALL_EVENT,hallEvent);
 
-        Layer.Instance.show("rank",Layer.Instance.layerView);
-        //弹出章节结算页面
-        Layer.Instance.show("rank",Layer.Instance.layerView);
-        //金币更新
-        GlobalData.Instance.gameRecord.gold += this.getGold;
-        this.getGold = 0;
-        GlobalData.Instance.gameRecord.getGold = 0;
-        // GameCustomEvent.Instance.node.emit(GameEventName.CHAPTER_RESULT_EVENT);
+        //打开排行榜页面
+        // Layer.Instance.show("rank",Layer.Instance.layerView);
+        // //发送分数
+        // let rankEvent = new GameEventName({ eventCode: 1, score: this.harmTotal });
+        // GameCustomEvent.Instance.node.emit(GameEventName.RANK_EVENT,rankEvent);
+        Layer.Instance.close("fightMoveHero",Layer.Instance.layerView);
     }
 
     //关卡通关
