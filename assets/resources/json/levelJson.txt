@@ -32,7 +32,7 @@
         "waveArr": [10301, 10302, 10303],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "103",
+        "levelName": "3",
         "taskArr": [101, 102, 103]
     },
     {
@@ -44,7 +44,7 @@
         "waveArr": [10401],
         "levelImgPath": "",
         "levelMusicPath": "",
-        "levelName": "104",
+        "levelName": "4",
         "taskArr": [101, 102, 103]
     },
     {

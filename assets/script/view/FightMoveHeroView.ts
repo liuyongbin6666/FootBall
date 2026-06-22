@@ -2176,6 +2176,10 @@ export class FightMoveHeroView extends Component {
                                             // item.setPosition(enemy.enemyItem.getPosition().x,enemy.enemyItem.getPosition().y - 65);
                                             item.setPosition(0,-65);
                                             break;
+                                        case 4:
+                                            item.getChildByName("ske_monsterBuff").scale = new Vec3(1,1,0);
+                                            item.setPosition(0,-90);
+                                            break;
                                     }
                                     this.frozenBuffArr.push(item);
                                     enemy.enemyItem.getChildByName("node_moveBuff").addChild(item);

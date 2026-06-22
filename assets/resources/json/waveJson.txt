@@ -47,7 +47,7 @@
                 "percent": 10
             }
         ],
-        "total": 10,
+        "total": 5,
         "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
@@ -88,7 +88,7 @@
             }
         ],
         "total": 5,
-        "intervalTime": 5,
+        "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -114,7 +114,7 @@
             }
         ],
         "total": 10,
-        "intervalTime": 4,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -140,7 +140,7 @@
             }
         ],
         "total": 100,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 105,
         "BossBornTime": 5,
         "minEnemy": 0
@@ -185,7 +185,7 @@
                 "percent": 10
             }
         ],
-        "total": 10,
+        "total": 5,
         "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
@@ -207,7 +207,7 @@
                 "percent": 10
             }
         ],
-        "total": 15,
+        "total": 5,
         "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
@@ -222,7 +222,7 @@
             }
         ],
         "total": 10,
-        "intervalTime": 5,
+        "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -244,7 +244,7 @@
             }
         ],
         "total": 15,
-        "intervalTime": 4,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -270,7 +270,7 @@
             }
         ],
         "total": 20,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -302,7 +302,7 @@
             }
         ],
         "total": 10,
-        "intervalTime": 5,
+        "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 5
@@ -324,7 +324,7 @@
             }
         ],
         "total": 15,
-        "intervalTime": 4,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -350,7 +350,7 @@
             }
         ],
         "total": 20,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -484,7 +484,7 @@
             }
         ],
         "total": 10,
-        "intervalTime": 5,
+        "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -506,7 +506,7 @@
             }
         ],
         "total": 15,
-        "intervalTime": 4,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -532,7 +532,7 @@
             }
         ],
         "total": 20,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -564,7 +564,7 @@
             }
         ],
         "total": 10,
-        "intervalTime": 5,
+        "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -586,7 +586,7 @@
             }
         ],
         "total": 15,
-        "intervalTime": 4,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -612,7 +612,7 @@
             }
         ],
         "total": 20,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -626,7 +626,7 @@
             }
         ],
         "total": 10,
-        "intervalTime": 5,
+        "intervalTime": 4,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -648,7 +648,7 @@
             }
         ],
         "total": 15,
-        "intervalTime": 4,
+        "intervalTime": 3,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
@@ -674,7 +674,7 @@
             }
         ],
         "total": 20,
-        "intervalTime": 3,
+        "intervalTime": 2,
         "BossID": 0,
         "BossBornTime": 0,
         "minEnemy": 0
