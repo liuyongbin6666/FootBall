@@ -180,7 +180,7 @@
         "heroName": "三藏鸡",
         "heroIntroduce": "三藏鸡特别喜欢讲道理。-n足球被抢了要讲道理。-n球门被拆了要讲道理。-n自己被打飞了还要讲道理。-n有一次它追着猪怪讲了三天三夜。-n最后猪怪主动把足球还了回来。",
         "heroHeadImgPath": "hero-heroHead-icon_heroHead_402",
-        "heroSkePath": "hero-hero401-hero402",
+        "heroSkePath": "hero-hero402-hero402",
         "quality": 4,
         "heroType": 1,
         "restrainType": 1,
