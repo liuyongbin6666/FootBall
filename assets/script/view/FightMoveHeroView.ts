@@ -3493,19 +3493,19 @@ export class FightMoveHeroView extends Component {
                 this.maxEXP = 1;
                 break;
             case 2:
-                this.maxEXP = 3;
+                this.maxEXP = 2;
                 break;
             case 3:
-                this.maxEXP = 5;
+                this.maxEXP = 3;
                 break;
             case 4:
-                this.maxEXP = 10;
+                this.maxEXP = 5;
                 break;
             case 5:
-                this.maxEXP = 20;
+                this.maxEXP = 10;
                 break;
             default:
-                this.maxEXP = 30;
+                this.maxEXP = 10;
                 break;
         }
     }
