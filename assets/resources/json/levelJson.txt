@@ -52,7 +52,7 @@
         "levelType": 5,
         "stillLife": true,
         "nextLevelArr": [],
-        "maxTime": 3000,
+        "maxTime": 1000,
         "waveArr": [10501],
         "levelImgPath": "",
         "levelMusicPath": "",
